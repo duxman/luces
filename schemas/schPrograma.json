@@ -1,0 +1,32 @@
+{
+  "title" : "Programa",
+  "type" : "object",
+  "id" : "programa",
+  "properties" :
+  {
+    "HoraDesde" :
+    {
+      "type" : "string",
+      "format" : "time",
+      "description" : "Hora de inicio"
+    },
+    "HoraHasta" :
+    {
+      "type" : "string",
+      "format" : "time",
+      "description" : "Hora de Finalizacion"
+
+    },
+    "Estado" :
+    {
+      "type" : "string",
+      "description" : "Estado del programa [ OFF | TIMED | ON ] ",
+      "enum": [ "OFF","TIMED","ON" ]
+    },
+    "Programa" :
+    {
+      "type" : "string",
+      "description" : "Configuracion a aplicar"
+    }
+  }
+}

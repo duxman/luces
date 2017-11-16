@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Duxman Ligths</title>
+    <link rel='stylesheet' id='theme_stylesheet' href="./css/bootstrap.min.css">
+    <link rel='stylesheet' id='icon_stylesheet' href="./css/font-awesome.css">
+    <link rel='stylesheet' href="./css/luces.css">
+
+    <script src="./js/jsoneditor.min.js"></script>
+    <script src="./js/require.js"></script>
+    <script src="./js/editor.js"></script>
+    <script src="./js/jquery-3.2.1.js"></script>
+    <script src="./js/gui.js"></script>
+  </head>
+  <body >
+    <h1>Configurador</h1>
+
+    <div class="tab" width="60%">
+      <button class="tablinks" onclick="openTab(event, 'TabProgramacion')">Programacion Actual</button>
+      <button class="tablinks" onclick="openTab(event, 'TabSecuencias')">Secuencias Programadas</button>
+      <button class="tablinks" onclick="openTab(event, 'TabConfigGeneral')">Configuracion General</button>
+    </div>
+
+    <div id="TabProgramacion" class="tabcontent">
+        <button id='submitProgramacion'>Guardar Programacion</button>
+    </div>
+
+    <div id="TabSecuencias" class="tabcontent">
+        <button id='submitSecuencias' >Guardar Secuencias</button>
+    </div>
+
+    <div id="TabConfigGeneral" class="tabcontent">
+        <button id='submitGeneral' >Guardar Configuracion General</button>
+    </div>
+
+
+
+    <script>
+        var editorProgramacion = loadEditor( "schPrograma.json", "TabProgramacion" );
+        var editorSecuencias = loadEditor( "schSecuencias.json", "TabSecuencias" );
+        var editorGeneral = loadEditor( "schConfiguracion.json", "TabConfigGeneral" );
+        //Creamos los eventos
+        CreateEvents()
+    </script>
+  </body>
+</html>

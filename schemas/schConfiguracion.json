@@ -1,0 +1,13 @@
+{
+  "title" : "Configuracion General",
+  "type" : "object",
+  "id" : "configuracion",
+  "properties" :
+  {
+    "pines" :
+    {
+      "type" : "string",
+      "description" : "Salidas digitales a utilizar"
+    }
+  }
+}

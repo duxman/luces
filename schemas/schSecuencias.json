@@ -1,0 +1,35 @@
+{
+  "title" : "Secuencias Programadas",
+  "type" : "object",
+  "id" : "Secuencias",
+  "properties" :
+  {
+    "pines" :
+    {
+      "type" : "string",
+      "description" : "Salidas digitales a utilizar"
+    },
+    "musica" :
+    {
+      "type" : "string",
+      "description" : "Fichero a utilizar en la sincronizacion"
+
+    },
+    "secuencia" :
+    {
+      "type" : "string",
+      "description" : "Secuencias de iluminacion"
+
+    },
+    "intervalo" :
+    {
+      "type" : "string",
+      "description" : "Segundos entre secuencia y secuencia"
+    },
+    "repeticiones" :
+    {
+      "type" : "string",
+      "description" : "Numero de repeticiones de la secuencia, -1 infinito"
+    }
+  }
+}
