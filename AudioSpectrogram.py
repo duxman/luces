@@ -11,86 +11,85 @@ represents frequency, and color represents amplitude.
 
 # !/usr/bin/env python
 import contextlib
-import sys
+import uuid
 
-
+import os
+from pydub import AudioSegment
 from sklearn.preprocessing import scale, minmax_scale
 from pylab import *
 import wave
 import numpy as np
 import pyaudio
 
+
 chunk = 1024
+AudioSegment.converter = "d://dev/ffmpeg/bin/ffmpeg.exe"
+class parameters(object):
+    pass
+
+class wavesincronize(object):
+    def PlayWavFile(self,speech,**attrs):
+        e = parameters()
+        for k, v in attrs.iteritems():
+            setattr(e, k, v)
+        ValorVector = getattr(e,"vector", [])
+        ValorTiempo = getattr(e,"tiempo", 250)
+
+        if ValorVector.__len__() >=0:
+            with contextlib.closing(wave.open(speech, 'rb')) as f:
+                rate = (f.getframerate() / ValorTiempo)/2
+                p = pyaudio.PyAudio()
+                stream = p.open(format=p.get_format_from_width(f.getsampwidth()),
+                                channels=f.getnchannels(),
+                                rate=f.getframerate(),
+                                output=True)
+
+                data = f.readframes(rate+1)
+
+                i = 0
+                while data and i < ValorVector.__len__():
+                    valor = int(ValorVector[i])
+                    i = i +1
+                    print ''.ljust(valor*2,"#")
+                    stream.write(data)
+                    data = f.readframes(rate+1)
+
+                stream.stop_stream()
+                stream.close()
+                p.terminate()
 
 
-def playsound(speech,tiempo,vector):
-    with contextlib.closing(wave.open(speech, 'rb')) as f:
-        filedata = wave.open(speech, 'r')
-        frames = filedata.getnframes()
-        rate = filedata.getframerate()
-        every = (rate / tiempo)/2
+    def AnalizeWavFile(self,speech, **attrs):
+        e = parameters()
+        for k, v in attrs.iteritems():
+            setattr(e,k,v)
 
-        p = pyaudio.PyAudio()
-        stream = p.open(format=p.get_format_from_width(f.getsampwidth()),
-                        channels=f.getnchannels(),
-                        rate=f.getframerate(),
-                        output=True)
+        ValorMinimo =   getattr(e,"min",0)
+        ValorMaximo =   getattr(e,"max",10)
+        ValorTiempo =   getattr(e,"tiempo", 250)
+        extension   =   getattr(e,"format","WAV")
+        if extension == ".MP3":
+            sound = AudioSegment.from_mp3(speech)
+            fdestino = "music/temp/"+str( uuid.uuid4())+".wav"
+            sound.export(fdestino , format="wav")
+            speech = fdestino
 
-        data = f.readframes(every+1)
-        sound_info = filedata.readframes(every+1)
-        arraya=[]
-        i = 0
-        while data and i < vector.__len__():
+        with contextlib.closing(wave.open(speech, 'r')) as f:
+            frames = f.getnframes()
+            rate = f.getframerate()
+            every = ( rate / ValorTiempo )
 
-            """
-            sound_info = np.absolute(np.fromstring(sound_info, 'Int16'))
-            sound_infosample = [round(x) for x in np.absolute(minmax_scale(sound_info, (1, 10), axis=0, copy=True))]
-            #print 'Normal [%s]' % ', '.join(map(str, sound_infosample))
-            valor = int(round( np.average(sound_infosample) ))
-            """
-            valor = int(vector[i])
-            arraya.append(valor)
-            i = i +1
-
-            print ''.ljust(valor,'#')
-            stream.write(data)
-            data = f.readframes(every+1)
-            #sound_info = filedata.readframes(every + 1)
-            # stop stream
-
-        subplot(212)
-        plot(arraya)
-        show()
-        filedata.close()
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
+            sound_info = f.readframes(-1)
+            sound_info = np.absolute( np.fromstring(sound_info[::1], 'Int16'))[::every]
+            sound_infosample = [round(x) for x in np.absolute( minmax_scale(sound_info,(ValorMinimo,ValorMaximo), axis=0,  copy=True) ) ]
+            print 'Normal [%s]' % ', '.join(map(str, sound_infosample))
+            return sound_infosample, speech
 
 
-def show_wave_n_spec(speech, tiempo):
-    with contextlib.closing(wave.open(speech, 'r')) as f:
-        frames = f.getnframes()
-        rate = f.getframerate()
-        duration = frames / float(rate)
-        every = ( rate / tiempo )
+fil = "music/SoundHelix.mp3"#sys.argv[1]
+o = wavesincronize()
+extension = os.path.splitext(fil)[1].upper()
 
-        sound_info = f.readframes(-1)
-        sound_info = np.absolute( np.fromstring(sound_info[::1], 'Int16'))[::every]
-        sound_infosample = [round(x) for x in np.absolute( minmax_scale(sound_info,(1,10), axis=0,  copy=True) ) ]
-        print 'Normal [%s]' % ', '.join(map(str, sound_infosample))
+sound_infosample, fdestino = o.AnalizeWavFile(fil,tiempo=250,max=20, format=extension)
 
-
-
-
-        subplot(211)
-        plot(sound_info)
-
-        subplot(212)
-        plot(sound_infosample)
-        show()
-
-        return sound_infosample
-
-fil = "music/sample2.wav"#sys.argv[1]
-sound_infosample = show_wave_n_spec(fil,250)
-playsound(fil, 250, sound_infosample)
+o.PlayWavFile(fdestino, tiempo=250, vector=sound_infosample)
