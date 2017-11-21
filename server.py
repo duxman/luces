@@ -1,6 +1,8 @@
 import cgi
 from BaseHTTPServer import HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
+from SocketServer import ThreadingMixIn
+
 
 class MiHTTPRequestHandler(SimpleHTTPRequestHandler):
 
@@ -24,14 +26,16 @@ class MiHTTPRequestHandler(SimpleHTTPRequestHandler):
         return self.do_GET()
 
 
+class WebServer(ThreadingMixIn):
+    PORT = 8000
+    Handler = None
+    HttpdServer = None
+    Logger = None
 
-PORT = 8000
-
-
-
-Handler = MiHTTPRequestHandler
-
-httpd = HTTPServer(("", PORT), Handler)
-
-print "serving at port", PORT
-httpd.serve_forever()
+    def __init__(self, port, logger):
+        self.PORT = 8000
+        self.Logger = logger
+        self.Handler = MiHTTPRequestHandler
+        self.HttpdServer = HTTPServer(("", self.PORT), self.Handler)
+        self.Logger.info( "serving at port" + str(self.PORT))
+        self.HttpdServer.serve_forever()

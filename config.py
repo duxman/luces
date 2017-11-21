@@ -60,13 +60,8 @@ class GeneralConfiguration(clienteLog):
         self.data = json.load(open('./config/configuration.json'))
 
         pinesString = self.data["Pines"]
-        secuenciasString = self.data["Secuencias"]
 
         self.Pines = pinesString.split(",")
-        self.Secuencias = secuenciasString.split(",")
-
-        for sec in self.Secuencias:
-            self.Secuencia = secuencia(sec,self.Logger)
 
         for pin in self.Pines:
             self.Pines = pin
