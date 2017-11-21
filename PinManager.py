@@ -2,7 +2,8 @@
 
 import time  # necesario para los delays
 
-import EmulatorGUI as GPIO   # import RPi.GPIO as GPIO
+#import EmulatorGUI as GPIO
+import RPi.GPIO as GPIO
 
 class PinManager(object):
     Logger = None
@@ -13,11 +14,12 @@ class PinManager(object):
         self.PinList = pinlist
         self.gpio_setup( self.PinList)
 
+
     def gpio_setup( self, pinList ):
         GPIO.setmode(GPIO.BCM)
-        for pin in pinList:
-           GPIO.setup( pin,GPIO.OUT)
-           GPIO.output( pin, False)
+        GPIO.setwarnings(False)
+        GPIO.setup(pinList, GPIO.OUT)
+        GPIO.output(pinList, GPIO.LOW)
 
     def Encender( self,pin ):
         GPIO.output(pin, True )
@@ -32,10 +34,10 @@ class PinManager(object):
             self.Apagar( pin )
 
     def EjecutarSecuencia( self,secuencia, intervalo ):
-        for pin in secuencia:
-            self.Encender( pin )
-
+        GPIO.output(secuencia, GPIO.HIGH)
         time.sleep( intervalo)
+        GPIO.output(secuencia, GPIO.LOW)
+
 
         for pin in secuencia:
             self.Apagar( pin )
@@ -49,11 +51,10 @@ class PinManager(object):
             self.Apagar(pin)
 
     def EncenderInRange(self,  MaxValue):
-        i = 0
-        self.ApagarTodo()
-        while i< MaxValue:
-            self.Encender( self.PinList[i] )
-            i = i + 1
+        secuencia = self.PinList[:MaxValue]
+        GPIO.output(self.PinList, GPIO.LOW)
+        GPIO.output(secuencia, GPIO.HIGH)
+
 
     def EjecutarPrograma( self,pinProgram , repeticiones , intervalo ):
         iteracion = 0

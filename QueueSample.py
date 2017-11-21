@@ -1,7 +1,15 @@
 import contextlib
+import uuid
 import wave
 import audioop
-import pyaudio
+
+import os
+
+from pydub import AudioSegment
+
+import PinManager
+#import pyaudio
+import alsaaudio
 import threading
 import Queue
 from datetime import datetime
@@ -58,55 +66,77 @@ class Consumer(threading.Thread):
 
         print "%s ends" % (self.getName(),)
 
+def prepareDevice(device, f):
+    # Set attributes
+    device.setchannels(f.getnchannels())
+    device.setrate(f.getframerate())
+
+    # 8bit is unsigned in wav files
+    if f.getsampwidth() == 1:
+        device.setformat(alsaaudio.PCM_FORMAT_U8)
+    # Otherwise we assume signed data, little endian
+    elif f.getsampwidth() == 2:
+        device.setformat(alsaaudio.PCM_FORMAT_S16_LE)
+    elif f.getsampwidth() == 3:
+        device.setformat(alsaaudio.PCM_FORMAT_S24_3LE)
+    elif f.getsampwidth() == 4:
+        device.setformat(alsaaudio.PCM_FORMAT_S32_LE)
+    else:
+        raise ValueError('Unsupported format')
+
+    periodsize = f.getframerate() / 8
+    device.setperiodsize(periodsize)
+
+def ConvertWavFile(FileName):
+    extension   =  os.path.splitext(FileName)[1].upper()
+    WaveFile = FileName
+    if extension == ".MP3":
+        sound = AudioSegment.from_mp3( FileName )
+        WaveFile = "music/temp/"+str( uuid.uuid4())+".wav"
+        sound.export(WaveFile , format="wav")
+    return WaveFile
+
 
 def PlayWavFile(FileName, **attrs):
+    ConvertWavFile(FileName)
     e = parameters()
     for k, v in attrs.iteritems():
         setattr(e, k, v)
-    ValorTiempo = getattr(e, "tiempo", 250)
     ValorQueue = getattr(e, "queue", None )
     with contextlib.closing(wave.open(FileName, 'rb')) as analizer:
         periodsize = analizer.getframerate() / 8
         max = audioop.rms( analizer.readframes( -1 ) , 2)
 
     with contextlib.closing(wave.open(FileName, 'rb')) as f:
-        rate = (f.getframerate() / ValorTiempo) / 2
-        p = pyaudio.PyAudio()
-        stream = p.open(format=p.get_format_from_width(f.getsampwidth()),
-                        channels=f.getnchannels(),
-                        rate=f.getframerate(),
-                        output=True)
+        device = alsaaudio.PCM()
+        prepareDevice(device, f)
 
-        data = f.readframes(rate + 1)
+        data = f.readframes(periodsize)
 
         i = 0
         while data:
-            i = i + 1
             valor = int(round( audioop.rms(data, 2) * 5 / max ))
-            queuevalue =  ''.ljust(valor * 2, "#")
-            ValorQueue.put( queuevalue )
-            stream.write(data)
-            data = f.readframes(rate + 1)
+            ValorQueue.put( valor )
+            device.write(data)
+            data = f.readframes(periodsize)
 
         ValorQueue.join()
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
 
 class targetclass():
-    array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
     def printfunction(self, valor):
-        a,b,c,d,self.array[:valor]
+        array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        arr = array[:valor]
         #print "Target value %s" % (valor,)
         print(arr)
 
 if __name__ == "__main__":
     q = Queue.Queue()
-    c = targetclass();
-    testthread = Consumer( q,target =c.printfunction, name="MiConsumidor" )
+    pinman = PinManager.PinManager(None,[2,3,4,17,27,22,10,9,11,5])
+    testthread = Consumer( q,target =pinman.EncenderInRange, name="MiConsumidor" )
     testthread.start( )
 
-    producer = threading.Thread(target=PlayWavFile("music/sample2.wav",queue=q))
+    producer = threading.Thread(target=PlayWavFile("music/sample3.wav",queue=q))
     producer.start()
     q.join()
     #producer.join()
