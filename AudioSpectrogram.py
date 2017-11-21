@@ -11,13 +11,15 @@ represents frequency, and color represents amplitude.
 
 # !/usr/bin/env python
 import contextlib
+import wave
+import audioop
 import uuid
 
 import os
 from pydub import AudioSegment
 from sklearn.preprocessing import scale, minmax_scale
 from pylab import *
-import wave
+
 import numpy as np
 import pyaudio
 
