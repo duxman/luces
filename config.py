@@ -1,6 +1,6 @@
 import json
 
-from logger import clienteLog
+from Util.logger import clienteLog
 
 Logger = None
 

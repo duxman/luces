@@ -1,8 +1,8 @@
-import config
-from logger import clienteLog
 from www.AudioSpectrogram import WaveSynchronize
 from www.PinManager import PinManager
-from www.server import WebServer
+
+import config
+from Util.logger import clienteLog
 
 
 class  DuxmanLights(object):
