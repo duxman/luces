@@ -45,8 +45,9 @@ class secuencia:
         self.intervalo = self.data["intervalo"]
         self.repeticiones = self.data["repeticiones"]
 
-
 class GeneralConfiguration(clienteLog):
+    RutaFFMPEG = None
+    RutaMusica = None
     Pines=""
     Secuencias=""
     Programacion = ""
@@ -60,6 +61,8 @@ class GeneralConfiguration(clienteLog):
         self.data = json.load(open('./config/configuration.json'))
 
         pinesString = self.data["Pines"]
+        self.RutaMusica = self.data["RutaMusica"]
+        self.RutaFFMPEG = self.data["Rutaffmpeg"]
 
         self.Pines = pinesString.split(",")
 

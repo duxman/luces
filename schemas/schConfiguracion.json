@@ -8,6 +8,16 @@
     {
       "type" : "string",
       "description" : "Salidas digitales a utilizar"
+    },
+    "RutaMusica" :
+    {
+      "type" : "string",
+      "description" : "Ubicacion predeterminada de las canciones"
+    },
+    "Rutaffmpeg" :
+    {
+      "type" : "string",
+      "description" : "Ruta Completa del Programa ffmpeg, solo si no es linux"
     }
   }
 }

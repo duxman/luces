@@ -9,20 +9,24 @@ else:
     import pyaudio
 from pydub import AudioSegment
 
+
+
 class AudioProcessing():
     PeriodSize = 1024
     MaxRate = 1024
     WaveFile = None
     SongName = None
     Device  = None
-    def __int__(self,FileName=None):
+
+    def __init__(self,FileName=None):
         self.SongName = FileName
-        self.ConvertWavFile(FileName)
-        self.GetMaxRate(self.WaveFile)
         if os.name == 'posix':
             self.Device = alsaaudio.PCM()
         else:
             self.Device = pyaudio.PyAudio()
+
+    def setFfmpegPath(self, path):
+        AudioSegment.converter = path
 
     def prepareDevice(self, AudioDevice, WaveAudio):
         if os.name == 'posix':
@@ -45,11 +49,13 @@ class AudioProcessing():
 
             periodsize = WaveAudio.getframerate() / 8
             AudioDevice.setperiodsize(periodsize)
+            self.WriteFunction = AudioDevice.Write
         else:
-            AudioDevice.open(format=AudioDevice.get_format_from_width(WaveAudio.getsampwidth()),
+            self.Stream =  AudioDevice.open(format=AudioDevice.get_format_from_width(WaveAudio.getsampwidth()),
                              channels=WaveAudio.getnchannels(),
                              rate=WaveAudio.getframerate(),
                              output=True)
+            self.WriteFunction = self.Stream.write
 
     def ConvertWavFile(self,FileName):
         extension   =  os.path.splitext(FileName)[1].upper()
@@ -58,6 +64,8 @@ class AudioProcessing():
             sound = AudioSegment.from_mp3( FileName )
             self.WaveFile = "music/temp/"+str( uuid.uuid4())+".wav"
             sound.export(self.WaveFile , format="wav")
+
+        self.GetMaxRate(self.WaveFile)
         return self.WaveFile
 
     def GetMaxRate(self, FileName):
@@ -66,14 +74,14 @@ class AudioProcessing():
             array = []
             data = f.readframes(self.PeriodSize)
             while data:
-                valor = int( audioop.rms )
-                array.push( valor )
+                valor = int( audioop.rms( data,2) )
+                array.append( valor )
                 data = f.readframes(self.PeriodSize)
-            self.MaxRate = audioop.max(array, 2)
+            self.MaxRate = max( array )
         return self.MaxRate, self.PeriodSize
 
 
-    def PlayWavFile(self, queue, FileName = None):
+    def PlayWavFile(self, queue, FileName = None, NumeroPines=5):
         self.QueueProcess = queue
 
         if FileName == None:
@@ -83,8 +91,14 @@ class AudioProcessing():
             self.prepareDevice(self.Device, WaveAudio)
             data = WaveAudio.readframes(self.PeriodSize)
             while data:
-                valor = int(round( audioop.rms(data, 2) * 5 / self.MaxRate ))
+                valor = int(round( audioop.rms(data, 2) * NumeroPines / self.MaxRate ))
                 self.QueueProcess.put( valor )
-                self.Device.write(data)
+                self.WriteFunction(data)
                 data = WaveAudio.readframes(self.PeriodSize)
+
+            if os.name != 'poxis':
+                self.Stream.stop_stream()
+                self.Stream.close()
+                self.Device.terminate()
+
             self.QueueProcess.join()

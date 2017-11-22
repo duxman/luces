@@ -4,7 +4,7 @@ import threading
 import PinManager
 
 
-class Consumer(threading.Thread):
+class StopableConsumerThread(threading.Thread):
     ConsumerQueue = None
     def __init__(self, queue = None,target = None, sleep = 0.1, name = "DefaultConsumerThread"):
         """
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     q = Queue.Queue()
     pinman = PinManager.PinManager(None, [2, 3, 4, 17, 27, 22, 10, 9, 11, 5])
 
-    testthread = Consumer( q,target =pinman.EncenderInRange, name="MiConsumidor" )
+    testthread = StopableConsumerThread(q, target =pinman.EncenderInRange, name="MiConsumidor")
     testthread.start( )
 
     producer = threading.Thread(target=PlayWavFile("music/sample3.wav",queue=q))

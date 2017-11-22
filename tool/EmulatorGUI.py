@@ -2,6 +2,8 @@ BCM = "BCM"
 BOARD = "BOARD"
 OUT = "OUT"
 IN = "IN"
+LOW = 0
+HIGH = 1
 
 def setmode(a):
    print a

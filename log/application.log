@@ -26997,3 +26997,98 @@
 2017-11-18 16:52:11,368 INFO  execute callback
 2017-11-18 16:52:11,368 INFO  execute callback
 2017-11-18 16:52:11,368 INFO  execute callback
+2017-11-22 22:40:23,608 INFO --------------------<<  INI  >>--------------------
+2017-11-22 22:40:23,608 INFO Arrancamos la ejecucion
+2017-11-22 22:40:23,608 INFO Cargamos configuracion general 
+2017-11-22 22:40:23,608 INFO Cargamos configuracion programacion
+2017-11-22 22:40:23,624 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 22:40:23,640 INFO Configuracion Cargada
+2017-11-22 22:40:23,640 INFO Creamos Cola de procesamiento
+2017-11-22 22:42:10,982 INFO --------------------<<  INI  >>--------------------
+2017-11-22 22:42:10,982 INFO Arrancamos la ejecucion
+2017-11-22 22:42:10,982 INFO Cargamos configuracion general 
+2017-11-22 22:42:10,982 INFO Cargamos configuracion programacion
+2017-11-22 22:42:10,982 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 22:42:10,982 INFO Configuracion Cargada
+2017-11-22 22:42:10,982 INFO Creamos Cola de procesamiento
+2017-11-22 22:43:27,640 INFO --------------------<<  INI  >>--------------------
+2017-11-22 22:43:27,640 INFO Arrancamos la ejecucion
+2017-11-22 22:43:27,640 INFO Cargamos configuracion general 
+2017-11-22 22:43:27,640 INFO Cargamos configuracion programacion
+2017-11-22 22:43:27,640 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 22:43:27,640 INFO Configuracion Cargada
+2017-11-22 22:43:27,640 INFO Creamos Cola de procesamiento
+2017-11-22 22:44:42,821 INFO --------------------<<  INI  >>--------------------
+2017-11-22 22:44:42,821 INFO Arrancamos la ejecucion
+2017-11-22 22:44:42,821 INFO Cargamos configuracion general 
+2017-11-22 22:44:42,821 INFO Cargamos configuracion programacion
+2017-11-22 22:44:48,701 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 22:44:56,051 INFO Configuracion Cargada
+2017-11-22 22:44:56,051 INFO Creamos Cola de procesamiento
+2017-11-22 22:45:58,647 INFO --------------------<<  INI  >>--------------------
+2017-11-22 22:45:58,647 INFO Arrancamos la ejecucion
+2017-11-22 22:45:58,647 INFO Cargamos configuracion general 
+2017-11-22 22:45:58,647 INFO Cargamos configuracion programacion
+2017-11-22 22:45:58,647 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 22:45:58,647 INFO Configuracion Cargada
+2017-11-22 22:45:58,647 INFO Creamos Cola de procesamiento
+2017-11-22 22:47:43,336 INFO --------------------<<  INI  >>--------------------
+2017-11-22 22:47:43,336 INFO Arrancamos la ejecucion
+2017-11-22 22:47:43,338 INFO Cargamos configuracion general 
+2017-11-22 22:47:43,338 INFO Cargamos configuracion programacion
+2017-11-22 22:47:43,338 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 22:47:43,338 INFO Configuracion Cargada
+2017-11-22 22:47:43,339 INFO Creamos Cola de procesamiento
+2017-11-22 22:57:42,680 INFO --------------------<<  INI  >>--------------------
+2017-11-22 22:57:42,680 INFO Arrancamos la ejecucion
+2017-11-22 22:57:42,680 INFO Cargamos configuracion general 
+2017-11-22 22:57:42,680 INFO Cargamos configuracion programacion
+2017-11-22 22:57:42,680 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 22:57:42,681 INFO Configuracion Cargada
+2017-11-22 22:57:42,681 INFO Creamos Cola de procesamiento
+2017-11-22 22:58:37,226 INFO Fin Del Proceso
+2017-11-22 23:03:33,778 INFO --------------------<<  INI  >>--------------------
+2017-11-22 23:03:33,779 INFO Arrancamos la ejecucion
+2017-11-22 23:03:33,779 INFO Cargamos configuracion general 
+2017-11-22 23:03:33,779 INFO Cargamos configuracion programacion
+2017-11-22 23:03:33,779 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 23:03:33,779 INFO Configuracion Cargada
+2017-11-22 23:03:33,780 INFO Creamos Cola de procesamiento
+2017-11-22 23:04:28,328 INFO Fin Del Proceso
+2017-11-22 23:04:28,328 INFO Fin de ejecucion
+2017-11-22 23:04:28,328 INFO Fin Programa
+2017-11-22 23:07:11,476 INFO --------------------<<  INI  >>--------------------
+2017-11-22 23:07:11,476 INFO Arrancamos la ejecucion
+2017-11-22 23:07:11,476 INFO Cargamos configuracion general 
+2017-11-22 23:07:11,480 INFO Cargamos configuracion programacion
+2017-11-22 23:07:11,486 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 23:07:11,505 INFO Configuracion Cargada
+2017-11-22 23:07:11,505 INFO Creamos Cola de procesamiento
+2017-11-22 23:10:33,434 INFO --------------------<<  INI  >>--------------------
+2017-11-22 23:10:33,434 INFO Arrancamos la ejecucion
+2017-11-22 23:10:33,434 INFO Cargamos configuracion general 
+2017-11-22 23:10:33,436 INFO Cargamos configuracion programacion
+2017-11-22 23:10:33,436 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 23:10:33,437 INFO Configuracion Cargada
+2017-11-22 23:10:33,437 INFO Creamos Cola de procesamiento
+2017-11-22 23:10:38,520 INFO --------------------<<  INI  >>--------------------
+2017-11-22 23:10:38,520 INFO Arrancamos la ejecucion
+2017-11-22 23:10:38,522 INFO Cargamos configuracion general 
+2017-11-22 23:10:38,522 INFO Cargamos configuracion programacion
+2017-11-22 23:10:38,523 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 23:10:38,523 INFO Configuracion Cargada
+2017-11-22 23:10:38,523 INFO Creamos Cola de procesamiento
+2017-11-22 23:10:41,378 INFO --------------------<<  INI  >>--------------------
+2017-11-22 23:10:41,378 INFO Arrancamos la ejecucion
+2017-11-22 23:10:41,378 INFO Cargamos configuracion general 
+2017-11-22 23:10:41,378 INFO Cargamos configuracion programacion
+2017-11-22 23:10:41,380 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 23:10:41,381 INFO Configuracion Cargada
+2017-11-22 23:10:41,381 INFO Creamos Cola de procesamiento
+2017-11-22 23:10:45,428 INFO --------------------<<  INI  >>--------------------
+2017-11-22 23:10:45,430 INFO Arrancamos la ejecucion
+2017-11-22 23:10:45,430 INFO Cargamos configuracion general 
+2017-11-22 23:10:45,430 INFO Cargamos configuracion programacion
+2017-11-22 23:10:45,430 INFO Cargamos configuracion secuencia ./config/led1.json
+2017-11-22 23:10:45,431 INFO Configuracion Cargada
+2017-11-22 23:10:45,431 INFO Creamos Cola de procesamiento
