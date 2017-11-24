@@ -1,6 +1,6 @@
 import json
 
-from Util.logger import clienteLog
+from Util import logger
 
 Logger = None
 
@@ -11,19 +11,22 @@ class programacion:
     Programa=""
     data = ""
 
-    Secuencia = ""
+    Secuencia = []
     Logger = None
 
-    def __init__(self,log):
-        self.Logger = log
+    def __init__(self):
+        self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion programacion")
 
         self.data = json.load(open('./config/programacion.json'))
         self.HoraDesde = self.data["HoraDesde"]
         self.horaHasta = self.data["HoraHasta"]
         self.Estado = self.data["Estado"]
-        self.Programa = self.data["Programa"]
-        self.Secuencia = secuencia(self.Programa,log)
+        programas = self.data["Programa"]
+        vprogramas = programas.split(",")
+
+        for p in vprogramas:
+            self.Secuencia.append( secuencia(p) )
 
 class secuencia:
     pines = ""
@@ -34,8 +37,8 @@ class secuencia:
     data = ""
     Logger = None
 
-    def __init__(self, fichero, log):
-        self.Logger = log
+    def __init__(self, fichero):
+        self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion secuencia " + fichero)
 
         self.data = json.load(open(fichero))
@@ -45,17 +48,18 @@ class secuencia:
         self.intervalo = self.data["intervalo"]
         self.repeticiones = self.data["repeticiones"]
 
-class GeneralConfiguration(clienteLog):
+class GeneralConfiguration():
     RutaFFMPEG = None
     RutaMusica = None
+    WebServerPort = 8000
     Pines=""
     Secuencias=""
     Programacion = ""
     Logger = None
 
 
-    def __init__(self, log):
-        self.Logger = log
+    def __init__(self):
+        self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion general ")
 
         self.data = json.load(open('./config/configuration.json'))
@@ -63,12 +67,13 @@ class GeneralConfiguration(clienteLog):
         pinesString = self.data["Pines"]
         self.RutaMusica = self.data["RutaMusica"]
         self.RutaFFMPEG = self.data["Rutaffmpeg"]
+        self.WebServerPort = self.data["WebServerPort"]
 
         self.Pines = pinesString.split(",")
 
         for pin in self.Pines:
             self.Pines = pin
 
-        self.Programacion = programacion(self.Logger)
+        self.Programacion = programacion()
 
 

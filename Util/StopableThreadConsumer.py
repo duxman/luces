@@ -53,48 +53,30 @@ class StopableConsumerThread(threading.Thread):
         #  starts" % (self.getName(),)
         #count = 0
         """Mientras no este parado"""
-        while self.isRunning():
-            try:
-                """"Obtenemos el valor de la cola esperamos si esta relleno"""
-                valor = self.ConsumerQueue.get( False, self._sleepperiod)
-                """comprobamos si tenemos target si no lo tenemos """
-                if self.Target == None:
-                    print "Loop %d Valor %s" % (count, valor,)
-                else:
-                    """Si tenemos target pasamos el valor al controlador"""
-                    self.Target(valor)
-                """Comprobamos si tenemos que esperar"""
-                if(self._sleepperiod > 0):
-                    """Hacemos un wait con tiempo para no quedarnos bloqueados"""
-                    self._stopevent.wait(self._sleepperiod)
-                """indicamos la finalizacion del proceso del valor para que lo elimine de la queue"""
-                self.ConsumerQueue.task_done()
+        while self.isRunning() and self.Target != None:
+            if  self.ConsumerQueue !=None:
 
-            except Queue.Empty as e:
-                """si no tenemos valor lo controlamos"""
-                pass
-                #print "Empty...  " + e.message
+                try:
+                    """"Obtenemos el valor de la cola esperamos si esta relleno"""
+                    valor = self.ConsumerQueue.get( False, self._sleepperiod)
+
+                    self.Target(valor)
+
+                    """indicamos la finalizacion del proceso del valor para que lo elimine de la queue"""
+                    self.ConsumerQueue.task_done()
+                except Queue.Empty:
+                    """si no tenemos valor lo controlamos"""
+                    pass
+                    #print "Empty...  " + e.message
+            else:
+                """comprobamos si tenemos target si no lo tenemos """
+                self.Target(valor)
+
+            """Comprobamos si tenemos que esperar"""
+            if (self._sleepperiod > 0):
+                """Hacemos un wait con tiempo para no quedarnos bloqueados"""
+                self._stopevent.wait(self._sleepperiod)
+
         """Fin del proceso"""
         print "%s ends" % (self.getName(),)
-
-
-
-
-if __name__ == "__main__":
-    q = Queue.Queue()
-    pinman = PinManager.PinManager(None, [2, 3, 4, 17, 27, 22, 10, 9, 11, 5])
-
-    testthread = StopableConsumerThread(q, target =pinman.EncenderInRange, name="MiConsumidor")
-    testthread.start( )
-
-    producer = threading.Thread(target=PlayWavFile("music/sample3.wav",queue=q))
-    producer.start()
-    q.join()
-    #producer.join()
-
-    print "fin"
-    testthread.stop(timeout=0.3 )
-    print "finStop"
-
-    print str ( producer.is_alive() )
 

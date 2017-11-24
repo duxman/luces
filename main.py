@@ -1,13 +1,16 @@
 import Queue
 import threading
-
 import os
+from multiprocessing import Process
+
+import thread
 
 from Util import PinManager
 from Util.AudioProcessing import AudioProcessing
 from Util.PinManager import PinManager
 from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
+from server import WebServer
 import config
 
 
@@ -29,9 +32,9 @@ class  DuxmanLights(object):
 
     def musicManager(self):
         filename = "c://music/sample2.wav"  # sys.argv[1]
-        self.MusicManager = AudioProcessing(FileName = filename)#(( self.Logger,fil,self.PinManager.EncenderInRange)
+        self.MusicManager = AudioProcessing(FileName = filename)
 
-        if os.name == 'poxis':
+        if os.name != 'poxis':
             self.MusicManager.setFfmpegPath(self.Config.RutaFFMPEG)
 
         filename = self.MusicManager.ConvertWavFile(filename)
@@ -41,6 +44,11 @@ class  DuxmanLights(object):
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)
         self.Logger.info("Fin Del Proceso")
+
+    def CreateServer(self):
+        self.ConfigServer = WebServer(self.Config.WebServerPort)
+        thread.start_new_thread(self.ConfigServer.StartServer())
+
 
     def execute(self):
         self.pinManager()
@@ -52,11 +60,20 @@ class  DuxmanLights(object):
         self.Logger = cliente.InicializaLog()
         self.Logger.info("--------------------<<  INI  >>--------------------")
         self.Logger.info("Arrancamos la ejecucion")
-        self.Config = config.GeneralConfiguration(self.Logger)
+
+        """Leemos la configuracion general"""
+        self.Config = config.GeneralConfiguration()
+        """ Asignamos los pines configurados """
+        self.PinList = self.Config.Pines
         self.Logger.info("Configuracion Cargada")
+
         self.Logger.info("Creamos Cola de procesamiento")
         self.WorkingQueue = Queue.Queue()
-        #self.ConfigServer = WebServer(8000, self.Logger)
+
+        self.WebServerProcess =  Process( target= self.CreateServer())
+        self.WebServerProcess.start()
+
+
         self.execute()
         # my code here
 
