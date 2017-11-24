@@ -1,5 +1,7 @@
 import json
 
+import os
+
 from Util import logger
 
 Logger = None
@@ -36,12 +38,14 @@ class secuencia:
     repeticiones=""
     data = ""
     Logger = None
+    Nombre =  ""
 
     def __init__(self, fichero):
         self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion secuencia " + fichero)
 
         self.data = json.load(open(fichero))
+        self.Nombre =  os.path.splitext(fichero)[0].upper()
         self.pines = self.data["pines"]
         self.musica = self.data["musica"]
         self.secuencia = self.data["secuencia"]
@@ -71,8 +75,6 @@ class GeneralConfiguration():
 
         self.Pines = pinesString.split(",")
 
-        for pin in self.Pines:
-            self.Pines = pin
 
         self.Programacion = programacion()
 

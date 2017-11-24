@@ -4,6 +4,7 @@ from SimpleHTTPServer import SimpleHTTPRequestHandler
 from multiprocessing import Pool
 
 import thread
+from threading import Thread
 
 from Util import logger
 
@@ -36,8 +37,18 @@ class WebServer():
     HttpdServer = None
     Logger = None
 
+    def StopServer(self):
+        try:
+            self.HttpdServer.shutdown()
+            self.HttpdServer.socket.close()
+            self.HttpdServer.join()
+            self.HttpdServer, self.HttpdServer = None, None
+        except Exception as error:
+            pass  # catch and raise which ever errors you desire here
+
     def StartServer(self):
-        self.HttpdServer.serve_forever()
+        self.server_thread = Thread(target=self.HttpdServer.serve_forever)
+        self.server_thread.start()
 
     def __init__(self, port):
         self.PORT = port

@@ -25,13 +25,13 @@ class  DuxmanLights(object):
     Queue = None
 
 
-    def pinManager(self):
-       self.PinManager = PinManager(self.Logger,self.PinList)
+    def pinManager(self, PinList = [] ):
+       self.PinManager = PinManager(self.Logger, PinList)
        self.ConsumerThread = StopableConsumerThread( queue=self.WorkingQueue, target= self.PinManager.EncenderInRange,name="PinManagerConsumerThread", sleep= 0.1)
        self.ConsumerThread.start()
 
-    def musicManager(self):
-        filename = "c://music/sample2.wav"  # sys.argv[1]
+    def musicManager(self, filename = "" ):
+        #filename = "c://music/sample2.wav"  # sys.argv[1]
         self.MusicManager = AudioProcessing(FileName = filename)
 
         if os.name != 'poxis':
@@ -47,13 +47,21 @@ class  DuxmanLights(object):
 
     def CreateServer(self):
         self.ConfigServer = WebServer(self.Config.WebServerPort)
-        thread.start_new_thread(self.ConfigServer.StartServer())
+        self.ConfigServer.StartServer()
 
 
     def execute(self):
-        self.pinManager()
-        self.musicManager()
+        i = 0
+
+        for p in self.Config.Programacion.Secuencia:
+            self.Logger.info("ejecutamos programa : " + p.Nombre)
+            self.pinManager( PinList = p.pines )
+            self.musicManager(filename = p.musica )
+            threading._sleep( p.intervalo )
+            self.Logger.info("fin ejecutamos programa : " + p.Nombre)
+
         self.Logger.info("Fin de ejecucion")
+
 
     def __init__(self):
         cliente = clienteLog()
@@ -70,12 +78,12 @@ class  DuxmanLights(object):
         self.Logger.info("Creamos Cola de procesamiento")
         self.WorkingQueue = Queue.Queue()
 
-        self.WebServerProcess =  Process( target= self.CreateServer())
-        self.WebServerProcess.start()
+        self.CreateServer()
 
 
         self.execute()
-        # my code here
+        self.ConfigServer.StopServer()
+
 
 if __name__ == "__main__":
     mainprogram = DuxmanLights()
