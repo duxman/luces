@@ -1,6 +1,1 @@
-{
-  "HoraDesde" : "17:00",
-  "HoraHasta" : "21:00",
-  "Estado"    : "ON",
-  "Programa"  : "./config/led1.json,./config/led2.json"
-}
+{"HoraDesde":"17:00","HoraHasta":"21:00","Estado":"OFF","Programa":"led1,led2","repeticiones":"3"}

@@ -1,6 +1,8 @@
 import cgi
+import json
 from BaseHTTPServer import HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
+from json import JSONEncoder
 from multiprocessing import Pool
 
 import thread
@@ -24,11 +26,39 @@ class MiHTTPRequestHandler(SimpleHTTPRequestHandler):
 
         filename = postvars['filename'][0]
         contenido = postvars['contenido'][0]
-        if filename:
-            file = open('./config/' + filename, 'wb')
-            file.write(contenido)
-            file.close()
+        type = postvars["type"][0]
+        if type == 'PROGRAMACION':
+            self.saveProgramacion(filename, contenido)
+        elif type == "GENERAL":
+            self.saveConfiguracion(self, filename, contenido)
+        elif type == "SECUENCIA":
+            self.saveSecuencia( contenido)
+
         return self.do_GET()
+
+    def saveSecuencia(self,contenido):
+        data = json.loads(contenido)
+        dataout = []
+        i = 0
+        for secuencia in data:
+            i = i +1
+            secuencia["Nombre"] = "led"+str(i)
+            dataout.append(secuencia)
+
+        dataencoded = JSONEncoder().encode(dataout)
+
+        file = open('./config/leds.json', 'wb')
+        file.write(dataencoded)
+        file.close()
+
+    def saveProgramacion(self, filename,contenido):
+        file = open('./config/' + filename, 'wb')
+        file.write(contenido)
+        file.close()
+    def saveConfiguracion(self, filename,contenido):
+        file = open('./config/' + filename, 'wb')
+        file.write(contenido)
+        file.close()
 
 
 class WebServer():

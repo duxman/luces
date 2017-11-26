@@ -14,7 +14,7 @@
     <script src="./js/gui.js"></script>
   </head>
   <body >
-    <h1>Configurador</h1>
+    <h1>Configurador DuxmanLigths</h1>
 
     <div class="tab" width="60%">
       <button class="tablinks" onclick="openTab(event, 'TabProgramacion')">Programacion Actual</button>
@@ -37,11 +37,27 @@
 
 
     <script>
-        var editorProgramacion = loadEditor( "schPrograma.json", "TabProgramacion" );
-        var editorSecuencias = loadEditor( "schSecuencias.json", "TabSecuencias" );
-        var editorGeneral = loadEditor( "schConfiguracion.json", "TabConfigGeneral" );
-        //Creamos los eventos
-        CreateEvents()
+
+      var editorProgramacion;
+      var editorSecuencias;
+      var editorGeneral
+      $.getJSON('/config/programacion.json', function(data)
+      {
+         editorProgramacion = loadEditor( "schPrograma.json", "TabProgramacion",data, true );
+      });
+
+      $.getJSON('/config/leds.json', function(data)
+      {
+         editorSecuencias = loadEditor( "schSecuencias.json", "TabSecuencias",data,true );
+
+      });
+
+      $.getJSON('/config/configuration.json', function(data)
+      {
+        editorGeneral = loadEditor( "schConfiguracion.json", "TabConfigGeneral",data,false );
+      });
+      //Creamos los eventos
+      CreateEvents()
     </script>
   </body>
 </html>

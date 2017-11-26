@@ -4,6 +4,7 @@ import os
 from multiprocessing import Process
 
 import thread
+from time import gmtime, strftime
 
 from Util import PinManager
 from Util.AudioProcessing import AudioProcessing
@@ -49,39 +50,67 @@ class  DuxmanLights(object):
         self.ConfigServer = WebServer(self.Config.WebServerPort)
         self.ConfigServer.StartServer()
 
+    def executeProgram(self):
+        i = 0
+        if self.Config.Programacion.repeticiones == -1:
+              i = -99999
+
+        while (i >= self.Config.Programacion.repeticiones):
+
+            HoraActual = strftime("%H:%M", gmtime())
+            if HoraActual >= self.Config.Programacion.HoraHasta:
+                break
+
+            for p in self.Config.Programacion.Secuencia:
+                self.Logger.info("ejecutamos programa : " + p.Nombre)
+                self.pinManager( PinList = p.pines )
+                self.musicManager(filename = p.musica )
+                threading._sleep( p.intervalo )
+                self.Logger.info("fin ejecutamos programa : " + p.Nombre)
+        i = i + 1
 
     def execute(self):
-        i = 0
 
-        for p in self.Config.Programacion.Secuencia:
-            self.Logger.info("ejecutamos programa : " + p.Nombre)
-            self.pinManager( PinList = p.pines )
-            self.musicManager(filename = p.musica )
-            threading._sleep( p.intervalo )
-            self.Logger.info("fin ejecutamos programa : " + p.Nombre)
+        while(True):
+            self.Logger.info("Estado Programa : " + self.Config.Programacion.Estado)
+            HoraActual = strftime("%H:%M", gmtime())
+            if self.Config.Programacion.Estado == 'TIMED':
+                if HoraActual >= self.Config.Programacion.HoraDesde:
+                    self.executeProgram()
+            elif self.Config.Programacion.Estado == 'ON':
+                self.executeProgram()
+            elif self.Config.Programacion.Estado == 'OFF':
+                threading._sleep(120)
+
+            threading._sleep(10)
+            self.leeConfig()
 
         self.Logger.info("Fin de ejecucion")
 
 
-    def __init__(self):
-        cliente = clienteLog()
-        self.Logger = cliente.InicializaLog()
-        self.Logger.info("--------------------<<  INI  >>--------------------")
-        self.Logger.info("Arrancamos la ejecucion")
-
+    def leeConfig(self):
         """Leemos la configuracion general"""
         self.Config = config.GeneralConfiguration()
         """ Asignamos los pines configurados """
         self.PinList = self.Config.Pines
         self.Logger.info("Configuracion Cargada")
 
+    def __init__(self):
+        cliente = clienteLog()
+        self.Logger = cliente.InicializaLog()
+        self.Logger.info("--------------------<<  INI  >>--------------------")
+        self.Logger.info("Arrancamos la ejecucion")
+        self.leeConfig()
         self.Logger.info("Creamos Cola de procesamiento")
         self.WorkingQueue = Queue.Queue()
 
         self.CreateServer()
 
+        self.execute_thread = threading.Thread(target=self.execute())
+        self.execute_thread.start()
 
-        self.execute()
+        self.execute_thread.join()
+
         self.ConfigServer.StopServer()
 
 

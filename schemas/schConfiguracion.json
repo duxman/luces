@@ -18,6 +18,11 @@
     {
       "type" : "string",
       "description" : "Ruta Completa del Programa ffmpeg, solo si no es linux"
+    },
+    "WebServerPort":
+    {
+      "type" : "string",
+      "description" : "Puerto del servidor de configuracion"
     }
   }
 }

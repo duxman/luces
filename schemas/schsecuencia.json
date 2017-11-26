@@ -1,0 +1,34 @@
+{
+  "title" : "Secuencia Programada led",
+  "id" : "Secuencia",
+  "properties" :
+  {
+    "Nombre" :
+    {
+      "type" : "string",
+      "description" : "Nombre de la secuencia"
+    },
+    "pines" :
+    {
+      "type" : "string",
+      "description" : "Salidas digitales a utilizar"
+    },
+    "musica" :
+    {
+      "type" : "string",
+      "description" : "Fichero a utilizar en la sincronizacion"
+
+    },
+    "secuencia" :
+    {
+      "type" : "string",
+      "description" : "Secuencias de iluminacion"
+
+    },
+    "intervalo" :
+    {
+      "type" : "string",
+      "description" : "Segundos entre secuencia y secuencia"
+    }
+  }
+}
