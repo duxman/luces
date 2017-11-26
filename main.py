@@ -55,7 +55,7 @@ class  DuxmanLights(object):
         if self.Config.Programacion.repeticiones == -1:
               i = -99999
 
-        while (i >= self.Config.Programacion.repeticiones):
+        while (i <= self.Config.Programacion.repeticiones):
 
             HoraActual = strftime("%H:%M", gmtime())
             if HoraActual >= self.Config.Programacion.HoraHasta:
@@ -65,7 +65,7 @@ class  DuxmanLights(object):
                 self.Logger.info("ejecutamos programa : " + p.Nombre)
                 self.pinManager( PinList = p.pines )
                 self.musicManager(filename = p.musica )
-                threading._sleep( p.intervalo )
+                threading._sleep( float( p.intervalo ) )
                 self.Logger.info("fin ejecutamos programa : " + p.Nombre)
         i = i + 1
 

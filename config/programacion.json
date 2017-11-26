@@ -1,1 +1,1 @@
-{"HoraDesde":"17:00","HoraHasta":"21:00","Estado":"OFF","Programa":"led1,led2","repeticiones":"3"}
+{"HoraDesde":"16:00","HoraHasta":"21:00","Estado":"TIMED","Programa":"led1,led2","repeticiones":"3"}

@@ -18,7 +18,7 @@ class programacion:
 
         self.data = json.load(open('./config/programacion.json'))
         self.HoraDesde = self.data["HoraDesde"]
-        self.horaHasta = self.data["HoraHasta"]
+        self.HoraHasta = self.data["HoraHasta"]
         self.Estado = self.data["Estado"]
         programas = self.data["Programa"]
         self.repeticiones = self.data["repeticiones"]
@@ -76,7 +76,7 @@ class GeneralConfiguration():
 
         self.data = json.load(open('./config/configuration.json'))
 
-        pinesString = self.data["Pines"]
+        pinesString = self.data["pines"]
         self.RutaMusica = self.data["RutaMusica"]
         self.RutaFFMPEG = self.data["Rutaffmpeg"]
         self.WebServerPort = self.data["WebServerPort"]
