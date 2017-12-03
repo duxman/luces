@@ -2,6 +2,7 @@ import contextlib
 import uuid
 import wave
 import audioop
+import numpy
 import os
 if os.name == 'posix':
     import alsaaudio
@@ -49,20 +50,20 @@ class AudioProcessing():
 
             periodsize = WaveAudio.getframerate() / 8
             AudioDevice.setperiodsize(periodsize)
-            self.WriteFunction = AudioDevice.Write
+            self.WriteFunctionObject = AudioDevice
         else:
             self.Stream =  AudioDevice.open(format=AudioDevice.get_format_from_width(WaveAudio.getsampwidth()),
                              channels=WaveAudio.getnchannels(),
                              rate=WaveAudio.getframerate(),
                              output=True)
-            self.WriteFunction = self.Stream.write
+            self.WriteFunctionObject = self.Stream
 
     def ConvertWavFile(self,FileName):
         extension   =  os.path.splitext(FileName)[1].upper()
         self.WaveFile = FileName
         if extension == ".MP3":
             sound = AudioSegment.from_mp3( FileName )
-            self.WaveFile = "music/temp/"+str( uuid.uuid4())+".wav"
+            self.WaveFile = "./music/temp/"+str( uuid.uuid4())+".wav"
             sound.export(self.WaveFile , format="wav")
 
         self.GetMaxRate(self.WaveFile)
@@ -74,10 +75,12 @@ class AudioProcessing():
             array = []
             data = f.readframes(self.PeriodSize)
             while data:
-                valor = int( audioop.rms( data,2) )
+                #valor = int( audioop.rms( data,2) )
+                data = numpy.fromstring(data, 'Int16')                
+                valor = numpy.median( data)                
                 array.append( valor )
                 data = f.readframes(self.PeriodSize)
-            self.MaxRate = max( array )
+            self.MaxRate = numpy.median( array )
         return self.MaxRate, self.PeriodSize
 
 
@@ -91,9 +94,10 @@ class AudioProcessing():
             self.prepareDevice(self.Device, WaveAudio)
             data = WaveAudio.readframes(self.PeriodSize)
             while data:
-                valor = int(round( audioop.rms(data, 2) * NumeroPines / self.MaxRate ))
+                data1 = numpy.fromstring(data, 'Int16')                                
+                valor = int(round( numpy.median(data1) * NumeroPines / self.MaxRate ))
                 self.QueueProcess.put( valor )
-                self.WriteFunction(data)
+                self.WriteFunctionObject.write(data)
                 data = WaveAudio.readframes(self.PeriodSize)
 
             if os.name != 'poxis':
@@ -102,3 +106,4 @@ class AudioProcessing():
                 self.Device.terminate()
 
             self.QueueProcess.join()
+

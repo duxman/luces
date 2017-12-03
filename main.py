@@ -27,9 +27,15 @@ class  DuxmanLights(object):
 
 
     def pinManager(self, PinList = [] ):
-       self.PinManager = PinManager(self.Logger, PinList)
-       self.ConsumerThread = StopableConsumerThread( queue=self.WorkingQueue, target= self.PinManager.EncenderInRange,name="PinManagerConsumerThread", sleep= 0.1)
-       self.ConsumerThread.start()
+        self.Logger.info( PinList )
+        pines1= PinList.split(",")
+        pines2=[]
+        for pin in pines1:
+            self.Logger.info(pin)
+            pines2.append(int(pin))
+        self.PinManager = PinManager(self.Logger, pines2)
+        self.ConsumerThread = StopableConsumerThread( queue=self.WorkingQueue, target= self.PinManager.EncenderInRange,name="PinManagerConsumerThread", sleep= 0.1)
+        self.ConsumerThread.start()
 
     def musicManager(self, filename = "" ):
         #filename = "c://music/sample2.wav"  # sys.argv[1]
@@ -104,14 +110,14 @@ class  DuxmanLights(object):
         self.Logger.info("Creamos Cola de procesamiento")
         self.WorkingQueue = Queue.Queue()
 
-        self.CreateServer()
+#        self.CreateServer()
 
         self.execute_thread = threading.Thread(target=self.execute())
         self.execute_thread.start()
 
         self.execute_thread.join()
 
-        self.ConfigServer.StopServer()
+#        self.ConfigServer.StopServer()
 
 
 if __name__ == "__main__":
