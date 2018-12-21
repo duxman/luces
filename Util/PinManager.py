@@ -55,9 +55,18 @@ class PinManager(object):
             self.Apagar(pin)
 
     def EncenderInRange(self,  MaxValue):
-        secuencia = self.PinList[:MaxValue]
-        GPIO.output(self.PinList, GPIO.LOW)
-        GPIO.output(secuencia, GPIO.HIGH)
+        valortemp = MaxValue
+
+        #valortemp = valortemp + (MaxValue - 1)
+        ListPines =  self.PinList.split(',');
+        secuencia = ListPines[:valortemp]
+        if os.name == 'poxis':
+            GPIO.output(ListPines, GPIO.LOW)
+        if( MaxValue > 0):
+            GPIO.output(secuencia, GPIO.HIGH)
+        else:
+            GPIO.output(ListPines, GPIO.LOW)
+
 
     def EjecutarPrograma( self,pinProgram , repeticiones , intervalo ):
         iteracion = 0

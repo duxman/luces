@@ -31,7 +31,8 @@ class  DuxmanLights(object):
        self.ConsumerThread.start()
 
     def musicManager(self, filename = "" ):
-        #filename = "c://music/sample2.wav"  # sys.argv[1]
+        #filename = "c://music/sample2.wav"
+        #  sys.argv[1]
         self.MusicManager = AudioProcessing(FileName = filename)
 
         if os.name != 'poxis':
@@ -44,6 +45,8 @@ class  DuxmanLights(object):
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)
         self.Logger.info("Fin Del Proceso")
+        os.unlink(filename)
+        self.Logger.info("Borramos fichero : " +  filename)
 
     def CreateServer(self):
         self.ConfigServer = WebServer(self.Config.WebServerPort)
@@ -52,15 +55,17 @@ class  DuxmanLights(object):
 
     def execute(self):
         i = 0
-
+        PinListTemp = self.PinList
         for p in self.Config.Programacion.Secuencia:
             self.Logger.info("ejecutamos programa : " + p.Nombre)
+            self.PinList = p.pines
             self.pinManager( PinList = p.pines )
             self.musicManager(filename = p.musica )
-            threading._sleep( p.intervalo )
+            threading._sleep( float(p.intervalo) )
             self.Logger.info("fin ejecutamos programa : " + p.Nombre)
 
         self.Logger.info("Fin de ejecucion")
+        self.PinList = PinListTemp
 
 
     def __init__(self):

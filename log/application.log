@@ -27237,3 +27237,238 @@
 2017-11-24 14:53:21,864 INFO Fin Del Proceso
 2017-11-24 14:53:21,865 INFO Fin de ejecucion
 2017-11-24 14:54:07,059 INFO Fin Programa
+2018-12-21 10:55:32,720 INFO --------------------<<  INI  >>--------------------
+2018-12-21 10:55:32,720 INFO Arrancamos la ejecucion
+2018-12-21 10:55:32,720 INFO Cargamos configuracion general 
+2018-12-21 10:55:32,740 INFO Cargamos configuracion programacion
+2018-12-21 10:55:32,740 INFO Cargamos configuracion secuencia ./config/led1.json
+2018-12-21 10:55:32,742 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 10:55:32,742 INFO Configuracion Cargada
+2018-12-21 10:55:32,743 INFO Creamos Cola de procesamiento
+2018-12-21 10:55:33,660 INFO serving at port8000
+2018-12-21 10:55:33,660 INFO ejecutamos programa : ./CONFIG/LED1
+2018-12-21 13:27:52,358 INFO --------------------<<  INI  >>--------------------
+2018-12-21 13:27:52,358 INFO Arrancamos la ejecucion
+2018-12-21 13:27:52,358 INFO Cargamos configuracion general 
+2018-12-21 13:27:52,358 INFO Cargamos configuracion programacion
+2018-12-21 13:27:52,358 INFO Cargamos configuracion secuencia ./config/led1.json
+2018-12-21 13:27:52,358 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 13:27:52,358 INFO Configuracion Cargada
+2018-12-21 13:27:52,358 INFO Creamos Cola de procesamiento
+2018-12-21 13:27:53,296 INFO serving at port8000
+2018-12-21 13:28:10,908 INFO ejecutamos programa : ./CONFIG/LED1
+2018-12-21 13:37:18,953 INFO --------------------<<  INI  >>--------------------
+2018-12-21 13:37:18,953 INFO Arrancamos la ejecucion
+2018-12-21 13:37:18,953 INFO Cargamos configuracion general 
+2018-12-21 13:37:18,953 INFO Cargamos configuracion programacion
+2018-12-21 13:37:18,953 INFO Cargamos configuracion secuencia ./config/led1.json
+2018-12-21 13:37:18,953 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 13:37:18,953 INFO Configuracion Cargada
+2018-12-21 13:37:18,953 INFO Creamos Cola de procesamiento
+2018-12-21 13:37:19,798 INFO serving at port8000
+2018-12-21 13:38:14,211 INFO ejecutamos programa : ./CONFIG/LED1
+2018-12-21 13:43:47,845 INFO --------------------<<  INI  >>--------------------
+2018-12-21 13:43:47,845 INFO Arrancamos la ejecucion
+2018-12-21 13:43:47,845 INFO Cargamos configuracion general 
+2018-12-21 13:43:47,845 INFO Cargamos configuracion programacion
+2018-12-21 13:43:47,845 INFO Cargamos configuracion secuencia ./config/led1.json
+2018-12-21 13:43:47,845 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 13:43:47,845 INFO Configuracion Cargada
+2018-12-21 13:43:47,845 INFO Creamos Cola de procesamiento
+2018-12-21 13:43:48,760 INFO serving at port8000
+2018-12-21 13:46:27,316 INFO ejecutamos programa : ./CONFIG/LED1
+2018-12-21 13:47:28,710 INFO --------------------<<  INI  >>--------------------
+2018-12-21 13:47:28,710 INFO Arrancamos la ejecucion
+2018-12-21 13:47:28,710 INFO Cargamos configuracion general 
+2018-12-21 13:47:28,710 INFO Cargamos configuracion programacion
+2018-12-21 13:47:28,710 INFO Cargamos configuracion secuencia ./config/led1.json
+2018-12-21 13:47:28,711 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 13:47:28,711 INFO Configuracion Cargada
+2018-12-21 13:47:28,711 INFO Creamos Cola de procesamiento
+2018-12-21 13:47:29,549 INFO serving at port8000
+2018-12-21 13:47:37,684 INFO ejecutamos programa : ./CONFIG/LED1
+2018-12-21 13:49:02,269 INFO --------------------<<  INI  >>--------------------
+2018-12-21 13:49:02,269 INFO Arrancamos la ejecucion
+2018-12-21 13:49:02,269 INFO Cargamos configuracion general 
+2018-12-21 13:49:02,269 INFO Cargamos configuracion programacion
+2018-12-21 13:49:02,269 INFO Cargamos configuracion secuencia ./config/led1.json
+2018-12-21 13:49:02,272 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 13:49:02,272 INFO Configuracion Cargada
+2018-12-21 13:49:02,272 INFO Creamos Cola de procesamiento
+2018-12-21 13:49:03,108 INFO serving at port8000
+2018-12-21 13:49:03,108 INFO ejecutamos programa : ./CONFIG/LED1
+2018-12-21 13:49:57,707 INFO Fin Del Proceso
+2018-12-21 15:03:12,812 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:03:12,812 INFO Arrancamos la ejecucion
+2018-12-21 15:03:12,812 INFO Cargamos configuracion general 
+2018-12-21 15:03:12,812 INFO Cargamos configuracion programacion
+2018-12-21 15:03:12,813 INFO Cargamos configuracion secuencia ./config/led1.json
+2018-12-21 15:03:12,813 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:03:12,813 INFO Configuracion Cargada
+2018-12-21 15:03:12,813 INFO Creamos Cola de procesamiento
+2018-12-21 15:03:13,714 INFO serving at port8000
+2018-12-21 15:03:13,716 INFO ejecutamos programa : ./CONFIG/LED1
+2018-12-21 15:04:17,226 INFO Fin Del Proceso
+2018-12-21 15:04:49,295 INFO fin ejecutamos programa : ./CONFIG/LED1
+2018-12-21 15:04:50,710 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:05:44,421 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:05:44,421 INFO Arrancamos la ejecucion
+2018-12-21 15:05:44,421 INFO Cargamos configuracion general 
+2018-12-21 15:05:44,421 INFO Cargamos configuracion programacion
+2018-12-21 15:05:44,421 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:05:44,421 INFO Configuracion Cargada
+2018-12-21 15:05:44,421 INFO Creamos Cola de procesamiento
+2018-12-21 15:05:45,253 INFO serving at port8000
+2018-12-21 15:05:45,253 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:06:54,151 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:06:54,151 INFO Arrancamos la ejecucion
+2018-12-21 15:06:54,151 INFO Cargamos configuracion general 
+2018-12-21 15:06:54,151 INFO Cargamos configuracion programacion
+2018-12-21 15:06:54,151 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:06:54,151 INFO Configuracion Cargada
+2018-12-21 15:06:54,151 INFO Creamos Cola de procesamiento
+2018-12-21 15:06:55,005 INFO serving at port8000
+2018-12-21 15:06:55,006 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:30:11,769 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:30:11,769 INFO Arrancamos la ejecucion
+2018-12-21 15:30:11,769 INFO Cargamos configuracion general 
+2018-12-21 15:30:11,769 INFO Cargamos configuracion programacion
+2018-12-21 15:30:11,769 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:30:11,786 INFO Configuracion Cargada
+2018-12-21 15:30:11,786 INFO Creamos Cola de procesamiento
+2018-12-21 15:30:12,684 INFO serving at port8000
+2018-12-21 15:30:12,684 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:33:56,059 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:33:56,059 INFO Arrancamos la ejecucion
+2018-12-21 15:33:56,059 INFO Cargamos configuracion general 
+2018-12-21 15:33:56,059 INFO Cargamos configuracion programacion
+2018-12-21 15:33:56,059 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:33:56,059 INFO Configuracion Cargada
+2018-12-21 15:33:56,059 INFO Creamos Cola de procesamiento
+2018-12-21 15:33:56,904 INFO serving at port8000
+2018-12-21 15:33:56,904 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:38:30,039 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:38:30,039 INFO Arrancamos la ejecucion
+2018-12-21 15:38:30,039 INFO Cargamos configuracion general 
+2018-12-21 15:38:30,039 INFO Cargamos configuracion programacion
+2018-12-21 15:38:30,039 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:38:30,040 INFO Configuracion Cargada
+2018-12-21 15:38:30,040 INFO Creamos Cola de procesamiento
+2018-12-21 15:38:30,888 INFO serving at port8000
+2018-12-21 15:38:30,888 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:39:28,901 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:39:28,901 INFO Arrancamos la ejecucion
+2018-12-21 15:39:28,901 INFO Cargamos configuracion general 
+2018-12-21 15:39:28,903 INFO Cargamos configuracion programacion
+2018-12-21 15:39:28,903 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:39:28,903 INFO Configuracion Cargada
+2018-12-21 15:39:28,903 INFO Creamos Cola de procesamiento
+2018-12-21 15:39:29,740 INFO serving at port8000
+2018-12-21 15:39:29,740 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:42:23,734 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:42:23,734 INFO Arrancamos la ejecucion
+2018-12-21 15:42:23,734 INFO Cargamos configuracion general 
+2018-12-21 15:42:23,734 INFO Cargamos configuracion programacion
+2018-12-21 15:42:23,734 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:42:23,734 INFO Configuracion Cargada
+2018-12-21 15:42:23,734 INFO Creamos Cola de procesamiento
+2018-12-21 15:42:24,572 INFO serving at port8000
+2018-12-21 15:42:24,572 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:43:30,680 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:43:30,680 INFO Arrancamos la ejecucion
+2018-12-21 15:43:30,680 INFO Cargamos configuracion general 
+2018-12-21 15:43:30,680 INFO Cargamos configuracion programacion
+2018-12-21 15:43:30,680 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:43:30,680 INFO Configuracion Cargada
+2018-12-21 15:43:30,680 INFO Creamos Cola de procesamiento
+2018-12-21 15:43:32,480 INFO serving at port8000
+2018-12-21 15:43:32,480 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 15:46:47,836 INFO --------------------<<  INI  >>--------------------
+2018-12-21 15:46:47,836 INFO Arrancamos la ejecucion
+2018-12-21 15:46:47,836 INFO Cargamos configuracion general 
+2018-12-21 15:46:47,836 INFO Cargamos configuracion programacion
+2018-12-21 15:46:47,836 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 15:46:47,836 INFO Configuracion Cargada
+2018-12-21 15:46:47,836 INFO Creamos Cola de procesamiento
+2018-12-21 15:46:48,753 INFO serving at port8000
+2018-12-21 15:46:52,424 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 16:05:40,490 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:05:40,490 INFO Arrancamos la ejecucion
+2018-12-21 16:05:40,490 INFO Cargamos configuracion general 
+2018-12-21 16:05:40,490 INFO Cargamos configuracion programacion
+2018-12-21 16:05:40,490 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:05:40,490 INFO Configuracion Cargada
+2018-12-21 16:05:40,490 INFO Creamos Cola de procesamiento
+2018-12-21 16:05:41,407 INFO serving at port8000
+2018-12-21 16:06:34,908 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:06:34,908 INFO Arrancamos la ejecucion
+2018-12-21 16:06:34,908 INFO Cargamos configuracion general 
+2018-12-21 16:06:34,908 INFO Cargamos configuracion programacion
+2018-12-21 16:06:34,908 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:06:34,908 INFO Configuracion Cargada
+2018-12-21 16:06:34,908 INFO Creamos Cola de procesamiento
+2018-12-21 16:06:35,756 INFO serving at port8000
+2018-12-21 16:06:45,713 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 16:09:24,740 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:09:24,740 INFO Arrancamos la ejecucion
+2018-12-21 16:09:24,740 INFO Cargamos configuracion general 
+2018-12-21 16:09:24,742 INFO Cargamos configuracion programacion
+2018-12-21 16:09:24,742 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:09:24,742 INFO Configuracion Cargada
+2018-12-21 16:09:24,743 INFO Creamos Cola de procesamiento
+2018-12-21 16:09:25,585 INFO serving at port8000
+2018-12-21 16:09:29,200 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 16:12:48,542 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:12:48,542 INFO Arrancamos la ejecucion
+2018-12-21 16:12:48,542 INFO Cargamos configuracion general 
+2018-12-21 16:12:48,542 INFO Cargamos configuracion programacion
+2018-12-21 16:12:48,542 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:12:48,542 INFO Configuracion Cargada
+2018-12-21 16:12:48,542 INFO Creamos Cola de procesamiento
+2018-12-21 16:12:49,390 INFO serving at port8000
+2018-12-21 16:12:57,970 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 16:16:14,263 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:16:14,263 INFO Arrancamos la ejecucion
+2018-12-21 16:16:14,263 INFO Cargamos configuracion general 
+2018-12-21 16:16:14,263 INFO Cargamos configuracion programacion
+2018-12-21 16:16:14,263 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:16:14,263 INFO Configuracion Cargada
+2018-12-21 16:16:14,263 INFO Creamos Cola de procesamiento
+2018-12-21 16:16:15,115 INFO serving at port8000
+2018-12-21 16:16:15,115 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 16:23:05,950 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:23:05,950 INFO Arrancamos la ejecucion
+2018-12-21 16:23:05,950 INFO Cargamos configuracion general 
+2018-12-21 16:23:05,950 INFO Cargamos configuracion programacion
+2018-12-21 16:23:05,950 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:23:05,950 INFO Configuracion Cargada
+2018-12-21 16:23:05,950 INFO Creamos Cola de procesamiento
+2018-12-21 16:23:06,867 INFO serving at port8000
+2018-12-21 16:23:06,867 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 16:26:28,144 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:26:28,144 INFO Arrancamos la ejecucion
+2018-12-21 16:26:28,144 INFO Cargamos configuracion general 
+2018-12-21 16:26:28,144 INFO Cargamos configuracion programacion
+2018-12-21 16:26:28,144 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:26:28,144 INFO Configuracion Cargada
+2018-12-21 16:26:28,144 INFO Creamos Cola de procesamiento
+2018-12-21 16:26:28,989 INFO serving at port8000
+2018-12-21 16:26:28,989 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 16:29:34,614 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:29:34,614 INFO Arrancamos la ejecucion
+2018-12-21 16:29:34,614 INFO Cargamos configuracion general 
+2018-12-21 16:29:34,614 INFO Cargamos configuracion programacion
+2018-12-21 16:29:34,614 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:29:34,614 INFO Configuracion Cargada
+2018-12-21 16:29:34,614 INFO Creamos Cola de procesamiento
+2018-12-21 16:29:35,460 INFO serving at port8000
+2018-12-21 16:29:35,460 INFO ejecutamos programa : ./CONFIG/LED2
+2018-12-21 16:37:05,914 INFO --------------------<<  INI  >>--------------------
+2018-12-21 16:37:05,914 INFO Arrancamos la ejecucion
+2018-12-21 16:37:05,914 INFO Cargamos configuracion general 
+2018-12-21 16:37:05,914 INFO Cargamos configuracion programacion
+2018-12-21 16:37:05,914 INFO Cargamos configuracion secuencia ./config/led2.json
+2018-12-21 16:37:05,914 INFO Configuracion Cargada
+2018-12-21 16:37:05,914 INFO Creamos Cola de procesamiento
+2018-12-21 16:37:06,767 INFO serving at port8000
+2018-12-21 16:37:06,767 INFO ejecutamos programa : ./CONFIG/LED2

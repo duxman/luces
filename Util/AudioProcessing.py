@@ -101,4 +101,5 @@ class AudioProcessing():
                 self.Stream.close()
                 self.Device.terminate()
 
+            os.unlink(FileName)
             self.QueueProcess.join()
