@@ -1,10 +1,11 @@
-  function loadEditor( fichero, tab )
+  function loadEditor( fichero, tab, jsondata, esarray )
   {
     JSONEditor.defaults.options.theme = 'bootstrap3';
     JSONEditor.defaults.options.iconlib = "fontawesome4";
     // Initialize the editor
     editor = new JSONEditor(document.getElementById(tab),
     {
+
         // Enable fetching schemas via ajax
         ajax: true,
 
@@ -19,16 +20,18 @@
 
         // Disable additional properties
         no_additional_properties: true,
-        disable_edit_json : true,
+        disable_edit_json : !esarray,
         disable_collapse : true,
-        disable_array_add : true,
-        disable_array_delete : true,
+        disable_array_add : !esarray,
+        disable_array_delete : !esarray,
         disable_properties : true,
 
         // Require all properties by default
-        required_by_default: true
-        }
-    );
+        required_by_default: true,
+
+        // Seed the form with a starting value
+        startval: jsondata
+    });
 
     // Listen for changes
     editor.on("change",  function()

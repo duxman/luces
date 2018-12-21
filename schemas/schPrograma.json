@@ -15,7 +15,6 @@
       "type" : "string",
       "format" : "time",
       "description" : "Hora de Finalizacion"
-
     },
     "Estado" :
     {
@@ -27,6 +26,12 @@
     {
       "type" : "string",
       "description" : "Configuracion a aplicar"
+    },
+    "repeticiones" :
+    {
+      "type" : "string",
+      "enum": [ -1,1,2,3,4,5,10,20,30,40,50,100 ],
+      "description" : "Numero de repeticiones de la secuencia, -1 infinito"
     }
   }
 }

@@ -1,10 +1,6 @@
 import json
-
 import os
-
 from Util import logger
-
-Logger = None
 
 class programacion:
     HoraDesde = ""
@@ -16,41 +12,53 @@ class programacion:
     Secuencia = []
     Logger = None
 
-    def __init__(self):
+    def __init__(self, Secuencias):
         self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion programacion")
 
         self.data = json.load(open('./config/programacion.json'))
         self.HoraDesde = self.data["HoraDesde"]
-        self.horaHasta = self.data["HoraHasta"]
+        self.HoraHasta = self.data["HoraHasta"]
         self.Estado = self.data["Estado"]
         programas = self.data["Programa"]
+        self.repeticiones = self.data["repeticiones"]
         vprogramas = programas.split(",")
 
         for p in vprogramas:
-            self.Secuencia.append( secuencia(p) )
+            for s in Secuencias.items:
+                if s.Nombre == p:
+                    self.Secuencia.append( s )
+                    break
+
+class Secuencias:
+    items = []
+
+    def __init__(self):
+        self.Logger = logger.clienteLog.logger
+        self.Logger.info("Cargamos configuracion secuencias leds.json")
+
+        dataTotal = json.load(open("./config/leds.json"))
+
+        for d in dataTotal:
+            sec = secuencia(d["pines"],d["musica"],d["secuencia"],d["intervalo"],d["Nombre"] )
+            self.items.append( sec)
 
 class secuencia:
     pines = ""
     musica = ""
     secuencia=""
     intervalo=""
-    repeticiones=""
-    data = ""
-    Logger = None
     Nombre =  ""
 
-    def __init__(self, fichero):
+    def __init__(self, pines,musica,secuencia,intervalo,nombre):
         self.Logger = logger.clienteLog.logger
-        self.Logger.info("Cargamos configuracion secuencia " + fichero)
+        self.Logger.info("Cargamos configuracion secuencia ")
+        self.Nombre = nombre
+        self.pines = pines
+        self.musica = musica
+        self.secuencia = secuencia
+        self.intervalo = intervalo
 
-        self.data = json.load(open(fichero))
-        self.Nombre =  os.path.splitext(fichero)[0].upper()
-        self.pines = self.data["pines"]
-        self.musica = self.data["musica"]
-        self.secuencia = self.data["secuencia"]
-        self.intervalo = self.data["intervalo"]
-        self.repeticiones = self.data["repeticiones"]
 
 class GeneralConfiguration():
     RutaFFMPEG = None
@@ -68,14 +76,14 @@ class GeneralConfiguration():
 
         self.data = json.load(open('./config/configuration.json'))
 
-        pinesString = self.data["Pines"]
+        pinesString = self.data["pines"]
         self.RutaMusica = self.data["RutaMusica"]
         self.RutaFFMPEG = self.data["Rutaffmpeg"]
         self.WebServerPort = self.data["WebServerPort"]
 
         self.Pines = pinesString.split(",")
 
-
-        self.Programacion = programacion()
+        self.Secuencias = Secuencias()
+        self.Programacion = programacion( self.Secuencias )
 
 
