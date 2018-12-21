@@ -2,8 +2,10 @@
 
 import os
 import time  # necesario para los delays
-
-import RPi.GPIO as GPIO
+if os.name == 'poxis':
+    import RPi.GPIO as GPIO
+else:
+    import tool.EmulatorGUI as GPIO
 
 class PinManager(object):
     Logger = None

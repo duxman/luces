@@ -21,7 +21,6 @@ class programacion:
         self.HoraHasta = self.data["HoraHasta"]
         self.Estado = self.data["Estado"]
         programas = self.data["Programa"]
-        self.repeticiones = self.data["repeticiones"]
         vprogramas = programas.split(",")
 
         for p in vprogramas:
@@ -76,7 +75,7 @@ class GeneralConfiguration():
 
         self.data = json.load(open('./config/configuration.json'))
 
-        pinesString = self.data["pines"]
+        pinesString = self.data["Pines"]
         self.RutaMusica = self.data["RutaMusica"]
         self.RutaFFMPEG = self.data["Rutaffmpeg"]
         self.WebServerPort = self.data["WebServerPort"]

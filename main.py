@@ -12,6 +12,7 @@ from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
 from server import WebServer
 import config
+import time
 
 
 
@@ -45,7 +46,6 @@ class  DuxmanLights(object):
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)
         self.Logger.info("Fin Del Proceso")
-        os.unlink(filename)
         self.Logger.info("Borramos fichero : " +  filename)
 
     def CreateServer(self):
@@ -55,17 +55,32 @@ class  DuxmanLights(object):
 
     def execute(self):
         i = 0
-        PinListTemp = self.PinList
-        for p in self.Config.Programacion.Secuencia:
-            self.Logger.info("ejecutamos programa : " + p.Nombre)
-            self.PinList = p.pines
-            self.pinManager( PinList = p.pines )
-            self.musicManager(filename = p.musica )
-            threading._sleep( float(p.intervalo) )
-            self.Logger.info("fin ejecutamos programa : " + p.Nombre)
+        while (True):
+            desde = self.Config.Programacion.HoraDesde
+            hasta = self.Config.Programacion.HoraHasta
 
-        self.Logger.info("Fin de ejecucion")
-        self.PinList = PinListTemp
+            ahora = time.strftime("%H:%M")
+            ## representacion de fecha y hora
+            self.Logger.info( "Fecha y hora " + time.strftime("%c") )
+            self.Logger.info( "Configuracion de " + desde + " hasta " + hasta )
+            if ( ( ahora >= desde ) &  ( ahora < hasta ) ):
+                PinListTemp = self.PinList
+                for p in self.Config.Programacion.Secuencia:
+                    self.Logger.info("ejecutamos programa : " + p.Nombre)
+                    self.PinList = p.pines
+                    self.pinManager( PinList = p.pines )
+                    self.musicManager(filename = p.musica )
+                    threading._sleep( float(p.intervalo) )
+                    self.Logger.info("fin ejecutamos programa : " + p.Nombre)
+
+                self.Logger.info("Fin de ejecucion")
+                self.PinList = PinListTemp
+            else :
+                self.Logger.info( "No es la hora" )
+                self.Logger.info( "Configuracion de " + desde + " hasta " + hasta )
+                threading._sleep(60)
+
+
 
 
     def __init__(self):
@@ -76,6 +91,7 @@ class  DuxmanLights(object):
 
         """Leemos la configuracion general"""
         self.Config = config.GeneralConfiguration()
+
         """ Asignamos los pines configurados """
         self.PinList = self.Config.Pines
         self.Logger.info("Configuracion Cargada")
