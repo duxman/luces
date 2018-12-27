@@ -56,14 +56,18 @@ class PinManager(object):
         valortemp = MaxValue
 
         #valortemp = valortemp + (MaxValue - 1)
-        ListPines =  self.PinList.split(',');
+        ListPines =  self.PinList.split(',')
         secuencia = ListPines[:valortemp]
         if os.name == 'poxis':
             GPIO.output(ListPines, GPIO.LOW)
         if( MaxValue > 0):
             GPIO.output(secuencia, GPIO.HIGH)
         else:
-            GPIO.output(ListPines, GPIO.LOW)
+            if os.name == 'poxis':
+                GPIO.output(ListPines, GPIO.LOW)
+            else:
+                GPIO.output(0, GPIO.LOW)
+
 
 
     def EjecutarPrograma( self,pinProgram , repeticiones , intervalo ):

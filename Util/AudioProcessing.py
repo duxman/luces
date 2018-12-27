@@ -1,8 +1,8 @@
 import contextlib
 import uuid
 import wave
-import audioop
 import numpy
+import math
 import os
 if os.name == 'posix':
     import alsaaudio
@@ -77,10 +77,10 @@ class AudioProcessing():
             while data:
                 #valor = int( audioop.rms( data,2) )
                 data = numpy.fromstring(data, 'Int16')                
-                valor = numpy.median( data)                
+                valor = numpy.max( data)
                 array.append( valor )
                 data = f.readframes(self.PeriodSize)
-            self.MaxRate = numpy.median( array )
+            self.MaxRate = numpy.max( array )
         return self.MaxRate, self.PeriodSize
 
 
@@ -94,9 +94,11 @@ class AudioProcessing():
             self.prepareDevice(self.Device, WaveAudio)
             data = WaveAudio.readframes(self.PeriodSize)
             while data:
-                data1 = numpy.fromstring(data, 'Int16')                                
-                valor = int(round( numpy.median(data1) * NumeroPines / self.MaxRate ))
-                self.QueueProcess.put( valor )
+                data1 = numpy.fromstring(data, 'Int16')
+                ValorMedio = numpy.max(data1)
+                ValorIntermedio = ( ValorMedio * NumeroPines ) / self.MaxRate
+                ValorNormalizado = int( math.ceil ( ValorIntermedio ) )
+                self.QueueProcess.put( ValorNormalizado )
                 self.WriteFunctionObject.write(data)
                 data = WaveAudio.readframes(self.PeriodSize)
 
@@ -105,6 +107,6 @@ class AudioProcessing():
                 self.Stream.close()
                 self.Device.terminate()
 
-            os.unlink(FileName)
+
             self.QueueProcess.join()
 

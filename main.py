@@ -41,7 +41,7 @@ class  DuxmanLights(object):
 
         filename = self.MusicManager.ConvertWavFile(filename)
 
-        producer = threading.Thread( target=self.MusicManager.PlayWavFile(queue=self.WorkingQueue,FileName=filename, NumeroPines=len( self.PinList )), name="MusicManagerThread" )
+        producer = threading.Thread( target=self.MusicManager.PlayWavFile(queue=self.WorkingQueue,FileName=filename, NumeroPines=len( self.PinList.split(',') )), name="MusicManagerThread" )
         producer.start()
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)
@@ -66,12 +66,12 @@ class  DuxmanLights(object):
             if ( ( ahora >= desde ) &  ( ahora < hasta ) ):
                 PinListTemp = self.PinList
                 for p in self.Config.Programacion.Secuencia:
-                    self.Logger.info("ejecutamos programa : " + p.Nombre)
+                    self.Logger.info("ejecutamos programa : " + p.nombre)
                     self.PinList = p.pines
                     self.pinManager( PinList = p.pines )
                     self.musicManager(filename = p.musica )
                     threading._sleep( float(p.intervalo) )
-                    self.Logger.info("fin ejecutamos programa : " + p.Nombre)
+                    self.Logger.info("fin ejecutamos programa : " + p.nombre)
 
                 self.Logger.info("Fin de ejecucion")
                 self.PinList = PinListTemp

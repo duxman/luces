@@ -2,17 +2,18 @@ import json
 import os
 from Util import logger
 
+
 class programacion:
     HoraDesde = ""
     HoraHasta = ""
-    Estado=""
-    Programa=""
+    Estado = ""
+    Programa = ""
     data = ""
 
     Secuencia = []
     Logger = None
 
-    def __init__(self, Secuencias):
+    def __init__(self):
         self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion programacion")
 
@@ -24,50 +25,50 @@ class programacion:
         vprogramas = programas.split(",")
 
         for p in vprogramas:
-            for s in Secuencias.items:
-                if s.Nombre == p:
-                    self.Secuencia.append( s )
-                    break
+            confledn = Secuencia(p)
+            self.Secuencia.append(confledn)
 
-class Secuencias:
-    items = []
 
-    def __init__(self):
-        self.Logger = logger.clienteLog.logger
-        self.Logger.info("Cargamos configuracion secuencias leds.json")
-
-        dataTotal = json.load(open("./config/leds.json"))
-
-        for d in dataTotal:
-            sec = secuencia(d["pines"],d["musica"],d["secuencia"],d["intervalo"],d["Nombre"] )
-            self.items.append( sec)
-
-class secuencia:
+class Secuencia:
     pines = ""
     musica = ""
-    secuencia=""
-    intervalo=""
-    Nombre =  ""
+    secuencia = ""
+    intervalo = ""
+    nombre = ""
+    repeticiones = ""
+    Data = ""
+    def __init__(self, file):
+        self.Logger = logger.clienteLog.logger
+        self.Logger.info("Cargamos configuracion secuencias" + file)
 
-    def __init__(self, pines,musica,secuencia,intervalo,nombre):
+        self.Data = json.load(open(file))
+
+        self.pines = self.Data["pines"]
+        self.musica = self.Data["musica"]
+        self.secuencia = self.Data["secuencia"]
+        self.intervalo = self.Data["intervalo"]
+        self.repeticiones = self.Data["repeticiones"]
+        self.nombre = file
+
+    def initialize (self, pines, musica, secuencia, intervalo, repeticiones, nombre):
         self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion secuencia ")
-        self.Nombre = nombre
+        self.nombre = nombre
         self.pines = pines
         self.musica = musica
         self.secuencia = secuencia
         self.intervalo = intervalo
+        self.repeticiones = repeticiones
 
 
 class GeneralConfiguration():
     RutaFFMPEG = None
     RutaMusica = None
     WebServerPort = 8000
-    Pines=""
-    Secuencias=""
+    Pines = ""
+    Secuencias = ""
     Programacion = ""
     Logger = None
-
 
     def __init__(self):
         self.Logger = logger.clienteLog.logger
@@ -82,7 +83,5 @@ class GeneralConfiguration():
 
         self.Pines = pinesString.split(",")
 
-        self.Secuencias = Secuencias()
-        self.Programacion = programacion( self.Secuencias )
-
-
+        # self.Secuencias = Secuencias()
+        self.Programacion = programacion()

@@ -1,6 +1,6 @@
 {
-  "HoraDesde" : "18:00",
-  "HoraHasta" : "21:00",
+  "HoraDesde" : "16:00",
+  "HoraHasta" : "23:00",
   "Estado"    : "ON",
   "Programa"  : "./config/led2.json"
 }
