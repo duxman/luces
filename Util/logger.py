@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import RotatingFileHandler
 
 class clienteLog:
     logger = None
@@ -7,17 +8,19 @@ class clienteLog:
 
     def InicializaLog(self):
         clienteLog.logger = logging.getLogger('Application')
+        clienteLog.logger.setLevel(logging.INFO)
+        fh = RotatingFileHandler('./log/application.log', maxBytes=10000000, backupCount=2)
 
-        fh = logging.FileHandler('./log/application.log')
         ch = logging.StreamHandler()
 
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+
         fh.setFormatter(formatter)
         ch.setFormatter(formatter)
 
         clienteLog.logger.addHandler(fh)
         clienteLog.logger.addHandler(ch)
-        clienteLog.logger.level = logging.INFO
+
         return clienteLog.logger
 
 
