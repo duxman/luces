@@ -1,0 +1,19 @@
+{
+  "type": "array",
+  "format": "table",
+  "title": "Programs Configuration",
+  "items" : 
+  {
+    "title": "Program",
+    "type": "object",    
+    "properties": {
+      "Pins"      : { "type" : "string", "description" : "Pin List" },
+      "Music"     : { "type" : "string", "description" : "Music Files" },
+      "Secuence"  : { "type" : "string", "description" : "Secuence Program" },
+      "Interval"  : { "type" : "string", "description" : "Wait Time" },
+      "Repeat"    : { "type" : "string", "description" : "Repeats" },
+      "Type"      : { "type" : "string", "description" : "Execution Type", "enum": [ "SEC","MUSIC" ], "default" : "MUSIC" },
+      "Name"      : { "type" : "string", "description" : "Program name", "readonly" : true }
+    }
+  }
+}

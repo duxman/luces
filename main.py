@@ -44,8 +44,7 @@ class  DuxmanLights(object):
         producer.start()
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)
-        self.Logger.info("Fin Del Proceso")
-        self.Logger.info("Borramos fichero : " +  filename)
+        self.Logger.info("End of the process")
 
     def secuenceManager(self, StringSecuencia, time):
         vSecuenciatmp = StringSecuencia.split(",")
@@ -56,7 +55,7 @@ class  DuxmanLights(object):
 
     def reloadConfig(self):
         ## volvemos a cargar la configuracion de la programacion por si se ha cambiado mientras ejecutabamos
-        self.Logger.info("Recargamos Programacion por si ha cambiado ")
+        self.Logger.info("Reloads configuration files ")
         self.Config.Programacion = None
         self.Config.Programacion = config.programacion()
 
@@ -72,8 +71,7 @@ class  DuxmanLights(object):
         self.ConfigServer = WebServer(DefaultPort)
         self.ConfigServer.StartServer()
 
-
-    def execute(self, Tiempo):
+    def execute(self):
         i = int(self.Config.Programacion.Repeticiones)
         ## ejecutamos siempre en un bucle infinito
         while( True ):
@@ -83,8 +81,8 @@ class  DuxmanLights(object):
 
             ahora = time.strftime("%H:%M")
             ## representacion de fecha y hora
-            self.Logger.info("Fecha y hora " + time.strftime("%c"))
-            self.Logger.info("Configuracion de " + desde + " hasta " + hasta)
+            self.Logger.info("Date Time" + time.strftime("%c"))
+            self.Logger.info("Configuration from " + desde + " to " + hasta)
 
             ## si tenemos que ejecutar
             if ((ahora >= desde) & (ahora < hasta)):
@@ -96,9 +94,9 @@ class  DuxmanLights(object):
                         break
 
                     if( i > 0):
-                        self.Logger.info("Repeticiones que faltan = " + str(i))
+                        self.Logger.info("Remaining repeats = " + str(i))
                     else:
-                        self.Logger.info("Repeticiones infinitas")
+                        self.Logger.info("Infinite loops")
 
                     i = i - 1
                     ##Obtenemos la lista de pines a usar
@@ -106,7 +104,7 @@ class  DuxmanLights(object):
 
                     ##Ejecutamos cada uno de los programas
                     for p in self.Config.Programacion.Secuencia:
-                        self.Logger.info("ejecutamos programa : " + p.nombre)
+                        self.Logger.info("Execute program: " + p.nombre)
                         self.PinList = p.pines
                         self.pinManager( PinList = p.pines )
 
@@ -118,31 +116,29 @@ class  DuxmanLights(object):
 
                         ## dormimos el tiempo estipulado
                         threading._sleep( float(p.intervalo) )
-                        self.Logger.info("fin ejecutamos programa : " + p.nombre)
+                        self.Logger.info("End Execution of : " + p.nombre)
 
                         ##  Establecemos los pines generales
-                        self.Logger.info("Fin de ejecucion")
+                        self.Logger.info("End of execution")
                         self.PinList = PinListTemp
                     self.reloadConfig()
+                else :
+                    self.Logger.info("End of repeats")
             else :
                 ##Como no es la hora dormimos 60 seg
                 i = int(self.Config.Programacion.Repeticiones)
-                self.Logger.info( "No es la hora" )
-                self.Logger.info( "Configuracion de " + desde + " hasta " + hasta )
+                self.Logger.info( "it is not the Time" )
+                self.Logger.info( "Configured from " + desde + " to " + hasta )
 
             self.reloadConfig()
-            threading._sleep(Tiempo)
-
-
-
-
-
+            self.Logger.info("Wait " + str( self.Config.Programacion.WaitTime )+ "sec" )
+            threading._sleep(self.Config.Programacion.WaitTime)
 
     def __init__(self):
         cliente = clienteLog()
         self.Logger = cliente.InicializaLog()
         self.Logger.info("--------------------<<  INI  >>--------------------")
-        self.Logger.info("Arrancamos la ejecucion")
+        self.Logger.info("Start of Program")
         DefaultPort = 8000
         if os.path.isfile('./config/configuracion.json'):
             """Leemos la configuracion general"""
@@ -152,18 +148,18 @@ class  DuxmanLights(object):
             self.PinList = self.Config.Pines
             self.Logger.info("Configuracion Cargada")
 
-            self.Logger.info("Creamos Cola de procesamiento")
+            self.Logger.info("Create Process Queue")
             self.WorkingQueue = Queue.Queue()
             DefaultPort = int(self.Config.WebServerPort)
 
         self.CreateServer(DefaultPort)
 
         if( self.Config != None ):
-            self.execute(10)
+            self.execute()
             self.ConfigServer.StopServer()
 
 
 if __name__ == "__main__":
     mainprogram = DuxmanLights()
-    mainprogram.Logger.info("Fin Programa")
+    mainprogram.Logger.info("--------------------<<  END  >>--------------------")
 

@@ -9,6 +9,7 @@ class programacion:
     Estado = ""
     Programa = ""
     Repeticiones = -1
+    WaitTime = 10
     data = ""
 
     Secuencia = []
@@ -22,8 +23,10 @@ class programacion:
         self.HoraDesde = self.data["StartTime"]
         self.HoraHasta = self.data["EndTime"]
         self.Estado = self.data["State"]
-        programas = self.data["Programs"]
         self.Repeticiones =  self.data["Repeats"]
+        self.WaitTime = int(self.data["WaitTime"])
+
+        programas = self.data["Programs"]
         vprogramas = programas.split(",")
 
         for p in vprogramas:

@@ -32,6 +32,13 @@
       "type" : "string",
       "enum": [ -1,1,2,3,4,5,10,20,30,40,50,100 ],
       "description" : "Numero de repeticiones de la secuencia, -1 infinito"
+    },
+    "WaitTime" :
+    {
+      "type" : "string",
+      "enum": [ 10,20,30,40,50,60],
+      "description" : "Wait time on the execution loop"
     }
+
   }
 }

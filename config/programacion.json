@@ -1,1 +1,8 @@
-{"StartTime":"00:00","EndTime":"23:59","State":"ON","Programs":"led_example.json","Repeats":"3"}
+{
+    "EndTime": "23:59",
+    "Programs": "led_example.json",
+    "Repeats": "3",
+    "StartTime": "00:00",
+    "State": "ON",
+    "WaitTime": "10"
+}

@@ -1,5 +1,6 @@
 import cgi
 import json
+from StringIO import StringIO
 from BaseHTTPServer import HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from json import JSONEncoder
@@ -31,7 +32,7 @@ class MiHTTPRequestHandler(SimpleHTTPRequestHandler):
             self.saveProgramacion(filename, contenido)
         elif type == "GENERAL":
             self.saveConfiguracion(filename, contenido)
-        elif type == "SECUENCIA":
+        elif type == "PROGRAMS":
             self.saveSecuencia( contenido)
 
         return self.do_GET()
@@ -40,22 +41,43 @@ class MiHTTPRequestHandler(SimpleHTTPRequestHandler):
         data = json.loads(contenido)
         dataout = []
         i = 0
+        dataencoded = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+        file = open('./config/ledsConfig.json', 'wb')
+        file.write(dataencoded)
+        file.close()
+
         for secuencia in data:
-            i = i +1
-            secuencia["Nombre"] = "led"+str(i)
-            dataout.append(secuencia)
-            dataencoded = JSONEncoder().encode(dataout)
-            file = open('./config/led'+str(i)+'.json', 'wb')
+            i = i + 1
+
+            ## se hace esta conversion para poder modificar el dato name
+            dataencoded = json.dumps(secuencia)
+            secuenciatemp = json.loads(dataencoded)
+
+            ## establecemos el nombre correcto
+            nameTemp = 'led'+str(i)+'.json'
+            secuenciatemp["Name"] = nameTemp
+
+            ## Lo ponemos bonito
+            dataencoded = json.dumps(secuenciatemp, sort_keys=True, indent=4, separators=(',', ': '))
+
+            ## Escribimos el fichero
+            file = open('./config/' + nameTemp, 'wb')
             file.write(dataencoded)
             file.close()
 
     def saveProgramacion(self, filename,contenido):
         file = open('./config/' + filename, 'wb')
-        file.write(contenido)
+        io = StringIO(contenido)
+        data  = json.load(io)
+        dataencoded = json.dumps(data, sort_keys=True, indent=4,separators=(',', ': '))
+        file.write(dataencoded)
         file.close()
     def saveConfiguracion(self, filename,contenido):
         file = open('./config/' + filename, 'wb')
-        file.write(contenido)
+        io = StringIO(contenido)
+        data = json.load(io)
+        dataencoded = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+        file.write( dataencoded )
         file.close()
 
 

@@ -1,0 +1,29 @@
+[
+    {
+        "Interval": "1",
+        "Music": "1",
+        "Name": "1",
+        "Pins": "1",
+        "Repeat": "1",
+        "Secuence": "1",
+        "Type": "MUSIC"
+    },
+    {
+        "Interval": "2",
+        "Music": "2",
+        "Name": "2",
+        "Pins": "2",
+        "Repeat": "2",
+        "Secuence": "2",
+        "Type": "MUSIC"
+    },
+    {
+        "Interval": "3",
+        "Music": "3",
+        "Name": "3",
+        "Pins": "3",
+        "Repeat": "3",
+        "Secuence": "3",
+        "Type": "MUSIC"
+    }
+]

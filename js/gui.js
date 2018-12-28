@@ -39,6 +39,24 @@ function CreateEvents()
             // Get the value from the editor
             console.log(datos);
         });
+        document.getElementById('submitPrograms').addEventListener('click',function()
+        {
+            var datos = editorProgramas.getValue()
+            $.ajax
+            (
+              {
+                type: "POST",
+                url: "/cgi/store.py",
+                data: { type : "PROGRAMS"  ,filename: "leds.json" , contenido: JSON.stringify(datos)},
+                dataType: "text"
+              }
+            ).done(function( o )
+            {
+                alert("OK PROGRAMS SAVED");
+            });
+            // Get the value from the editor
+            console.log(datos);
+        });
         document.getElementById('submitGeneral').addEventListener('click',function()
         {
             var datos = editorGeneral.getValue()

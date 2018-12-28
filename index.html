@@ -19,13 +19,18 @@
     <div class="tab" width="60%">
       <button class="tablinks" onclick="openTab(event, 'TabProgramacion')">Programacion Actual</button>
       <button class="tablinks" onclick="openTab(event, 'TabConfigGeneral')">Configuracion General</button>
+      <button class="tablinks" onclick="openTab(event, 'TabPrograms')">Configuracion Programas</button>
     </div>
+
 
     <div id="TabProgramacion" class="tabcontent">
         <button id='submitProgramacion'>Guardar Programacion</button>
     </div>
     <div id="TabConfigGeneral" class="tabcontent">
         <button id='submitGeneral' >Guardar Configuracion General</button>
+    </div>
+    <div id="TabPrograms" class="tabcontent">
+        <button id='submitPrograms' >Guardar Configuracion Programas</button>
     </div>
 
 
@@ -37,12 +42,16 @@
       var editorGeneral
       $.getJSON('/config/programacion.json', function(data)
       {
-         editorProgramacion = loadEditor( "schPrograma.json", "TabProgramacion",data, true );
-      });
+         editorProgramacion = loadEditor( "schPrograma.json", "TabProgramacion",data, false );
+      }).fail(function() { editorProgramacion = loadEditorDefault( "schPrograma.json", "TabProgramacion",false ); });
       $.getJSON('/config/configuracion.json', function(data)
       {
         editorGeneral = loadEditor( "schConfiguracion.json", "TabConfigGeneral",data,false );
-      });
+      }).fail(function() { editorGeneral = loadEditorDefault( "schConfiguracion.json", "TabConfigGeneral",false ); });
+       $.getJSON('/config/ledsConfig.json', function(data)
+      {
+        editorProgramas = loadEditor( "schPrograms.json", "TabPrograms",data,true );
+      }).fail(function() { editorProgramas = loadEditorDefault( "schPrograms.json", "TabPrograms",true ); });
       //Creamos los eventos
       CreateEvents()
     </script>
