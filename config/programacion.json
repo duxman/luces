@@ -1,6 +1,1 @@
-{
-  "HoraDesde" : "16:00",
-  "HoraHasta" : "23:00",
-  "Estado"    : "ON",
-  "Programa"  : "./config/led2.json"
-}
+{"StartTime":"00:00","EndTime":"23:59","State":"ON","Programs":"led_example.json","Repeats":"3"}

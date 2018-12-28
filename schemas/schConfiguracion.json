@@ -4,17 +4,17 @@
   "id" : "configuracion",
   "properties" :
   {
-    "pines" :
+    "GeneralPins" :
     {
       "type" : "string",
       "description" : "Salidas digitales a utilizar"
     },
-    "RutaMusica" :
+    "MusicPath" :
     {
       "type" : "string",
       "description" : "Ubicacion predeterminada de las canciones"
     },
-    "Rutaffmpeg" :
+    "FfmpegPath" :
     {
       "type" : "string",
       "description" : "Ruta Completa del Programa ffmpeg, solo si no es linux"

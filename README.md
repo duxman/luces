@@ -18,9 +18,9 @@ Modify the following files y config directory.
 This file contains 
 
 ````
-  "Pines"       : General configured pines ( not in use)
-  "RutaMusica"  : Music directory
-  "Rutaffmpeg"  : ffmpeg path , only for windows,
+  "GeneralPins"   : General configured pines ( not in use)
+  "MusicPath"     : Music directory
+  "FfmpegPath"    : ffmpeg path , only for windows,
   "WebServerPort" : web server port
 ````
 
@@ -29,10 +29,10 @@ This file contains
 This file contains 
 
 ````
-  "HoraDesde" : Start Time,
-  "HoraHasta" : End Time
-  "Estado"    : Not in use
-  "Programa"  : list of files led(1..n).json config files comma separated"
+  "StartTime" : Start Time,
+  "EndTime"   : End Time
+  "State"     : Not in use
+  "Programs"  : list of files led(1..n).json config files comma separated"
 ````
 
 **led(1..n).json**
@@ -40,11 +40,16 @@ This file contains
 This file contains 
 
 ````
-  "pines"         : Configured pins for this song
-  "musica"        : wav file song,
-  "secuencia"     : Not in use
-  "intervalo"     : sleep time
-  "repeticiones"  : repeat times
+  "Name"         : Program name
+  "Pins"         : Configured pins for this song
+  "Music"        : wav file song,
+  "Secuence"     : num of pins to activate
+  "Interval"     : sleep time
+  "Repeat"       : repeat times
+  "Type"         : Execute mode
+                   SEC   -> Execute Secuence
+                   MUSIC -> execute with music file
+
 ````
 
 ###### Execute

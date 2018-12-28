@@ -8,6 +8,7 @@ class programacion:
     HoraHasta = ""
     Estado = ""
     Programa = ""
+    Repeticiones = -1
     data = ""
 
     Secuencia = []
@@ -18,10 +19,11 @@ class programacion:
         self.Logger.info("Cargamos configuracion programacion")
 
         self.data = json.load(open('./config/programacion.json'))
-        self.HoraDesde = self.data["HoraDesde"]
-        self.HoraHasta = self.data["HoraHasta"]
-        self.Estado = self.data["Estado"]
-        programas = self.data["Programa"]
+        self.HoraDesde = self.data["StartTime"]
+        self.HoraHasta = self.data["EndTime"]
+        self.Estado = self.data["State"]
+        programas = self.data["Programs"]
+        self.Repeticiones =  self.data["Repeats"]
         vprogramas = programas.split(",")
 
         for p in vprogramas:
@@ -36,29 +38,21 @@ class Secuencia:
     intervalo = ""
     nombre = ""
     repeticiones = ""
+    type = ""
     Data = ""
     def __init__(self, file):
         self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion secuencias" + file)
 
-        self.Data = json.load(open(file))
+        self.Data = json.load(open("./config/"+file))
 
-        self.pines = self.Data["pines"]
-        self.musica = self.Data["musica"]
-        self.secuencia = self.Data["secuencia"]
-        self.intervalo = self.Data["intervalo"]
-        self.repeticiones = self.Data["repeticiones"]
-        self.nombre = file
-
-    def initialize (self, pines, musica, secuencia, intervalo, repeticiones, nombre):
-        self.Logger = logger.clienteLog.logger
-        self.Logger.info("Cargamos configuracion secuencia ")
-        self.nombre = nombre
-        self.pines = pines
-        self.musica = musica
-        self.secuencia = secuencia
-        self.intervalo = intervalo
-        self.repeticiones = repeticiones
+        self.pines = self.Data["Pins"]
+        self.musica = self.Data["Music"]
+        self.secuencia = self.Data["Secuence"]
+        self.intervalo = self.Data["Interval"]
+        self.repeticiones = self.Data["Repeat"]
+        self.type = self.Data["Type"]
+        self.nombre = self.Data["Name"]
 
 
 class GeneralConfiguration():
@@ -74,11 +68,11 @@ class GeneralConfiguration():
         self.Logger = logger.clienteLog.logger
         self.Logger.info("Cargamos configuracion general ")
 
-        self.data = json.load(open('./config/configuration.json'))
+        self.data = json.load(open('./config/configuracion.json'))
 
-        pinesString = self.data["Pines"]
-        self.RutaMusica = self.data["RutaMusica"]
-        self.RutaFFMPEG = self.data["Rutaffmpeg"]
+        pinesString = self.data["GeneralPins"]
+        self.RutaMusica = self.data["MusicPath"]
+        self.RutaFFMPEG = self.data["FfmpegPath"]
         self.WebServerPort = self.data["WebServerPort"]
 
         self.Pines = pinesString.split(",")

@@ -77,12 +77,16 @@ class AudioProcessing():
             while data:
                 #valor = int( audioop.rms( data,2) )
                 data = numpy.fromstring(data, 'Int16')                
-                valor = numpy.max( data)
+                valor = numpy.average( data)
                 array.append( valor )
                 data = f.readframes(self.PeriodSize)
             self.MaxRate = numpy.max( array )
         return self.MaxRate, self.PeriodSize
 
+    def getQueueValue(self, ValorMax, ValorMedio, NumeroPines ):
+        ValorIntermedio = (ValorMedio * NumeroPines) / ValorMax
+        ValorNormalizado = int(abs(math.ceil(ValorIntermedio)))
+        self.QueueProcess.put(ValorNormalizado)
 
     def PlayWavFile(self, queue, FileName = None, NumeroPines=5):
         self.QueueProcess = queue
@@ -95,10 +99,10 @@ class AudioProcessing():
             data = WaveAudio.readframes(self.PeriodSize)
             while data:
                 data1 = numpy.fromstring(data, 'Int16')
-                ValorMedio = numpy.max(data1)
-                ValorIntermedio = ( ValorMedio * NumeroPines ) / self.MaxRate
-                ValorNormalizado = int( math.ceil ( ValorIntermedio ) )
-                self.QueueProcess.put( ValorNormalizado )
+
+                ValorMedio = numpy.average(data1)
+                self.getQueueValue( self.MaxRate, ValorMedio, NumeroPines)
+
                 self.WriteFunctionObject.write(data)
                 data = WaveAudio.readframes(self.PeriodSize)
 

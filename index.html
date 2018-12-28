@@ -18,18 +18,12 @@
 
     <div class="tab" width="60%">
       <button class="tablinks" onclick="openTab(event, 'TabProgramacion')">Programacion Actual</button>
-      <button class="tablinks" onclick="openTab(event, 'TabSecuencias')">Secuencias Programadas</button>
       <button class="tablinks" onclick="openTab(event, 'TabConfigGeneral')">Configuracion General</button>
     </div>
 
     <div id="TabProgramacion" class="tabcontent">
         <button id='submitProgramacion'>Guardar Programacion</button>
     </div>
-
-    <div id="TabSecuencias" class="tabcontent">
-        <button id='submitSecuencias' >Guardar Secuencias</button>
-    </div>
-
     <div id="TabConfigGeneral" class="tabcontent">
         <button id='submitGeneral' >Guardar Configuracion General</button>
     </div>
@@ -45,14 +39,7 @@
       {
          editorProgramacion = loadEditor( "schPrograma.json", "TabProgramacion",data, true );
       });
-
-      $.getJSON('/config/leds.json', function(data)
-      {
-         editorSecuencias = loadEditor( "schSecuencias.json", "TabSecuencias",data,true );
-
-      });
-
-      $.getJSON('/config/configuration.json', function(data)
+      $.getJSON('/config/configuracion.json', function(data)
       {
         editorGeneral = loadEditor( "schConfiguracion.json", "TabConfigGeneral",data,false );
       });

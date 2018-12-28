@@ -4,30 +4,30 @@
   "id" : "programa",
   "properties" :
   {
-    "HoraDesde" :
+    "StartTime" :
     {
       "type" : "string",
       "format" : "time",
       "description" : "Hora de inicio"
     },
-    "HoraHasta" :
+    "EndTime" :
     {
       "type" : "string",
       "format" : "time",
       "description" : "Hora de Finalizacion"
     },
-    "Estado" :
+    "State" :
     {
       "type" : "string",
       "description" : "Estado del programa [ OFF | TIMED | ON ] ",
       "enum": [ "OFF","TIMED","ON" ]
     },
-    "Programa" :
+    "Programs" :
     {
       "type" : "string",
       "description" : "Configuracion a aplicar"
     },
-    "repeticiones" :
+    "Repeats" :
     {
       "type" : "string",
       "enum": [ -1,1,2,3,4,5,10,20,30,40,50,100 ],

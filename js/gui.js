@@ -39,21 +39,6 @@ function CreateEvents()
             // Get the value from the editor
             console.log(datos);
         });
-        document.getElementById('submitSecuencias').addEventListener('click',function()
-        {
-            var datos = editorSecuencias.getValue()
-            $.ajax
-            (
-              {
-                type: "POST",
-                url: "/cgi/store.py",
-                data: {type : "SECUENCIA" , filename: "led%.json" , contenido: JSON.stringify(datos)},
-                dataType: "text"
-              }
-            ).done(function( o ) { alert("OK SECUENCIA GRABADA"); });
-            // Get the value from the editor
-            console.log(datos);
-        });
         document.getElementById('submitGeneral').addEventListener('click',function()
         {
             var datos = editorGeneral.getValue()

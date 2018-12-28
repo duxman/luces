@@ -30,7 +30,7 @@ class MiHTTPRequestHandler(SimpleHTTPRequestHandler):
         if type == 'PROGRAMACION':
             self.saveProgramacion(filename, contenido)
         elif type == "GENERAL":
-            self.saveConfiguracion(self, filename, contenido)
+            self.saveConfiguracion(filename, contenido)
         elif type == "SECUENCIA":
             self.saveSecuencia( contenido)
 
@@ -44,12 +44,10 @@ class MiHTTPRequestHandler(SimpleHTTPRequestHandler):
             i = i +1
             secuencia["Nombre"] = "led"+str(i)
             dataout.append(secuencia)
-
-        dataencoded = JSONEncoder().encode(dataout)
-
-        file = open('./config/leds.json', 'wb')
-        file.write(dataencoded)
-        file.close()
+            dataencoded = JSONEncoder().encode(dataout)
+            file = open('./config/led'+str(i)+'.json', 'wb')
+            file.write(dataencoded)
+            file.close()
 
     def saveProgramacion(self, filename,contenido):
         file = open('./config/' + filename, 'wb')

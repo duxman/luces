@@ -1,4 +1,5 @@
 import logging
+import distutils.dir_util
 from logging.handlers import RotatingFileHandler
 
 class clienteLog:
@@ -7,8 +8,10 @@ class clienteLog:
         return clienteLog.logger
 
     def InicializaLog(self):
+
         clienteLog.logger = logging.getLogger('Application')
         clienteLog.logger.setLevel(logging.INFO)
+        distutils.dir_util.mkpath("./log/")
         fh = RotatingFileHandler('./log/application.log', maxBytes=10000000, backupCount=2)
 
         ch = logging.StreamHandler()
