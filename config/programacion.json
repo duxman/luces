@@ -1,7 +1,6 @@
 {
     "EndTime": "23:59",
-    "Programs": "led_example.json",
-    "Repeats": "3",
+    "Repeats": "-1",
     "StartTime": "00:00",
     "State": "ON",
     "WaitTime": "10"

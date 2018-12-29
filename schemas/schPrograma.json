@@ -22,11 +22,6 @@
       "description" : "Estado del programa [ OFF | TIMED | ON ] ",
       "enum": [ "OFF","TIMED","ON" ]
     },
-    "Programs" :
-    {
-      "type" : "string",
-      "description" : "Configuracion a aplicar"
-    },
     "Repeats" :
     {
       "type" : "string",

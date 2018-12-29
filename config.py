@@ -26,37 +26,54 @@ class programacion:
         self.Repeticiones =  self.data["Repeats"]
         self.WaitTime = int(self.data["WaitTime"])
 
-        programas = self.data["Programs"]
-        vprogramas = programas.split(",")
 
-        for p in vprogramas:
-            confledn = Secuencia(p)
-            self.Secuencia.append(confledn)
+class Zone():
+    ZoneName = ""
+    ZonePins = []
 
+    def __init__(self,Name, Pins):
+        self.ZoneName = Name
+        self.ZonePins = Pins.split(",")
 
-class Secuencia:
-    pines = ""
-    musica = ""
-    secuencia = ""
-    intervalo = ""
-    nombre = ""
-    repeticiones = ""
-    type = ""
-    Data = ""
-    def __init__(self, file):
+class Zones():
+    Logger = None
+    ZoneType = ""
+    DefinedZones = []
+
+    def __init__(self):
         self.Logger = logger.clienteLog.logger
-        self.Logger.info("Cargamos configuracion secuencias" + file)
+        self.Logger.info("Cargamos configuracion Zones.json ")
 
-        self.Data = json.load(open("./config/"+file))
+        self.data = json.load(open('./config/Zones.json'))
 
-        self.pines = self.Data["Pins"]
-        self.musica = self.Data["Music"]
-        self.secuencia = self.Data["Sequence"]
-        self.intervalo = self.Data["Interval"]
-        self.repeticiones = self.Data["Repeat"]
-        self.type = self.Data["Type"]
-        self.nombre = self.Data["Name"]
+        self.ZoneType = self.data["ZoneType"]
+        for definedzone in self.data["Zones"]:
+            ZoneTemp = Zone( definedzone["ZoneName"],definedzone["ZonePins"] )
+            self.DefinedZones.append( ZoneTemp )
 
+
+class ProgramConfiguration():
+    Logger = None
+    ProgramName = ""
+    ProgramType = ""
+    ProgramInterval = 0.0
+    MusicFiles = []
+    Sequences = []
+
+    def __init__(self):
+        self.Logger = logger.clienteLog.logger
+        self.Logger.info("Cargamos configuracion ProgramConfiguration.json ")
+
+        self.data = json.load(open('./config/ProgramConfiguration.json'))
+
+        self.ProgramName = self.data["ProgramName"]
+        self.ProgramType = self.data["ProgramType"]
+        self.ProgramInterval = float( self.data["ProgramInterval"] )
+        for fichero in self.data["MusicFiles"]:
+            self.MusicFiles.append(fichero["File"])
+
+        for sequence in self.data["Sequences"]:
+            self.Sequences.append(sequence["Activate Zone"])
 
 class GeneralConfiguration():
     RutaFFMPEG = None
@@ -65,6 +82,8 @@ class GeneralConfiguration():
     Pines = ""
     Secuencias = ""
     Programacion = ""
+    ProgramConfiguration = ""
+    Zones = ""
     Logger = None
 
     def __init__(self):
@@ -79,6 +98,6 @@ class GeneralConfiguration():
         self.WebServerPort = self.data["WebServerPort"]
 
         self.Pines = pinesString.split(",")
-
-        # self.Secuencias = Secuencias()
         self.Programacion = programacion()
+        self.ProgramConfiguration = ProgramConfiguration()
+        self.Zones = Zones()

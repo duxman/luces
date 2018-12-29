@@ -27,57 +27,17 @@ class MiHTTPRequestHandler(SimpleHTTPRequestHandler):
 
         filename = postvars['filename'][0]
         contenido = postvars['contenido'][0]
-        type = postvars["type"][0]
-        if type == 'PROGRAMACION':
-            self.saveProgramacion(filename, contenido)
-        elif type == "GENERAL":
-            self.saveConfiguracion(filename, contenido)
-        elif type == "PROGRAMS":
-            self.saveSecuencia( contenido)
+
+        self.saveConfigurationJsonFile(filename, contenido)
 
         return self.do_GET()
 
-    def saveSecuencia(self,contenido):
-        data = json.loads(contenido)
-        dataout = []
-        i = 0
-        dataencoded = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-        file = open('./config/ledsConfig.json', 'wb')
-        file.write(dataencoded)
-        file.close()
-
-        for secuencia in data:
-            i = i + 1
-
-            ## se hace esta conversion para poder modificar el dato name
-            dataencoded = json.dumps(secuencia)
-            secuenciatemp = json.loads(dataencoded)
-
-            ## establecemos el nombre correcto
-            nameTemp = 'led'+str(i)+'.json'
-            secuenciatemp["Name"] = nameTemp
-
-            ## Lo ponemos bonito
-            dataencoded = json.dumps(secuenciatemp, sort_keys=True, indent=4, separators=(',', ': '))
-
-            ## Escribimos el fichero
-            file = open('./config/' + nameTemp, 'wb')
-            file.write(dataencoded)
-            file.close()
-
-    def saveProgramacion(self, filename,contenido):
-        file = open('./config/' + filename, 'wb')
-        io = StringIO(contenido)
-        data  = json.load(io)
-        dataencoded = json.dumps(data, sort_keys=True, indent=4,separators=(',', ': '))
-        file.write(dataencoded)
-        file.close()
-    def saveConfiguracion(self, filename,contenido):
+    def saveConfigurationJsonFile(self, filename,contenido):
         file = open('./config/' + filename, 'wb')
         io = StringIO(contenido)
         data = json.load(io)
-        dataencoded = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-        file.write( dataencoded )
+        dataencoded = json.dumps(data, sort_keys=True, indent=4,separators=(',', ': '))
+        file.write(dataencoded)
         file.close()
 
 

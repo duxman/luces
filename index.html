@@ -20,6 +20,7 @@
       <button class="tablinks" onclick="openTab(event, 'TabProgramacion')">Programacion Actual</button>
       <button class="tablinks" onclick="openTab(event, 'TabConfigGeneral')">Configuracion General</button>
       <button class="tablinks" onclick="openTab(event, 'TabPrograms')">Configuracion Programas</button>
+      <button class="tablinks" onclick="openTab(event, 'TabZones')">Configuracion de Zonas de iluminacion</button>
     </div>
 
 
@@ -32,26 +33,43 @@
     <div id="TabPrograms" class="tabcontent">
         <button id='submitPrograms' >Guardar Configuracion Programas</button>
     </div>
+    <div id="TabZones" class="tabcontent">
+        <button id='submitZones' >Guardar Configuracion de Zonas</button>
+    </div>
 
 
 
     <script>
 
+      var editorGeneral;
       var editorProgramacion;
-      var editorSecuencias;
-      var editorGeneral
+      var editorProgramas;
+      var editorZonas;
+
+
       $.getJSON('/config/programacion.json', function(data)
       {
          editorProgramacion = loadEditor( "schPrograma.json", "TabProgramacion",data, false );
       }).fail(function() { editorProgramacion = loadEditorDefault( "schPrograma.json", "TabProgramacion",false ); });
+
+
       $.getJSON('/config/configuracion.json', function(data)
       {
         editorGeneral = loadEditor( "schConfiguracion.json", "TabConfigGeneral",data,false );
       }).fail(function() { editorGeneral = loadEditorDefault( "schConfiguracion.json", "TabConfigGeneral",false ); });
+
+
+       $.getJSON('/config/ProgramConfiguration.json', function(data)
+      {
+        editorProgramas = loadEditor( "schProgramConfiguration.json", "TabPrograms",data,true );
+      }).fail(function() { editorProgramas = loadEditorDefault( "schProgramConfiguration.json", "TabPrograms",true ); });
+
+
        $.getJSON('/config/ledsConfig.json', function(data)
       {
-        editorProgramas = loadEditor( "schPrograms.json", "TabPrograms",data,true );
-      }).fail(function() { editorProgramas = loadEditorDefault( "schPrograms.json", "TabPrograms",true ); });
+        editorZonas = loadEditor( "schZones.json", "TabZones",data,true );
+      }).fail(function() { editorZonas = loadEditorDefault( "schZones.json", "TabZones",true ); });
+
       //Creamos los eventos
       CreateEvents()
     </script>

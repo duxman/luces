@@ -1,0 +1,21 @@
+{
+    "ZoneType": "GPIO",
+    "Zones": [
+        {
+            "ZoneName": "z1",
+            "ZonePins": "1,2,3,4,5,6"
+        },
+        {
+            "ZoneName": "z2",
+            "ZonePins": "7,8,9,10,11,12"
+        },
+        {
+            "ZoneName": "z3",
+            "ZonePins": "2,4,6,8,10"
+        },
+        {
+            "ZoneName": "z4",
+            "ZonePins": "1,3,5,7,9"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+  "title" : "Defined Zones",
+  "type" : "object",
+  "id" : "Zones",
+  "properties" :
+  {
+    "ZoneType": {"type": "string", "description": "Zone Type", "enum": ["MCP", "GPIO"], "default": "GPIO"},
+    "Zones"    : {
+      "type"  : "array",
+      "format": "tabs",
+      "title" : "Zones Configuration",
+      "items" : {
+        "title"     : "Zone",
+        "type"      : "object",
+        "properties": {
+          "ZoneName": {"type": "string"},
+          "ZonePins": {"type": "string"}
+        }
+      }
+    }
+  }
+}

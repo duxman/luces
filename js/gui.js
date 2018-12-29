@@ -47,7 +47,7 @@ function CreateEvents()
               {
                 type: "POST",
                 url: "/cgi/store.py",
-                data: { type : "PROGRAMS"  ,filename: "leds.json" , contenido: JSON.stringify(datos)},
+                data: { type : "PROGRAMS"  ,filename: "ProgramConfiguration.json" , contenido: JSON.stringify(datos)},
                 dataType: "text"
               }
             ).done(function( o )
@@ -57,6 +57,27 @@ function CreateEvents()
             // Get the value from the editor
             console.log(datos);
         });
+
+         document.getElementById('submitZones').addEventListener('click',function()
+        {
+            var datos = editorZonas.getValue()
+            $.ajax
+            (
+              {
+                type: "POST",
+                url: "/cgi/store.py",
+                data: { type : "ZONES"  ,filename: "Zones.json" , contenido: JSON.stringify(datos)},
+                dataType: "text"
+              }
+            ).done(function( o )
+            {
+                alert("OK ZONES SAVED");
+            });
+            // Get the value from the editor
+            console.log(datos);
+        });
+
+
         document.getElementById('submitGeneral').addEventListener('click',function()
         {
             var datos = editorGeneral.getValue()
