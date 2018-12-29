@@ -51,7 +51,7 @@ class Secuencia:
 
         self.pines = self.Data["Pins"]
         self.musica = self.Data["Music"]
-        self.secuencia = self.Data["Secuence"]
+        self.secuencia = self.Data["Sequence"]
         self.intervalo = self.Data["Interval"]
         self.repeticiones = self.Data["Repeat"]
         self.type = self.Data["Type"]

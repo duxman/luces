@@ -111,7 +111,7 @@ class  DuxmanLights(object):
                         ##Comprobamos is es musica o secuencia
                         if( p.type == "MUSIC" ):
                             self.musicManager(filename = p.musica )
-                        if (p.type == "SEC"):
+                        if (p.type == "SEQ"):
                             self.secuenceManager(p.secuencia,p.intervalo)
 
                         ## dormimos el tiempo estipulado
