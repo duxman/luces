@@ -5,9 +5,11 @@ import time  # necesario para los delays
 if os.name == 'poxis':
     import RPi.GPIO as GPIO
 else:
-    import tool.EmulatorGUI as GPIO
+    import tool.EmulatorGUI as GPIODEV
+    GPIO = GPIODEV.emulatorGPIO()
 
-class PinManager(object):
+
+class PinControl(object):
     Logger = None
     Zones = None
     PinList = []
@@ -62,12 +64,15 @@ class PinManager(object):
 
     def EncenderInRangeZone(self,  MaxValue):
 
-        ZonesToUP = self.Zones.DefinedZones[:MaxValue]
+        zonestoup = self.Zones.DefinedZones[:MaxValue]
+        data=[]
         if os.name == 'poxis':
             GPIO.output(self.PinList, GPIO.LOW)
         if( MaxValue > 0):
-            for zone in ZonesToUP:
-                GPIO.output(zone.ZonePins, GPIO.HIGH)
+            for zone in zonestoup:
+                data.extend(zone.ZonePins)
+            data = list(set(data))
+            GPIO.output(data, GPIO.HIGH)
         else:
             if os.name == 'poxis':
                 GPIO.output(self.PinList, GPIO.LOW)

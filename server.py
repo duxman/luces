@@ -66,5 +66,5 @@ class WebServer():
 
         self.Handler = MiHTTPRequestHandler
         self.HttpdServer = HTTPServer(("", self.PORT), self.Handler)
-        self.Logger.info( "serving at port" + str(self.PORT))
+        self.Logger.debug( "serving at port" + str(self.PORT))
 

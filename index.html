@@ -21,6 +21,7 @@
       <button class="tablinks" onclick="openTab(event, 'TabConfigGeneral')">Configuracion General</button>
       <button class="tablinks" onclick="openTab(event, 'TabPrograms')">Configuracion Programas</button>
       <button class="tablinks" onclick="openTab(event, 'TabZones')">Configuracion de Zonas de iluminacion</button>
+      <button class="tablinks" onclick="openTab(event, 'TabI2C')">Configuracion de I2C</button>
     </div>
 
 
@@ -36,6 +37,9 @@
     <div id="TabZones" class="tabcontent">
         <button id='submitZones' >Guardar Configuracion de Zonas</button>
     </div>
+    <div id="TabI2C" class="tabcontent">
+        <button id='submitI2C' >Guardar Configuracion I2C</button>
+    </div>
 
 
 
@@ -45,6 +49,7 @@
       var editorProgramacion;
       var editorProgramas;
       var editorZonas;
+      var editorI2C;
 
 
       $.getJSON('/config/programacion.json', function(data)
@@ -65,13 +70,18 @@
       }).fail(function() { editorProgramas = loadEditorDefault( "schProgramConfiguration.json", "TabPrograms",true ); });
 
 
-       $.getJSON('/config/ledsConfig.json', function(data)
+       $.getJSON('/config/Zones.json', function(data)
       {
         editorZonas = loadEditor( "schZones.json", "TabZones",data,true );
       }).fail(function() { editorZonas = loadEditorDefault( "schZones.json", "TabZones",true ); });
 
+      $.getJSON('/config/I2CConfig.json', function(data)
+      {
+        editorI2C = loadEditor( "schMCPConfs.json", "TabI2C",data,true );
+      }).fail(function() { editorI2C = loadEditorDefault( "schMCPConfs.json", "TabI2C",true ); });
+
       //Creamos los eventos
-      CreateEvents()
+      CreateEvents();
     </script>
   </body>
 </html>

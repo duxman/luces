@@ -39,6 +39,7 @@ function CreateEvents()
             // Get the value from the editor
             console.log(datos);
         });
+
         document.getElementById('submitPrograms').addEventListener('click',function()
         {
             var datos = editorProgramas.getValue()
@@ -90,6 +91,22 @@ function CreateEvents()
                 dataType: "text"
               }
             ).done(function( o ) { alert("OK CONFIGURACION GRABADA"); });
+            // Get the value from the editor
+            console.log(datos);
+        });
+
+        document.getElementById('submitI2C').addEventListener('click',function()
+        {
+            var datos = editorI2C.getValue()
+            $.ajax
+            (
+              {
+                type: "POST",
+                url: "/cgi/store.py",
+                data: { type : "I2C" , filename: "I2CConfig.json" , contenido: JSON.stringify(datos)},
+                dataType: "text"
+              }
+            ).done(function( o ) { alert("OK CONFIGURACION I2C GUARDADA"); });
             // Get the value from the editor
             console.log(datos);
         });

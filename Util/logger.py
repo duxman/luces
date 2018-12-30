@@ -7,12 +7,11 @@ class clienteLog:
     def log(self):
         return clienteLog.logger
 
-    def InicializaLog(self):
-
+    def InicializaLog(self, filename="./log/application.log"):
         clienteLog.logger = logging.getLogger('Application')
         clienteLog.logger.setLevel(logging.INFO)
         distutils.dir_util.mkpath("./log/")
-        fh = RotatingFileHandler('./log/application.log', maxBytes=10000000, backupCount=2)
+        fh = RotatingFileHandler(filename, maxBytes=10000000, backupCount=2)
 
         ch = logging.StreamHandler()
 
@@ -26,4 +25,13 @@ class clienteLog:
 
         return clienteLog.logger
 
+    def InicializaLogConsole(self):
+        clienteLog.logger = logging.getLogger('Application')
+        clienteLog.logger.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+        ch.setFormatter(formatter)
+        clienteLog.logger.addHandler(ch)
+
+        return clienteLog.logger
 

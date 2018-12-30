@@ -4,6 +4,7 @@ import wave
 import numpy
 import math
 import os
+import time
 if os.name == 'posix':
     import alsaaudio
 else:
@@ -77,7 +78,7 @@ class AudioProcessing():
             while data:
                 #valor = int( audioop.rms( data,2) )
                 data = numpy.fromstring(data, 'Int16')                
-                valor = numpy.average( data)
+                valor = numpy.median( data)
                 array.append( valor )
                 data = f.readframes(self.PeriodSize)
             self.MaxRate = numpy.max( array )
@@ -100,10 +101,11 @@ class AudioProcessing():
             while data:
                 data1 = numpy.fromstring(data, 'Int16')
 
-                ValorMedio = numpy.average(data1)
-                self.getQueueValue( self.MaxRate, ValorMedio, NumeroPines)
+                valormedio = numpy.median(data1)
+                self.getQueueValue( self.MaxRate, valormedio, NumeroPines)
 
                 self.WriteFunctionObject.write(data)
+                time.sleep(0.015)
                 data = WaveAudio.readframes(self.PeriodSize)
 
             if os.name != 'poxis':
