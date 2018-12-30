@@ -9,17 +9,24 @@ else:
 
 class PinManager(object):
     Logger = None
-    PinList = None
+    Zones = None
+    PinList = []
 
-    def __init__(self, log , pinlist):
+    def __init__(self, log , z):
         self.Logger = log
-        self.PinList = pinlist
-        self.gpio_setup( self.PinList)
+        self.Zones = z
+        self.gpio_setup()
+        for zone in self.Zones.DefinedZones:
+            self.gpio_setup_pins(zone.ZonePins)
+            for i in zone.ZonePins:
+                self.PinList.append(i)
 
 
-    def gpio_setup( self, pinList ):
+    def gpio_setup( self ):
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
+
+    def gpio_setup_pins(self, pinList):
         GPIO.setup(pinList, GPIO.OUT)
         GPIO.output(pinList, GPIO.LOW)
 
@@ -52,19 +59,32 @@ class PinManager(object):
         for pin in self.PinList:
             self.Apagar(pin)
 
+
+    def EncenderInRangeZone(self,  MaxValue):
+
+        ZonesToUP = self.Zones.DefinedZones[:MaxValue]
+        if os.name == 'poxis':
+            GPIO.output(self.PinList, GPIO.LOW)
+        if( MaxValue > 0):
+            for zone in ZonesToUP:
+                GPIO.output(zone.ZonePins, GPIO.HIGH)
+        else:
+            if os.name == 'poxis':
+                GPIO.output(self.PinList, GPIO.LOW)
+            else:
+                GPIO.output(0, GPIO.LOW)
+
     def EncenderInRange(self,  MaxValue):
         valortemp = MaxValue
 
-        #valortemp = valortemp + (MaxValue - 1)
-        ListPines =  self.PinList.split(',')
-        secuencia = ListPines[:valortemp]
+        secuencia = self.PinList[:valortemp]
         if os.name == 'poxis':
-            GPIO.output(ListPines, GPIO.LOW)
+            GPIO.output(self.PinList, GPIO.LOW)
         if( MaxValue > 0):
             GPIO.output(secuencia, GPIO.HIGH)
         else:
             if os.name == 'poxis':
-                GPIO.output(ListPines, GPIO.LOW)
+                GPIO.output(self.PinList, GPIO.LOW)
             else:
                 GPIO.output(0, GPIO.LOW)
 

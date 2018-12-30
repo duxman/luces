@@ -1,5 +1,5 @@
-## Duxman Luces
-###### Install
+# Duxman Luces
+### Install
 download the repository
 ````
 https://github.com/duxman/luces.git
@@ -10,7 +10,7 @@ python -m pip install numpy
 python -m pip install pyaudio
 python -m pip install pydub
 ````
-###### Configure
+### Configure
 Modify the following files y config directory.
 
 **configuration.json**
@@ -52,7 +52,7 @@ This file contains
 
 ````
 
-###### Execute
+### Execute
 ````
 sudo python luces/main.py
 ````

@@ -1,13 +1,13 @@
 {
     "MusicFiles": [
         {
-            "File": "fichero1"
+            "File": "sample.wav"
         },
         {
-            "File": "fichero2"
+            "File": "sample1.wav"
         },
         {
-            "File": "fichero3"
+            "File": "sample2.wav"
         }
     ],
     "ProgramInterval": "10",
