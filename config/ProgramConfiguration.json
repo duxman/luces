@@ -10,7 +10,7 @@
             "File": "sample2.wav"
         }
     ],
-    "ProgramInterval": "1",
+    "ProgramInterval": "0.1",
     "ProgramName": "Mi primer programa chispas",
     "ProgramType": "SEQ",
     "Sequences": [
