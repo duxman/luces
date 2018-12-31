@@ -2,7 +2,9 @@ import sys
 import getopt
 import threading
 import Queue
+import os
 from config import Zones
+from Util import Mp3ToWav
 from Util import PinManager
 from Util.AudioProcessing import AudioProcessing
 from Util.StopableThreadConsumer import StopableConsumerThread
@@ -21,7 +23,7 @@ class PlayMusic(object):
     def __init__(self, filename, zones):
         cliente = clienteLog()
         self.Logger = cliente.InicializaLog(filename="./log/PlayMusic.log")
-        self.Filename = filename
+        self.Filename = self.CheckFileType( filename)
         self.Zones = Zones()
         self.Logger.debug("Create Process Queue")
         self.WorkingQueue = Queue.Queue()
@@ -44,6 +46,30 @@ class PlayMusic(object):
         self.ConsumerThread.stop(timeout=0.3)
         self.Logger.info("End of the process")
 
+    def CallMp3ToWav(self, filename):
+        self.Logger.info("--------------------<<  INI PROCESO  CONVERSION>>--------------------")
+        conv = Mp3ToWav.conversor(filename)
+        return conv.Convertir()
+        self.Logger.info("--------------------<<  FIN PROCESO  CONVERSION>>--------------------")
+
+    def CheckFileType(self, inputfile):
+        filename, file_extension = os.path.splitext(inputfile)
+        file_extension = file_extension.upper()
+        if( file_extension == ".MP3"):
+            outputfile = inputfile + ".wav"
+            exists = os.path.isfile(outputfile)
+            if exists:
+                # retornamos el nuemro nombre
+                self.Filename = outputfile
+                return outputfile
+            else:
+                # Convertimos el fichero
+                outputfile = self.CallMp3ToWav(inputfile)
+                self.Filename = outputfile
+                return outputfile
+        # End of file Extension
+
+
 
 def main(argv):
     inputfile = ""
@@ -63,10 +89,12 @@ def main(argv):
         elif opt in ("-i", "--ifile"):
             inputfile = arg
 
+
     playfile = PlayMusic(inputfile, zones)
     playfile.Logger.info("--------------------<<  INI PLAY SCRIPT >>--------------------")
     playfile.PlayFile()
     playfile.Logger.info("--------------------<<  END PLAY SCRIPT >>--------------------")
+
 
 
 if __name__ == "__main__":

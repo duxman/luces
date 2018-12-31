@@ -4,9 +4,6 @@ import os
 import config
 import time
 import subprocess
-from Util import PinManager
-from Util.AudioProcessing import AudioProcessing
-from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
 from server import WebServer
 

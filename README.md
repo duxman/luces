@@ -10,6 +10,9 @@ python -m pip install numpy
 python -m pip install pyaudio
 python -m pip install pydub
 ````
+For use with MP3 file you need ffmepg instaled in your system 
+make sure you have ffmpeg and ffprobe in your path of execution
+
 ### Configure
 Modify the following files y config directory.
 
@@ -52,7 +55,8 @@ This file contains
                           MUSIC -> execute with music file 
   "ProgramInterval"     : Wait time between executions
   "Sequences"           : Array of Zones to activate 
-  "MusicFiles"          : Arrray of songs                     
+  "MusicFiles"          : Arrray of songs wav or mp3 files
+                          The mp3 files will beed converted to wav the first time we play then.                    
 ````
 **Zones.json**
 
@@ -108,5 +112,15 @@ For test a Sequence execute this command
     
     example :
     sudo python luces/PlaySequence.py -i 1,3,1,4,2,1,5,2,3,4,5    
+````
+
+Convert mp3 to wav
+````
+    sudo python luces/util/Mp3ToWav.py -i <Mp3FileNanme> -p <Path>
+    
+    example :
+    sudo python luces/PlaySequence.py -i sample.mp3 -p ../music
+    
+    you'll get ../music/sample.mp3.wav    
 ````
 
