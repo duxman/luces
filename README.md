@@ -100,12 +100,12 @@ This file contains
 
 ### Execute
 
-For use the main program execute this command
+**For use the main program execute this command**
 ````
     sudo python luces/main.py
 ````
 
-For test a Song execute this command
+**For test a Song execute this command**
 ````
     sudo python luces/PlayMusic.py -i <Path to song in wav>
     
@@ -113,7 +113,7 @@ For test a Song execute this command
     sudo python luces/PlayMusic.py -i ./music/sample.wav
 ````
 
-For test a Sequence execute this command
+**For test a Sequence execute this command**
 ````
     sudo python luces/PlaySequence.py -i <Comma separated sequece>
     
@@ -121,7 +121,7 @@ For test a Sequence execute this command
     sudo python luces/PlaySequence.py -i 1,3,1,4,2,1,5,2,3,4,5    
 ````
 
-Convert mp3 to wav
+**Convert mp3 to wav**
 ````
     sudo python luces/util/Mp3ToWav.py -i <Mp3FileNanme> -p <Path>
     
