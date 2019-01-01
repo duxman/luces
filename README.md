@@ -1,4 +1,8 @@
 # Duxman Luces
+### More info y blog
+
+http://duxnet.es/luces/
+
 ### Install
 download the repository
 ````
