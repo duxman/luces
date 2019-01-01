@@ -4,7 +4,7 @@
   "id" : "Zones",
   "properties" :
   {
-    "ZoneType": {"type": "string", "description": "Zone Type", "enum": ["MCP", "GPIO"], "default": "GPIO"},
+    "ZonePinType": {"type": "string", "description": "Zone Type", "enum": ["MCP", "GPIO"], "default": "GPIO"},
     "Zones"    : {
       "type"  : "array",
       "format": "tabs",
@@ -13,8 +13,11 @@
         "title"     : "Zone",
         "type"      : "object",
         "properties": {
+          "ZoneId"  : {"type": "string"},
           "ZoneName": {"type": "string"},
-          "ZonePins": {"type": "string"}
+          "ZonePins": {"type": "string"},
+          "ZoneType": {"type": "string","enum": ["SPECTRUM", "ALONE"], "default":"SPECTRUM"}
+
         }
       }
     }

@@ -3,8 +3,7 @@
     "type"      : "object",
     "properties": {
       "ProgramName": {"type": "string", "description": "Program name"},
-      "ProgramType"        : {"type": "string", "description": "Execution Type", "enum": ["SEQ", "MUSIC"], "default":
-      "MUSIC"},
+      "ProgramType"        : {"type": "string", "description": "Execution Type", "enum": ["SEQ", "MUSIC"], "default":"MUSIC"},
       "ProgramInterval"    : {"type": "string", "description": "Wait Time"},
       "MusicFiles" :
       {

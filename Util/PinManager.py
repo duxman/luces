@@ -64,15 +64,16 @@ class PinControl(object):
 
     def EncenderInRangeZone(self,  MaxValue):
 
-        zonestoup = self.Zones.DefinedZones[:MaxValue]
-        data=[]
+        if MaxValue >= len( self.Zones.OrderedPins ):
+           MaxValue = len( self.Zones.OrderedPins ) -1
+        pinstohigh = self.Zones.OrderedPins[MaxValue]
+
+        self.Logger.info("item to show " + " " .join( pinstohigh))
+
         if os.name == 'poxis':
             GPIO.output(self.PinList, GPIO.LOW)
         if( MaxValue > 0):
-            for zone in zonestoup:
-                data.extend(zone.ZonePins)
-            data = list(set(data))
-            GPIO.output(data, GPIO.HIGH)
+            GPIO.output(pinstohigh, GPIO.HIGH)
         else:
             if os.name == 'poxis':
                 GPIO.output(self.PinList, GPIO.LOW)

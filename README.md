@@ -69,8 +69,11 @@ This file contains
                  (if we use MCP we need to configure I2CConfig.json file)
   "Zones"      : Array of Zones
   [
+        ZoneId   : it is the weight or the order of the zone
         ZoneName : Name of the zone
         ZonePins : Comma separated string with the used pins in this zone
+        ZoneType : Indicate if the zone light alone or in spectrum mode.
+                   It is usefull to highlight especific zones 
   ]                                     
 ````
 

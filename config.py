@@ -30,23 +30,40 @@ class programacion:
 class Zone():
     ZoneName = ""
     ZonePins = []
+    ZoneId = 0
+    ZoneType = ""
 
-    def __init__(self,Name, Pins):
-        self.ZoneName = Name
-        self.ZonePins = Pins.split(",")
+    def __cmp__(self, other):
+        return cmp(self.ZoneId, other.ZoneId)
+
+    def __eq__(self, other):
+        return self.ZoneId==other.ZoneId
+
+    def __lt__(self, other):
+        return self.ZoneId < other.ZoneId
+
+    def __gt__(self, other):
+        return self.ZoneId > other.ZoneId
+
+    def __init__(self, name, pins, id, type):
+        self.ZoneName = name
+        self.ZonePins = pins.split(",")
+        self.ZoneId = id
+        self.ZoneType = type
 
 class I2CDevice():
     I2CAddress = 0x20
     BasePin = 65
 
     def __init__(self,address, base):
-        self.I2CAddress = int(address)
+        self.I2CAddress = int(address,16)
         self.BasePin = int(base)
 
 class Zones():
     Logger = None
-    ZoneType = ""
+    ZonePinType = ""
     DefinedZones = []
+    OrderedPins = []
 
     def __init__(self):
         self.Logger = logger.clienteLog.logger
@@ -54,10 +71,31 @@ class Zones():
 
         self.data = json.load(open('./config/Zones.json'))
 
-        self.ZoneType = self.data["ZoneType"]
+        self.ZonePinType = self.data["ZonePinType"]
+        definedzonestemp = []
         for definedzone in self.data["Zones"]:
-            ZoneTemp = Zone( definedzone["ZoneName"],definedzone["ZonePins"] )
-            self.DefinedZones.append( ZoneTemp )
+            ZoneTemp = Zone( definedzone["ZoneName"], definedzone["ZonePins"], definedzone["ZoneId"], definedzone["ZoneType"])
+            definedzonestemp.append( ZoneTemp )
+
+        # Ordenamos la lista
+        self.DefinedZones = sorted(definedzonestemp)
+
+        # Montamos la lista para no tener que calcular los pines
+        acttualpins = []
+        for d in self.DefinedZones:
+            acttualpins.extend(d.ZonePins)
+            self.OrderedPins.append(list(acttualpins))
+
+        # sustituimos los valores alone puesto que estos van solos
+        for idx,val  in enumerate(self.DefinedZones):
+            if val.ZoneType == "ALONE":
+                self.OrderedPins[idx] = val.ZonePins
+
+        # mostramos el resultado por si acaso
+        for d in self.OrderedPins:
+            self.Logger.info( ' '.join(d) )
+
+
 
 
 class I2CDevices():
@@ -71,7 +109,7 @@ class I2CDevices():
         self.data = json.load(open('./config/I2CConfig.json'))
 
         for device in self.data["Devices"]:
-            devicetemp = Zone( device["I2CAddress"], device["BasePin"])
+            devicetemp = I2CDevice(device["I2CAddress"], device["BasePin"])
             self.DefinedDevices.append(devicetemp)
 
 
