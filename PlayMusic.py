@@ -91,6 +91,7 @@ def main(argv):
 
         elif opt in ("-i", "--ifile"):
             inputfile = arg
+            
 
 
     playfile = PlayMusic(inputfile, zones)
