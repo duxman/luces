@@ -67,6 +67,9 @@ class PlayMusic(object):
                 outputfile = self.CallMp3ToWav(inputfile)
                 self.Filename = outputfile
                 return outputfile
+        else:
+            self.Filename = inputfile
+            return inputfile
         # End of file Extension
 
 
