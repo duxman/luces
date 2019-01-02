@@ -23,9 +23,13 @@ class DuxmanLights(object):
         self.Config.Programacion = None
         self.Config.Programacion = config.programacion()
 
-    def CreateServer(self, DefaultPort):
-        self.ConfigServer = WebServer(DefaultPort)
-        self.ConfigServer.StartServer()
+    def CreateServer(self, default_port=8000,internal_server=True,external_command="" ):
+        self.Logger.info("--------------------<<  INI SUBPROCESO WEBSERVER  >>--------------------")
+        if( internal_server == True):
+            self.ConfigServer = WebServer(default_port)
+            self.ConfigServer.StartServer()
+        else:
+            p = subprocess.Popen(external_command)
 
     def CheckTime(self):
         # Comprobamos la hora
@@ -36,10 +40,11 @@ class DuxmanLights(object):
         # representacion de fecha y hora
         self.Logger.info("Date Time" + time.strftime("%c"))
         self.Logger.info("Configuration from " + desde + " to " + hasta)
+        return_value = False
         if ((ahora >= desde) & (ahora < hasta)):
-            return True
-        else:
-            return False
+            return_value = True
+        return return_value
+
 
     def MainLoop(self, repeatNumber):
         while (repeatNumber != 0):
@@ -110,13 +115,13 @@ class DuxmanLights(object):
         p.wait()
         self.Logger.info("--------------------<<  FIN SUBPROCESO  >>--------------------")
 
-
     def __init__(self):
         cliente = clienteLog()
         self.Logger = cliente.InicializaLog()
         self.Logger.info("--------------------<<  INI  >>--------------------")
         self.Logger.debug("Start of Program")
         DefaultPort = 8000
+
         if os.path.isfile('./config/configuracion.json'):
             """Leemos la configuracion general"""
             self.Config = config.GeneralConfiguration()
@@ -129,7 +134,9 @@ class DuxmanLights(object):
             self.WorkingQueue = Queue.Queue()
             DefaultPort = int(self.Config.WebServerPort)
 
-        self.CreateServer(DefaultPort)
+            self.CreateServer( default_port=DefaultPort,internal_server=self.Config.UseInternalWebServer,external_command=self.Config.ExternalWebServerCommand )
+        else:
+            self.CreateServer(default_port=DefaultPort)
 
         if (self.Config != None):
             self.MainProcess()

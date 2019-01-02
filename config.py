@@ -140,6 +140,8 @@ class GeneralConfiguration():
     RutaFFMPEG = None
     RutaMusica = None
     WebServerPort = 8000
+    UseInternalWebServer = True
+    ExternalWebServerCommand = ""
     Pines = []
     Programacion = None
     ProgramConfiguration = None
@@ -155,8 +157,13 @@ class GeneralConfiguration():
 
         pinesString = self.data["GeneralPins"]
         self.RutaMusica = self.data["MusicPath"]
-        self.RutaFFMPEG = self.data["FfmpegPath"]
+        self.RutaFFMPEG = self.data["WebServerType"]
         self.WebServerPort = self.data["WebServerPort"]
+
+        self.UseInternalWebServer = ( self.data["WebServerType"] == "INTERNAL" )
+
+        if( self.UseInternalWebServer == False ):
+            self.ExternalWebServerCommand = self.data["WebServerExternoCommand"]
 
         self.Pines = pinesString.split(",")
 

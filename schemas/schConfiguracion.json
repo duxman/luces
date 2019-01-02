@@ -23,6 +23,18 @@
     {
       "type" : "string",
       "description" : "Puerto del servidor de configuracion"
+    },
+    "WebServerType":
+    {
+      "type" : "string",
+      "description" : "Tipo de servidor de configuracion interno o externo",
+      "enum": ["INTERNAL", "EXTERNO"], "default":"INTERNAL"
+
+    },
+    "WebServerExternoCommand":
+    {
+      "type" : "string",
+      "description" : "Comando para ejecutar WebServer Externo"
     }
   }
 }

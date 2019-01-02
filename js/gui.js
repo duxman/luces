@@ -82,15 +82,20 @@ function CreateEvents()
         document.getElementById('submitGeneral').addEventListener('click',function()
         {
             var datos = editorGeneral.getValue()
-            $.ajax
-            (
-              {
-                type: "POST",
-                url: "/cgi/store.py",
-                data: { type : "GENERAL" , filename: "configuracion.json" , contenido: JSON.stringify(datos)},
-                dataType: "text"
-              }
-            ).done(function( o ) { alert("OK CONFIGURACION GRABADA"); });
+            var useExternalServer = ( editorGeneral.editors["root.WebServerType"].value != "INTERNAL");
+
+            if ( useExternalServer )
+                $.post('/cgi/store.php',  { "type" : "GENERAL" , "filename": "../config/configuracion.json" , "contenido": JSON.stringify(datos)}).done(function(datos) {alert("OK Configuration saved with PHP"); } );
+            else
+                $.ajax
+                (
+                  {
+                    type: "POST",
+                    url: "/cgi/store.py",
+                    data: { type : "GENERAL" , filename: "configuracion.json" , contenido: JSON.stringify(datos)},
+                    dataType: "text"
+                  }
+                ).done(function( o ) { alert("OK CONFIGURACION GRABADA"); });
             // Get the value from the editor
             console.log(datos);
         });
