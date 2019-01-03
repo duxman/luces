@@ -16,7 +16,8 @@
           "ZoneId"  : {"type": "string"},
           "ZoneName": {"type": "string"},
           "ZonePins": {"type": "string"},
-          "ZoneType": {"type": "string","enum": ["SPECTRUM", "ALONE"], "default":"SPECTRUM"}
+          "ZoneType": {"type": "string","enum": ["SPECTRUM", "ALONE"], "default":"SPECTRUM"},
+          "ZonePosition": {"type": "string","enum": ["LOCAL", "REMOTE"], "default":"LOCAL"}
 
         }
       }

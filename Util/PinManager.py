@@ -19,9 +19,8 @@ class PinControl(object):
         self.Zones = z
         self.gpio_setup()
         for zone in self.Zones.DefinedZones:
-            self.gpio_setup_pins(zone.ZonePins)
-            for i in zone.ZonePins:
-                self.PinList.append(i)
+            self.PinList.extend(zone.ZonePins)
+            self.gpio_setup_pins(self.PinList)
 
 
     def gpio_setup( self ):

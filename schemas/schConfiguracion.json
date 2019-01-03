@@ -29,12 +29,24 @@
       "type" : "string",
       "description" : "Tipo de servidor de configuracion interno o externo",
       "enum": ["INTERNAL", "EXTERNO"], "default":"INTERNAL"
-
     },
     "WebServerExternoCommand":
     {
       "type" : "string",
       "description" : "Comando para ejecutar WebServer Externo"
+    },
+    "IpMulticast":
+    {
+      "type" : "string",
+      "description" : "Direccion Ip Multicast para informar a otros elementos de las acciones a realizar"
+
+    },
+    "PortMulticast":
+    {
+      "type" : "string",
+      "description" : "Puerto Multicast para informar a otros elementos de las acciones a realizar"
+
     }
+
   }
 }

@@ -32,6 +32,7 @@ class Zone():
     ZonePins = []
     ZoneId = 0
     ZoneType = ""
+    ZonePosition = "LOCAL"
 
     def __cmp__(self, other):
         return cmp(self.ZoneId, other.ZoneId)
@@ -45,11 +46,13 @@ class Zone():
     def __gt__(self, other):
         return self.ZoneId > other.ZoneId
 
-    def __init__(self, name, pins, id, type):
+    def __init__(self, name, pins, id, type,position):
         self.ZoneName = name
         self.ZonePins = pins.split(",")
         self.ZoneId = id
         self.ZoneType = type
+        self.ZonePosition = position
+
 
 class I2CDevice():
     I2CAddress = 0x20
@@ -74,7 +77,7 @@ class Zones():
         self.ZonePinType = self.data["ZonePinType"]
         definedzonestemp = []
         for definedzone in self.data["Zones"]:
-            ZoneTemp = Zone( definedzone["ZoneName"], definedzone["ZonePins"], definedzone["ZoneId"], definedzone["ZoneType"])
+            ZoneTemp = Zone( definedzone["ZoneName"], definedzone["ZonePins"], definedzone["ZoneId"], definedzone["ZoneType"], definedzone["ZonePosition"])
             definedzonestemp.append( ZoneTemp )
 
         # Ordenamos la lista
@@ -140,6 +143,8 @@ class GeneralConfiguration():
     RutaFFMPEG = None
     RutaMusica = None
     WebServerPort = 8000
+    IpMulticast = "224.0.0.1"
+    PortMulticast = 10000
     UseInternalWebServer = True
     ExternalWebServerCommand = ""
     Pines = []
@@ -159,6 +164,9 @@ class GeneralConfiguration():
         self.RutaMusica = self.data["MusicPath"]
         self.RutaFFMPEG = self.data["WebServerType"]
         self.WebServerPort = self.data["WebServerPort"]
+        # en un futuro cercano implementar dispositivos remotos sincronizados
+        self.IpMulticast = self.data["IpMulticast"]
+        self.PortMulticast = int( self.data["PortMulticast"] )
 
         self.UseInternalWebServer = ( self.data["WebServerType"] == "INTERNAL" )
 
