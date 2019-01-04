@@ -22,6 +22,12 @@ class emulatorGPIO(object):
     def output(self,a, b):
         self.Logger.debug(str(a) + "=" + str(b))
 
+    def analogread(self,a):
+        return 500
+
+    def analogwrite(self,a,b):
+        self.Logger.debug(str(a) + "=" + str(b))
+
     def cleanup(self):
         self.Logger.debug("Clean UP")
 
