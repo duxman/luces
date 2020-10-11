@@ -1,0 +1,39 @@
+{
+    "title"     : "Program",
+    "type"      : "object",
+    "properties": {
+      "ProgramName": {"type": "string", "description": "Program name"},
+      "ProgramType"        : {"type": "string", "description": "Execution Type", "enum": ["SEQ", "MUSIC"], "default":"MUSIC"},
+      "ProgramInterval"    : {"type": "string", "description": "Wait Time"},
+      "MusicFiles" :
+      {
+        "type"  : "array",
+        "format": "table",
+        "title" : "Music Files",
+        "items" :
+        {
+          "title"     : "Music File",
+          "type"      : "object",
+          "properties":
+          {
+            "File"      : {"type": "string"}
+          }
+        }
+      },
+      "Sequences" :
+      {
+        "type"  : "array",
+        "format": "table",
+        "title" : "Sequences",
+        "items" :
+        {
+          "title"     : "Sequence",
+          "type"      : "object",
+          "properties":
+          {
+            "Activate Zone"      : {"type": "string"}
+          }
+        }
+      }
+    }
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Duxman Ligths</title>
+    <link rel='stylesheet' id='theme_stylesheet' href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel='stylesheet' id='icon_stylesheet' href="{{ url_for('static', filename='css/font-awesome.css') }}">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/luces.css') }}">
+
+    <script src="{{ url_for('static', filename='js/jsoneditor.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/require.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.2.1.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gui.js') }}"></script>
+  </head>
+  <body >
+    <h1>DuxmanLigths Web Configurator</h1>
+
+    <div class="tab" width="60%">
+      <button class="tablinks" onclick="openTab(event, 'TabProgramacion')">Schedule Task</button>
+      <button class="tablinks" onclick="openTab(event, 'TabConfigGeneral')">General Config</button>
+      <button class="tablinks" onclick="openTab(event, 'TabPrograms')">Programs Config</button>
+      <button class="tablinks" onclick="openTab(event, 'TabZones')">Zone config</button>
+      <!--button class="tablinks" onclick="openTab(event, 'TabI2C')">I2C Config</button-->
+    </div>
+
+
+    <div id="TabProgramacion" class="tabcontent">
+        <button id='submitProgramacion'>Save</button>
+    </div>
+    <div id="TabConfigGeneral" class="tabcontent">
+        <button id='submitGeneral' >Save</button>
+    </div>
+    <div id="TabPrograms" class="tabcontent">
+        <button id='submitPrograms' >Save</button>
+    </div>
+    <div id="TabZones" class="tabcontent">
+        <button id='submitZones' >Save</button>
+    </div>
+    <!--div id="TabI2C" class="tabcontent">
+        <button id='submitI2C' >Guardar Configuracion I2C</button>
+    </div-->
+
+
+
+    <script>
+
+      var editorGeneral;
+      var editorProgramacion;
+      var editorProgramas;
+      var editorZonas;
+
+
+
+      editorProgramacion = loadTab( "{{ url_for('static', filename='config/programacion.json') }}",
+               "{{ url_for('static', filename='schemas/schPrograma.json') }}",
+               "TabProgramacion",
+               "submitProgramacion",
+                false);
+
+
+      loadTab( "{{ url_for('static', filename='config/configuracion.json') }}",
+               "{{ url_for('static', filename='schemas/schConfiguracion.json') }}",
+               "TabConfigGeneral",
+               "submitGeneral",
+               false);
+
+
+      loadTab( "{{ url_for('static', filename='config/ProgramConfiguration.json') }}",
+               "{{ url_for('static', filename='schemas/schProgramConfiguration.json') }}",
+               "TabPrograms",
+               "submitPrograms",
+               true);
+
+
+      loadTab( "{{ url_for('static', filename='config/Zones.json') }}",
+               "{{ url_for('static', filename='schemas/schZones.json') }}",
+               "TabZones",
+               "submitZones",
+               true);
+    </script>
+  </body>
+</html>

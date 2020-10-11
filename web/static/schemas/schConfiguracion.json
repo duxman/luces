@@ -1,0 +1,23 @@
+{
+  "title" : "General Config",
+  "type" : "object",
+  "id" : "configuracion",
+  "properties" :
+  {
+    "MusicPath" :
+    {
+      "type" : "string",
+      "description" : "Music files path"
+    },
+    "FfmpegPath" :
+    {
+      "type" : "string",
+      "description" : "Complete Path of ffmpeg, only on windows"
+    },
+    "WebServerPort":
+    {
+      "type" : "string",
+      "description" : "Configuration server port"
+    }
+  }
+}
