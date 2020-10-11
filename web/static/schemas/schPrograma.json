@@ -1,0 +1,39 @@
+{
+  "title" : "Schedule task",
+  "type" : "object",
+  "id" : "programa",
+  "properties" :
+  {
+    "StartTime" :
+    {
+      "type" : "string",
+      "format" : "time",
+      "description" : "Init Time"
+    },
+    "EndTime" :
+    {
+      "type" : "string",
+      "format" : "time",
+      "description" : "End Time"
+    },
+    "State" :
+    {
+      "type" : "string",
+      "description" : "Schedule state [ OFF | TIMED | ON ] ",
+      "enum": [ "OFF","TIMED","ON" ]
+    },
+    "Repeats" :
+    {
+      "type" : "string",
+      "enum": [ -1,1,2,3,4,5,10,20,30,40,50,100 ],
+      "description" : "repeat number, -1 infinite"
+    },
+    "WaitTime" :
+    {
+      "type" : "string",
+      "enum": [ 10,20,30,40,50,60],
+      "description" : "Wait time on the execution loop"
+    }
+
+  }
+}

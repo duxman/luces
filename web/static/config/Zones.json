@@ -1,0 +1,49 @@
+{
+    "ZonePinType": "GPIO",
+    "Zones": [
+        {
+            "ZoneId": "6",
+            "ZoneName": "z6 alone",
+            "ZonePins": "10,11",
+            "ZoneType": "ALONE",
+            "ZonePosition": "LOCAL"
+        },
+		{
+            "ZoneId": "5",
+            "ZoneName": "z5 alone",
+            "ZonePins": "8,9",
+            "ZoneType": "ALONE",
+            "ZonePosition": "LOCAL"
+        },
+        {
+            "ZoneId": "2",
+            "ZoneName": "z2",
+            "ZonePins": "3,4",
+            "ZoneType": "SPECTRUM",
+            "ZonePosition": "LOCAL"
+        },
+        {
+            "ZoneId": "3",
+            "ZoneName": "z3",
+            "ZonePins": "5,6",
+            "ZoneType": "SPECTRUM",
+            "ZonePosition": "LOCAL"
+        },
+		{
+            "ZoneId": "1",
+            "ZoneName": "z1",
+            "ZonePins": "1,2",
+            "ZoneType": "SPECTRUM",
+            "ZonePosition": "LOCAL"
+        },
+        {
+            "ZoneId": "4",
+            "ZoneName": "z4",
+            "ZonePins": "6,7",
+            "ZoneType": "SPECTRUM",
+            "ZonePosition": "LOCAL"
+        }
+        
+        
+    ]
+}
