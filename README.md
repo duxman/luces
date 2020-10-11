@@ -13,6 +13,7 @@ install the following packages
 python -m pip install numpy
 python -m pip install pyaudio
 python -m pip install pydub
+python -m pip install flask
 ````
 For use with MP3 file you need ffmepg instaled in your system 
 make sure you have ffmpeg and ffprobe in your path of execution
@@ -26,8 +27,7 @@ It is the general configuration of the program
 
 This file contains 
 
-````
-  "GeneralPins"   : General configured pines ( not in use)
+````  
   "MusicPath"     : Music directory
   "FfmpegPath"    : ffmpeg path , only for windows,
   "WebServerPort" : web server port
@@ -81,21 +81,6 @@ This file contains
   ]                                     
 ````
 
-**I2CConfig.json**
-
-In this file we configure the I2CDevices I use MCP23016 port expander 
-
-This file contains 
-
-````
-  "Devices"   : Array of devices                   
-  [
-        BasePin    : Initial pin number for this I2C Device, 
-                     in this way with MCP it is the first digital pin in this MCP 
-        
-        I2CAddress : Address of the MCP device
-  ]                                     
-````
 
 
 ### Execute
@@ -126,7 +111,7 @@ This file contains
     sudo python luces/util/Mp3ToWav.py -i <Mp3FileNanme> -p <Path>
     
     example :
-    sudo python luces/PlaySequence.py -i sample.mp3 -p ../music
+    sudo python luces/Mp3ToWav.py -i sample.mp3 -p ../music
     
     you'll get ../music/sample.mp3.wav    
 ````
