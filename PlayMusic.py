@@ -1,7 +1,7 @@
 import sys
 import getopt
 import threading
-import Queue
+import queue
 import os
 from config import Zones
 from Util import Mp3ToWav
@@ -26,7 +26,7 @@ class PlayMusic(object):
         self.Filename = self.CheckFileType( filename)
         self.Zones = Zones()
         self.Logger.debug("Create Process Queue")
-        self.WorkingQueue = Queue.Queue()
+        self.WorkingQueue = queue.Queue()
 
     def pinManagerProcess(self):
         pinmanager = PinManager.PinControl(self.Logger, self.Zones)
@@ -81,12 +81,12 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hi:z:", ["ifile=", "zones="])
     except getopt.GetoptError:
-        print 'PlayMusic.py -i <inputfile> -z <ZonesArray>'
+        print('PlayMusic.py -i <inputfile> -z <ZonesArray>')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == '-h':
-            print 'PlayMusic.py -i <inputfile> -z <ZonesArray>'
+            print('PlayMusic.py -i <inputfile> -z <ZonesArray>')
             sys.exit()
 
         elif opt in ("-i", "--ifile"):

@@ -1,7 +1,5 @@
-import Queue
+import queue
 import threading
-
-import PinManager
 
 
 class StopableConsumerThread(threading.Thread):
@@ -64,7 +62,7 @@ class StopableConsumerThread(threading.Thread):
 
                     """indicamos la finalizacion del proceso del valor para que lo elimine de la queue"""
                     self.ConsumerQueue.task_done()
-                except Queue.Empty:
+                except queue.Empty:
                     """si no tenemos valor lo controlamos"""
                     pass
                     #print "Empty...  " + e.message
@@ -78,5 +76,5 @@ class StopableConsumerThread(threading.Thread):
                 self._stopevent.wait(self._sleepperiod)
 
         """Fin del proceso"""
-        print "%s ends" % (self.getName(),)
+        print("%s ends" % (self.getName(),))
 

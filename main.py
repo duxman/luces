@@ -1,11 +1,10 @@
-import Queue
+import queue
 import threading
 import os
 import config
 import time
 import subprocess
 from Util.logger import clienteLog
-from server import WebServer
 
 
 class DuxmanLights(object):
@@ -120,7 +119,6 @@ class DuxmanLights(object):
         self.Logger = cliente.InicializaLog()
         self.Logger.info("--------------------<<  INI  >>--------------------")
         self.Logger.debug("Start of Program")
-        DefaultPort = 8000
 
         if os.path.isfile('./config/configuracion.json'):
             """Leemos la configuracion general"""
@@ -131,18 +129,11 @@ class DuxmanLights(object):
             self.Logger.debug("Configuracion Cargada")
 
             self.Logger.debug("Create Process Queue")
-            self.WorkingQueue = Queue.Queue()
-            DefaultPort = int(self.Config.WebServerPort)
-
-            self.CreateServer( default_port=DefaultPort,internal_server=self.Config.UseInternalWebServer,external_command=self.Config.ExternalWebServerCommand )
-        else:
-            self.CreateServer(default_port=DefaultPort)
+            self.WorkingQueue = queue.Queue()
 
         if (self.Config != None):
             self.MainProcess()
             # probamos comando externo
-            #self.executeCommandMusic()
-            self.ConfigServer.StopServer()
 
 
 if __name__ == "__main__":

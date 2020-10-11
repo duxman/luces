@@ -1,5 +1,4 @@
 import json
-import os
 from Util import logger
 
 
@@ -101,19 +100,6 @@ class Zones():
 
 
 
-class I2CDevices():
-    Logger = None
-    DefinedDevices = []
-
-    def __init__(self):
-        self.Logger = logger.clienteLog.logger
-        self.Logger.debug("Cargamos configuracion I2CConfig.json ")
-
-        self.data = json.load(open('./config/I2CConfig.json'))
-
-        for device in self.data["Devices"]:
-            devicetemp = I2CDevice(device["I2CAddress"], device["BasePin"])
-            self.DefinedDevices.append(devicetemp)
 
 
 class ProgramConfiguration():
@@ -143,11 +129,6 @@ class GeneralConfiguration():
     RutaFFMPEG = None
     RutaMusica = None
     WebServerPort = 8000
-    IpMulticast = "224.0.0.1"
-    PortMulticast = 10000
-    UseInternalWebServer = True
-    ExternalWebServerCommand = ""
-    Pines = []
     Programacion = None
     ProgramConfiguration = None
     Zones = None
@@ -160,20 +141,9 @@ class GeneralConfiguration():
 
         self.data = json.load(open('./config/configuracion.json'))
 
-        pinesString = self.data["GeneralPins"]
         self.RutaMusica = self.data["MusicPath"]
         self.RutaFFMPEG = self.data["WebServerType"]
         self.WebServerPort = self.data["WebServerPort"]
-        # en un futuro cercano implementar dispositivos remotos sincronizados
-        self.IpMulticast = self.data["IpMulticast"]
-        self.PortMulticast = int( self.data["PortMulticast"] )
-
-        self.UseInternalWebServer = ( self.data["WebServerType"] == "INTERNAL" )
-
-        if( self.UseInternalWebServer == False ):
-            self.ExternalWebServerCommand = self.data["WebServerExternoCommand"]
-
-        self.Pines = pinesString.split(",")
 
         try:
             self.ProgramConfiguration = ProgramConfiguration()
@@ -191,9 +161,5 @@ class GeneralConfiguration():
         except IOError:
             self.Logger.debug("No hay Zonas definidas")
 
-        try:
-            I2CDevicesConf = I2CDevices()
-        except IOError:
-            self.Logger.debug("No hay configuracion I2C")
 
 

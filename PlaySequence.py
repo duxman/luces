@@ -1,7 +1,7 @@
 import sys
 import getopt
 import threading
-import Queue
+import queue
 from config import Zones
 from Util import PinManager
 from Util.AudioProcessing import AudioProcessing
@@ -25,7 +25,7 @@ class PlaySequence(object):
         self.WaitTime = waittime
         self.Zones = Zones()
         self.Logger.debug("Create Process Queue")
-        self.WorkingQueue = Queue.Queue()
+        self.WorkingQueue = queue.Queue()
 
     def pinManagerProcess(self):
         pinmanager = PinManager.PinControl(self.Logger, self.Zones)
@@ -58,12 +58,12 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hi:w:", ["ifile=", "waittime="])
     except getopt.GetoptError:
-        print 'PlayMusic.py -i <inputfile> -z <ZonesArray>'
+        print('PlayMusic.py -i <inputfile> -z <ZonesArray>')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == '-h':
-            print 'PlayMusic.py -i <inputfile> -z <ZonesArray>'
+            print('PlayMusic.py -i <inputfile> -z <ZonesArray>')
             sys.exit()
 
         elif opt in ("-i", "--ifile"):

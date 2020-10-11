@@ -1,6 +1,5 @@
 import sys
 import getopt
-import os
 from pydub import AudioSegment
 
 
@@ -25,12 +24,12 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hi:p:", ["ifile=", "path="])
     except getopt.GetoptError:
-        print 'Mp3ToWav.py -i <inputfile> -p <Path>'
+        print('Mp3ToWav.py -i <inputfile> -p <Path>')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == '-h':
-            print 'Mp3ToWav.py -i <inputfile> -p <Path>'
+            print('Mp3ToWav.py -i <inputfile> -p <Path>')
             sys.exit()
 
         elif opt in ("-i", "--ifile"):
