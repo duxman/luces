@@ -22,14 +22,6 @@ class DuxmanLights(object):
         self.Config.Programacion = None
         self.Config.Programacion = config.programacion()
 
-    def CreateServer(self, default_port=8000,internal_server=True,external_command="" ):
-        self.Logger.info("--------------------<<  INI SUBPROCESO WEBSERVER  >>--------------------")
-        if( internal_server == True):
-            self.ConfigServer = WebServer(default_port)
-            self.ConfigServer.StartServer()
-        else:
-            p = subprocess.Popen(external_command)
-
     def CheckTime(self):
         # Comprobamos la hora
         desde = self.Config.Programacion.HoraDesde
@@ -39,9 +31,18 @@ class DuxmanLights(object):
         # representacion de fecha y hora
         self.Logger.info("Date Time" + time.strftime("%c"))
         self.Logger.info("Configuration from " + desde + " to " + hasta)
+        self.Logger.info("Configuration Status " + self.Config.Programacion.Estado)
+
         return_value = False
-        if ((ahora >= desde) & (ahora < hasta)):
+
+        if( self.Config.Programacion.Estado == "ON"):
             return_value = True
+        elif( self.Config.Programacion.Estado == "OFF"):
+            return_value = False
+        else:
+            if ((ahora >= desde) & (ahora < hasta)):
+                return_value = True
+
         return return_value
 
 
@@ -97,7 +98,7 @@ class DuxmanLights(object):
             # END if( self.CheckTime()== True ):
             self.reloadConfig()
             self.Logger.debug("Wait " + str(self.Config.Programacion.WaitTime) + "sec")
-            threading._sleep(self.Config.Programacion.WaitTime)
+            time.sleep(self.Config.Programacion.WaitTime)
 
         # END while (True):
         self.Logger.debug("End MainProcess")
@@ -120,12 +121,12 @@ class DuxmanLights(object):
         self.Logger.info("--------------------<<  INI  >>--------------------")
         self.Logger.debug("Start of Program")
 
-        if os.path.isfile('./config/configuracion.json'):
+        if os.path.isdir('./web/static/config'):
             """Leemos la configuracion general"""
             self.Config = config.GeneralConfiguration()
 
             """ Asignamos los pines configurados """
-            self.PinList = self.Config.Pines
+            self.PinList = self.Config.Zones.OrderedPins
             self.Logger.debug("Configuracion Cargada")
 
             self.Logger.debug("Create Process Queue")

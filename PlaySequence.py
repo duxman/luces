@@ -8,8 +8,8 @@ from Util.AudioProcessing import AudioProcessing
 from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
 
-class PlaySequence(object):
 
+class PlaySequence(object):
     Filename = ""
     WaitTime = 0
     Zones = None
@@ -29,7 +29,8 @@ class PlaySequence(object):
 
     def pinManagerProcess(self):
         pinmanager = PinManager.PinControl(self.Logger, self.Zones)
-        self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.EncenderInRangeZone, name="PinManagerConsumerThread", sleep=0)
+        self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.EncenderInRangeZone,
+                                                     name="PinManagerConsumerThread", sleep=0)
         self.ConsumerThread.start()
 
     def executeSecuence(self, queue, vSecuencia, waittime):
@@ -43,7 +44,9 @@ class PlaySequence(object):
 
         self.pinManagerProcess()
 
-        producer = threading.Thread(target=self.executeSecuence(queue=self.WorkingQueue, vSecuencia=vSecuenciatmp, waittime=self.WaitTime), name="SequenceManagerThread")
+        producer = threading.Thread(
+            target=self.executeSecuence(queue=self.WorkingQueue, vSecuencia=vSecuenciatmp, waittime=self.WaitTime),
+            name="SequenceManagerThread")
         producer.start()
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)

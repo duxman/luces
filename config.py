@@ -14,11 +14,11 @@ class programacion:
     Secuencia = []
     Logger = None
 
-    def __init__(self):
+    def __init__(self, path="./web/static/config"):
         self.Logger = logger.clienteLog.logger
         self.Logger.debug("Cargamos configuracion programacion")
 
-        self.data = json.load(open('./config/programacion.json'))
+        self.data = json.load(open(path + '/programacion.json'))
         self.HoraDesde = self.data["StartTime"]
         self.HoraHasta = self.data["EndTime"]
         self.Estado = self.data["State"]
@@ -53,25 +53,17 @@ class Zone():
         self.ZonePosition = position
 
 
-class I2CDevice():
-    I2CAddress = 0x20
-    BasePin = 65
-
-    def __init__(self,address, base):
-        self.I2CAddress = int(address,16)
-        self.BasePin = int(base)
-
 class Zones():
     Logger = None
     ZonePinType = ""
     DefinedZones = []
     OrderedPins = []
 
-    def __init__(self):
+    def __init__(self , path="./web/static/config"):
         self.Logger = logger.clienteLog.logger
         self.Logger.debug("Cargamos configuracion Zones.json ")
 
-        self.data = json.load(open('./config/Zones.json'))
+        self.data = json.load(open(path + '/Zones.json'))
 
         self.ZonePinType = self.data["ZonePinType"]
         definedzonestemp = []
@@ -98,10 +90,6 @@ class Zones():
             self.Logger.info( ' '.join(d) )
 
 
-
-
-
-
 class ProgramConfiguration():
     Logger = None
     ProgramName = ""
@@ -110,11 +98,11 @@ class ProgramConfiguration():
     MusicFiles = []
     Sequences = []
 
-    def __init__(self):
+    def __init__(self, path="./web/static/config"):
         self.Logger = logger.clienteLog.logger
         self.Logger.debug("Cargamos configuracion ProgramConfiguration.json ")
 
-        self.data = json.load(open('./config/ProgramConfiguration.json'))
+        self.data = json.load(open(path + '/ProgramConfiguration.json'))
 
         self.ProgramName = self.data["ProgramName"]
         self.ProgramType = self.data["ProgramType"]
@@ -135,14 +123,14 @@ class GeneralConfiguration():
     I2CDevicesConf = None
     Logger = None
 
-    def __init__(self):
+    def __init__(self, path="./web/static/config"):
         self.Logger = logger.clienteLog.logger
         self.Logger.debug("Cargamos configuracion general ")
 
-        self.data = json.load(open('./config/configuracion.json'))
+        self.data = json.load(open(path+'/configuracion.json'))
 
         self.RutaMusica = self.data["MusicPath"]
-        self.RutaFFMPEG = self.data["WebServerType"]
+        self.RutaFFMPEG = self.data["FfmpegPath"]
         self.WebServerPort = self.data["WebServerPort"]
 
         try:

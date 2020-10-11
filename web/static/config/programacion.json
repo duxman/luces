@@ -2,6 +2,6 @@
     "EndTime": "17:47",
     "Repeats": "-1",
     "StartTime": "14:45",
-    "State": "TIMED",
-    "WaitTime": "60"
+    "State": "ON",
+    "WaitTime": "10"
 }
