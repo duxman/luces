@@ -4,7 +4,6 @@ import threading
 import queue
 from config import Zones
 from Util import PinManager
-from Util.AudioProcessing import AudioProcessing
 from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
 

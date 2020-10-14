@@ -31,8 +31,8 @@
 
   function loadEditor( fichero, tab, jsondata, esarray , boton, config )
   {
-    JSONEditor.defaults.options.theme = 'bootstrap3';
-    JSONEditor.defaults.options.iconlib = "fontawesome4";
+    JSONEditor.defaults.options.theme = 'bootstrap4';
+    JSONEditor.defaults.options.iconlib = "fontawesome5";
     // Initialize the editor
     editor = new JSONEditor(document.getElementById(tab),
     {
@@ -78,8 +78,8 @@
 
   function loadEditorDefault( fichero, tab, esarray, boton, config )
   {
-    JSONEditor.defaults.options.theme = 'bootstrap3';
-    JSONEditor.defaults.options.iconlib = "fontawesome4";
+    JSONEditor.defaults.options.theme = 'bootstrap4';
+    JSONEditor.defaults.options.iconlib = "fontawesome5";
     // Initialize the editor
     editor = new JSONEditor(document.getElementById(tab),
     {

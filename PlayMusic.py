@@ -36,11 +36,11 @@ class PlayMusic(object):
     def PlayFile(self):
         self.Logger.info("Iniciamos reproduccion de fichero " + self.Filename)
 
+
         self.pinManagerProcess()
-
         self.MusicManager = AudioProcessing(FileName=self.Filename)
+        producer = threading.Thread(target=self.MusicManager.PlayWavFile(queue=self.WorkingQueue, FileName=self.Filename, NumeroPines=len(self.Zones.SpectrumPins)), name="MusicManagerThread")
 
-        producer = threading.Thread(target=self.MusicManager.PlayWavFile(queue=self.WorkingQueue, FileName=self.Filename, NumeroPines=len(self.Zones.DefinedZones)), name="MusicManagerThread")
         producer.start()
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)

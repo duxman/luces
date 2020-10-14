@@ -1,0 +1,30 @@
+{
+  "title": "Led Matrix Configuration",
+  "type": "object",
+  "id": "Matrix",
+  "properties":
+  {
+    "MatrixWidth": {"type": "integer",  "default": 16},
+    "MatrixHeight": {"type": "integer", "default": 8},
+    "LedPin": {"type": "integer", "default": 18},
+    "Zones"    :
+    {
+      "type"    : "array",
+      "format"  : "tabs-top",
+      "title"   : "Animations Configuration",
+      "items"   :
+      {
+        "id"    : "Animation",
+        "title" : "Animation",
+        "type"  : "object",
+        "properties":
+        {
+          "ImageFile": { "type": "string"},
+          "CommandFile":{ "type": "string" },
+          "Repetitions": { "type": "integer"},
+          "Speed": { "type": "number"}
+        }
+      }
+    }
+  }
+}

@@ -7,18 +7,18 @@
     "ZonePinType": {"type": "string", "description": "Zone Type", "enum": ["MCP", "GPIO"], "default": "GPIO"},
     "Zones"    : {
       "type"  : "array",
-      "format": "tabs",
+      "format": "tabs-top",
       "title" : "Zones Configuration",
       "items" : {
+        "id" : "Zone",
         "title"     : "Zone",
         "type"      : "object",
         "properties": {
-          "ZoneId"  : {"type": "string"},
-          "ZoneName": {"type": "string"},
-          "ZonePins": {"type": "string"},
-          "ZoneType": {"type": "string","enum": ["SPECTRUM", "ALONE"], "default":"SPECTRUM"},
-          "ZonePosition": {"type": "string","enum": ["LOCAL", "REMOTE"], "default":"LOCAL"}
-
+          "ZoneName": { "type": "string"},
+          "ZoneId": { "type": "string"},
+          "ZoneType": {"type": "string","enum": ["SPECTRUM","ALONE"],"default": "SPECTRUM", "description": "SPECTRUM = Normal Led Strip ALONE = Always on ligths" },
+          "ZonePosition": {"type": "string","enum": ["LOCAL", "REMOTE"], "default":"LOCAL", "description" :  "LOCAL = GPIO Controlled REMOTE = Comming soon"},
+          "ZonePins": {"type": "string","description" : "GPIO PIN"   }
         }
       }
     }

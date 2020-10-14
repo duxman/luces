@@ -61,23 +61,46 @@ class PinControl(object):
             self.Apagar(pin)
 
 
-    def EncenderInRangeZone(self,  MaxValue):
-
-        if MaxValue >= len( self.Zones.OrderedPins ):
-           MaxValue = len( self.Zones.OrderedPins ) -1
-        pinstohigh = self.Zones.OrderedPins[MaxValue]
-
-        self.Logger.info("item to show " + " " .join( pinstohigh))
+    def EncenderSpectrumZone(self,pins):
+        self.Logger.info("item to show " + " ".join(pins))
 
         if os.name == 'poxis':
-            GPIO.output(self.PinList, GPIO.LOW)
-        if( MaxValue > 0):
-            GPIO.output(pinstohigh, GPIO.HIGH)
+            GPIO.output(self.Zones.SpectrumPins, GPIO.LOW)
+
+        if (len(pins) > 0):
+            GPIO.output(pins, GPIO.HIGH)
         else:
             if os.name == 'poxis':
-                GPIO.output(self.PinList, GPIO.LOW)
+                GPIO.output(pins, GPIO.LOW)
             else:
                 GPIO.output(0, GPIO.LOW)
+
+    def EncenderVumeterZone(self, pins):
+        self.Logger.info("item to show " + " ".join(pins))
+
+        if os.name == 'poxis':
+            #aqui meter adafruit w2812b
+            GPIO.output(self.Zones.SpectrumPins, GPIO.LOW)
+
+        if (len(pins) > 0):
+            # aqui meter adafruit w2812b
+            GPIO.output(pins, GPIO.HIGH)
+        else:
+            if os.name == 'poxis':
+                # aqui meter adafruit w2812b
+                GPIO.output(pins, GPIO.LOW)
+            else:
+                GPIO.output(0, GPIO.LOW)
+
+    def EncenderInRangeZone(self,  MaxValue):
+
+        if MaxValue >= len( self.Zones.SpectrumPins):
+           MaxValue = len( self.Zones.SpectrumPins ) -1
+        pinstohigh = self.Zones.SpectrumPins[MaxValue]
+
+        self.EncenderSpectrumZone(pinstohigh)
+
+
 
     def EncenderInRange(self,  MaxValue):
         valortemp = MaxValue
