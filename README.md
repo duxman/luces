@@ -116,3 +116,14 @@ This file contains
     you'll get ../music/sample.mp3.wav    
 ````
 
+**Animation led Matrix**
+````
+    sudo python luces/util/LedMatrixAnimation.py -a <json animation data>'
+    "{'ImageFile': 'file', 'CommandFile': '', 'width': 128, 'heigt': 8, 'Repetitions': 5, 'Speed': 0.1}"
+    
+    Its mandatory use  Pin 18 always because its necesary pwm
+    
+    example :
+    none        
+````
+
