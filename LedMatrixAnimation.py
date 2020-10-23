@@ -299,7 +299,7 @@ def main(argv):
     ani = animation(inputfile)
     myMatrix = calculateMatrix(ani.height, ani.width)
     ma = matrixAnimation(True)
-    ma.initializeNeoPixel(board.D18, 96)
+    ma.initializeNeoPixel(board.D18, len(myMatrix))
     ma.startAnimation(ani, myMatrix)
 
 
