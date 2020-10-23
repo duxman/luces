@@ -1,20 +1,20 @@
-# Credits to Andrew Oakley www.aoakley.com
+False  # Credits to Andrew Oakley www.aoakley.com
 # Thanks a lot for the inspiration of this program
 # By parameter takes resolution and image and create animation
 import getopt
 import json
 import time, sys, os
-
-if os == 'poxis':
-    from neopixel import NeoPixel  # See https://learn.adafruit.com/neopixels-on-raspberry-pi/software
-else:
-    from Util.neopixelsimulator import NeoPixel, RGB
+import board
+# if os == 'poxis':
+import neopixel  # See https://learn.adafruit.com/neopixels-on-raspberry-pi/software
+# else:
+# from Util.neopixelsimulator import NeoPixel, RGB
 
 from PIL import Image  # Use apt-get install python-imaging to install this
 
 
-def calculateMatrix(MatrixHeight,MatrixWidth):
-    bInc = False
+def calculateMatrix(MatrixHeight, MatrixWidth):
+    bInc = True
     myMatrix = []
     for i in range(MatrixHeight, 0, -1):
         # Calculate Max and min led
@@ -22,13 +22,14 @@ def calculateMatrix(MatrixHeight,MatrixWidth):
         minled = (maxled - MatrixWidth)
         # For calculate go and return
         if bInc == False:
-            rangeMatrixLine = range(maxled-1, minled-1, -1)
+            rangeMatrixLine = range(maxled - 1, minled - 1, -1)
             bInc = True
         else:
             rangeMatrixLine = range(minled, maxled, 1)
             bInc = False;
         myMatrix.extend(rangeMatrixLine)
     return myMatrix
+
 
 class configurationLedMatrix(object):
     # Array of images
@@ -41,7 +42,7 @@ class configurationLedMatrix(object):
     # Size of your matrix
     MatrixWidth = 32
     MatrixHeight = 16
-    LedPin = 18  # GPIO pin connected to the pixels (must support PWM!).    
+    LedPin = 18  # GPIO pin connected to the pixels (must support PWM!).
     ################################################################
     #                 In configuration File
     ################################################################
@@ -63,6 +64,7 @@ class configurationLedMatrix(object):
     ################################################################
     myMatrix = []
     LedCount = 0
+
     ################################################################
     #           Auto calculate
     ################################################################
@@ -89,16 +91,16 @@ class configurationLedMatrix(object):
         for anim in self.data["Animations"]:
             anim["width"] = self.MatrixWidth
             anim["height"] = self.MatrixHeight
-            json.dump( anim)
-            animtemp = animation(json.dump( anim))
-            
+            json.dump(anim)
+            animtemp = animation(json.dump(anim))
+
             self.Animations.append(animtemp)
-            
+
         # self.LedFreqHz = self.data["LedFreqHz"]
         # self.LedDma = self.data["LedDma"]
         # self.LedBrigh = self.data["LedBrigh"]
-        # self.LedInvert = self.data["LedInvert"]       
-        self.myMatrix = calculateMatrix( self.MatrixHeight,self.MatrixWidth)
+        # self.LedInvert = self.data["LedInvert"]
+        self.myMatrix = calculateMatrix(self.MatrixHeight, self.MatrixWidth)
 
 
 class commandLine(object):
@@ -114,19 +116,20 @@ class commandLine(object):
         self.Value = val
 
 
-class animation( object):
+class animation(object):
     ImageFile = ""
     CommandFile = ""
     image = None
     width = 0
     heigt = 0
-    #instructions: commandLine = []
+    # instructions: commandLine = []
     instructions = []
     Repetitions = -1
     # Speed of movement, in seconds (recommend 0.1-0.3)
     Speed = 0.075
+
     # Example
-    #"{'ImageFile': 'file', 'CommandFile': '', 'width': 128, 'heigt': 8, 'Repetitions': 5, 'Speed': 0.1}"
+    # "{'ImageFile': 'file', 'CommandFile': '', 'width': 128, 'heigt': 8, 'Repetitions': 5, 'Speed': 0.1}"
     def __init__(self, TxtData):
         data = json.loads(TxtData)
 
@@ -136,11 +139,11 @@ class animation( object):
         self.height = data["height"]
         self.Repetitions = data["Repetitions"]
         self.Speed = data["Speed"]
-        #Procesamos
+        # Procesamos
         self.loadImage()
         self.loadAnimationCommand()
-    
-    def loadImage(self):    
+
+    def loadImage(self):
         # Open the image file given as the command line parameter
         try:
             loadIm = Image.open(self.ImageFile)
@@ -162,15 +165,14 @@ class animation( object):
         self.image = Image.new('RGB', (origIm.size[0] + self.width, self.height))
         self.image.paste(origIm, (0, 0, origIm.size[0], self.height))
         self.image.paste(origIm.crop((0, 0, self.width, self.height)),
-                      (origIm.size[0], 0, origIm.size[0] + self.width, self.height))
-        
+                         (origIm.size[0], 0, origIm.size[0] + self.width, self.height))
+
     def loadAnimationCommand(self):
         if self.CommandFile != "":
             data = json.load(open(self.CommandFile))
             for inst in data["Commands"]:
-                cLine = commandLine( inst["IniFrame"], inst["EndFrame"], inst["Instruction"], inst["Value"])
+                cLine = commandLine(inst["IniFrame"], inst["EndFrame"], inst["Instruction"], inst["Value"])
                 self.instructions.append(cLine)
-
 
 
 class matrixAnimation(object):
@@ -181,21 +183,21 @@ class matrixAnimation(object):
     origIm = None
     im = None
     txtlines = []
-    LedStrip: NeoPixel = None
+    LedStrip: neopixel.NeoPixel = None
     myMatrix = []
 
     def __init__(self, test=False):
-        if test==False :
+        if test == False:
             self.Config = configurationLedMatrix()
             self.initializeNeoPixel(self.Config.LedPin, self.Config.LedCount)
 
     def initializeNeoPixel(self, ledPin, LedCount):
         # Create NeoPixel object with appropriate configuration.
-        self.LedStrip = NeoPixel(ledPin,
-                                 LedCount,
-                                 brightness=1.0,
-                                 auto_write=False,
-                                 pixel_order=RGB)
+        self.LedStrip = neopixel.NeoPixel(ledPin,
+                                          LedCount,
+                                          brightness=1.0,
+                                          auto_write=False,
+                                          pixel_order=neopixel.GRB)
 
         self.initLeds(self.LedStrip)
 
@@ -208,10 +210,10 @@ class matrixAnimation(object):
         self.origIm = None
         self.im = None
         self.txtlines = []
-    
+
         # Load the animation config
         self.loadAnimationConfig()
-    
+
     def allonecolour(self, strip, colour):
 
         # Paint the entire matrix one colour
@@ -229,15 +231,14 @@ class matrixAnimation(object):
         RGBint = (red << 16) + (green << 8) + blue
         return RGBint
 
-
     def initLeds(self, strip):
         # Intialize the library (must be called once before other functions).
-        strip.begin()
+        # strip.begin()
         # Wake up the LEDs by briefly setting them all to white
         self.allonecolour(strip, self.colour(255, 255, 255))
         time.sleep(0.01)
 
-    def startAnimation(self, Anim : animation, myMatrix):
+    def startAnimation(self, Anim: animation, myMatrix):
         # And here we go.
         try:
             rep = Anim.Repetitions
@@ -268,11 +269,11 @@ class matrixAnimation(object):
                     for i in range(len(dots)):
                         id = myMatrix[i]
                         self.LedStrip[id] = self.colourTuple(dots[i])
-                        #self.strip.setPixelColor(self.Config.myMatrix[i], self.colourTuple(dots[i]))
+                        # self.strip.setPixelColor(self.Config.myMatrix[i], self.colourTuple(dots[i]))
 
                     self.LedStrip.show()
 
-                    #by the moment without instructions
+                    # by the moment without instructions
 
                     x = x + thisincrement
                     time.sleep(thissleep)
@@ -284,7 +285,6 @@ class matrixAnimation(object):
 
 def main(argv):
     inputfile = ""
-
 
     try:
         opts, args = getopt.getopt(argv, "a:", ["AnimationData="])
@@ -299,10 +299,8 @@ def main(argv):
     ani = animation(inputfile)
     myMatrix = calculateMatrix(ani.height, ani.width)
     ma = matrixAnimation(True)
-    ma.initializeNeoPixel(18,96)
-    ma.startAnimation( ani, myMatrix )
-
-
+    ma.initializeNeoPixel(board.D18, 96)
+    ma.startAnimation(ani, myMatrix)
 
 
 if __name__ == "__main__":
