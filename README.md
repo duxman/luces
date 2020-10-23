@@ -1,7 +1,17 @@
 # Duxman Luces
 ### More info y blog
 
-http://duxnet.es/luces/
+TODO pero de los gordos(sorry in Spanish  :d )
+* Esp8266 (In Progress)
+* MQTT (In Progress)
+* ProtoBuffers para comunicacion externa e interna (In Progress)
+* Zonas deslocalizadas (In Progress)
+* ~~LedMatrix~~ ( ya lo tenemos )
+* Integrar la led matrix en un hilo
+* Integrar comandos en LedMatrix
+* Acompasar ledmatrix con musica (animacion tipo baile)
+* Animatronica ( esto seria lo mas de lo mas) 
+* wifimanager en esp8266 con parametros para poder configurar MQTT (In Progress)
 
 ### Install
 download the repository
