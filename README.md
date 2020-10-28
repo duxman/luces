@@ -2,8 +2,8 @@
 ### More info y blog
 
 TODO pero de los gordos(sorry in Spanish  :d )
-* ~~Esp8266 (In Progress) 
-* ~~MQTT (usado AsyncMQTT)--
+* ~~Esp8266 (In Progress)~~ 
+* ~~MQTT (usado AsyncMQTT)--~~
 * ProtoBuffers para comunicacion ~~externa~~ e interna (In Progress)
 * Zonas deslocalizadas (In Progress)
 * ~~LedMatrix~~ ( ya lo tenemos )
