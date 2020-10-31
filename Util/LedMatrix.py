@@ -4,7 +4,7 @@ from PIL import Image  # Use apt-get install python-imaging to install this
 
 
 def calculateMatrix(MatrixHeight, MatrixWidth):
-    bInc = True
+    bInc = False
     myMatrix = []
     for i in range(MatrixHeight, 0, -1):
         # Calculate Max and min led
@@ -142,7 +142,7 @@ class animation(object):
         except:
             raise Exception("Image file %s could not be loaded" % self.ImageFile)
 
-        if loadIm.size[1] != self.heigth:
+        if loadIm.size[1] != self.height:
             origIm = loadIm.resize(
                 (loadIm.size[0] / (loadIm.size[1] // self.height), self.height),
                 Image.BICUBIC)

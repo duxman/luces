@@ -5,7 +5,7 @@
 ///////////////////////////////////////////////////////////////////////
 ////                 DEFINES
 ///////////////////////////////////////////////////////////////////////
-#define NUM_LEDS 96
+#define NUM_LEDS 432
 #define PIN D1
 #define COLOR_ORDER RGB
 
@@ -22,20 +22,18 @@
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
 #include <pb_decode.h>
-#define __FASTLED__ 1
+//#define __FASTLED__ 1
 #ifdef __FASTLED__
   #define FASTLED_ESP8266_RAW_PIN_ORDER
+  #define FASTLED_ALLOW_INTERRUPTS 0
+  #define FASTLED_INTERRUPT_RETRY_COUNT 3
   #include <FastLED.h>
   CRGB leds[NUM_LEDS];
 #else
   #define NEO_KHZ400 0x0100 ///< 400 KHz data transmission
   #include <Adafruit_NeoPixel.h>
-  #ifdef __AVR__
-    #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
-  #endif
-  Adafruit_NeoPixel leds(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ400); 
+  Adafruit_NeoPixel leds(NUM_LEDS, PIN, NEO_RGB + NEO_KHZ800); 
 #endif
-
 #include "protocol.proto.pb.h"
 #include "main.h"
 
@@ -53,6 +51,8 @@ Ticker mqttReconnectTimer;
 WiFiEventHandler wifiConnectHandler;
 WiFiEventHandler wifiDisconnectHandler;
 Ticker wifiReconnectTimer;
+byte *payloadBuffer;
+int posicion=0;
 ///////////////////////////////////////////////////////////////////////
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ Ticker wifiReconnectTimer;
 ///////////////////////////////////////////////////////////////////////
 void decodedisplay( byte* payload,unsigned int length )
 {       
-    //Serial.printf("try decoding display \n %d",length);          
+    Serial.printf("try decoding display \n %d",length);          
     msgdisplay.frame.funcs.decode=&decodeled;
     pb_istream_t stream = pb_istream_from_buffer(payload,length);    
     bool status = pb_decode(&stream, display_fields, &msgdisplay);
@@ -84,7 +84,7 @@ void decodedisplay( byte* payload,unsigned int length )
         FastLED.clear();
       #else
         leds.show();
-        leds.clear();    
+        leds.fill(0);        
       #endif
 }
 
@@ -187,8 +187,21 @@ void onMqttUnsubscribe(uint16_t packetId)
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) 
 {
-  Serial.printf("Publish received. len %d  index %d total %d\r\n", (int)len, (int)index, (int)total);
-  decodedisplay((byte *)payload,len);     
+  Serial.printf("Publish received. len %d  index %d total %d len payload %d \r\n", (int)len, (int)index, (int)total,sizeof(payload));  
+
+  //decodedisplay((byte *)payload,len);     
+  if (index==0)
+    payloadBuffer = (byte*) malloc(total);
+
+  memcpy( payloadBuffer+index,payload,len); 
+  
+  if( index+len == total)
+  {
+    Serial.printf("Mensaje completo len\r\n");  
+    decodedisplay((byte *)payloadBuffer,total);     
+    free(payloadBuffer);
+  }
+  
 }
 ///////////////////////////////////////////////////////////////////////
 ////                 MQTT
@@ -205,8 +218,10 @@ void ConfigureFastLed()
     FastLED.clear();
     FastLED.show();
     Serial.println("FastLed Configured");
-  #else
-    leds.clear();   
+  #else    
+    leds.begin();
+    leds.setBrightness(50);
+    leds.fill(0); 
     leds.show();        
     Serial.println("Adafruit Configure Configured");
   #endif

@@ -11,7 +11,7 @@ from LedMatrixAnimation import matrixAnimation
 from Util.LedMatrix import configurationLedMatrix, animation, calculateMatrix
 from Util.SimpleMessage import led, display
 
-MAX_PACKET = 15
+MAX_PACKET = 1024
 
 
 class ServeAnimation():
@@ -107,18 +107,18 @@ class ServeAnimation():
                     for i in range(len(dots)):
                         id = myMatrix[i]
                         if self.colourTuple(dots[i]) != 0:
-                            #if cont_paquete > MAX_PACKET:
-                            #    self.clienteMqtt.publish("InData", ledpanel.SerializeToString(), 2, True)
-                            #    ledpanel = display()
-                            #    ledpanel.Ini = False
-                            #    cont_paquete = 0
+                            if cont_paquete >= MAX_PACKET:
+                                self.clienteMqtt.publish("InData", ledpanel.SerializeToString(), 2, False)
+                                ledpanel = display()
+                                ledpanel.Ini = False
+                                cont_paquete = 0
                             ledpixel.Pin = id
                             ledpixel.Color = self.colourTuple(dots[i])
                             ledpanel.frame.append(ledpixel)
-
                             cont_paquete = cont_paquete + 1
                     ledpanel.Fin = True
-                    self.clienteMqtt.publish("InData", ledpanel.SerializeToString(), 2, True)
+
+                    self.clienteMqtt.publish("InData", ledpanel.SerializeToString(), 2, False)
 
                     x = x + thisincrement
                     time.sleep(thissleep)
