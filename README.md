@@ -128,6 +128,7 @@ This file contains
 
 **Animation led Matrix**
 ````
+    Directo from raspberry to Led Matrix
     sudo python luces/util/LedMatrixAnimation.py -a <json animation data>'
     "{'ImageFile': 'file', 'CommandFile': '', 'width': 128, 'heigt': 8, 'Repetitions': 5, 'Speed': 0.1}"
     
@@ -136,4 +137,14 @@ This file contains
     example :
     none        
 ````
-
+**Serve Animation led Matrix**
+````
+    Now with a esp8266 ESP12E you can use my code in esp8266luces and flash your device
+    With Platformio  this is a remote panel Code, controlled with WIFI
+    The Comunication with MQTT and ProtoBuffers  
+    sudo python serveAnimation.py -a <json animation data>'
+    "{'ImageFile': 'file', 'CommandFile': '', 'width': 128, 'heigt': 8, 'Repetitions': 5, 'Speed': 0.1}"
+            
+    example :
+    none        
+````

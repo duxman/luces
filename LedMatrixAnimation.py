@@ -15,7 +15,7 @@ import paho.mqtt.client
 
 from PIL import Image  # Use apt-get install python-imaging to install this
 
-from Util.LedMatrix import animation
+from config import animation
 
 
 class matrixAnimation(object):

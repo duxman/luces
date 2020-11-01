@@ -8,7 +8,8 @@ import paho.mqtt.client as mqtt
 from PIL import Image  # Use apt-get install python-imaging to install this
 
 from LedMatrixAnimation import matrixAnimation
-from Util.LedMatrix import configurationLedMatrix, animation, calculateMatrix
+from config import configurationLedMatrix, animation, calculateMatrix
+
 from Util.SimpleMessage import led, display
 
 MAX_PACKET = 1024
@@ -28,6 +29,10 @@ class ServeAnimation():
         self.clienteMqtt = mqtt.Client("ServeAnimation", True)
         if test == False:
             self.Config = configurationLedMatrix()
+            for mtx in self.Config.Matrix:
+                self.initializeMQTT(mtx.MQTT_HOST, int(mtx.MQTT_PORT), mtx.MQTT_TOKEN)
+                for anim in mtx.Animations:
+                    self.startAnimation( anim,mtx.myMatrix)
 
     def initializeMQTT(self, host, port, token):
         self.token = token
@@ -149,13 +154,17 @@ def main(argv):
         elif opt in ("-t", "--token"):
             token = arg
 
-    ani = animation(inputfile)
-    myMatrix = calculateMatrix(ani.height, ani.width)
+
 
     if (host != ""):
+        ani = animation(inputfile)
+        myMatrix = calculateMatrix(ani.height, ani.width)
         ma = ServeAnimation(True)
         ma.initializeMQTT(host, int(port), token)
         ma.startAnimation(ani, myMatrix)
+    else:
+        ma = ServeAnimation(False)
+
 
 
 if __name__ == "__main__":
