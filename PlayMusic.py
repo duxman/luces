@@ -3,17 +3,18 @@ import getopt
 import threading
 import queue
 import os
-from config import Zones
+from config import Zones, GeneralConfiguration
 from Util import Mp3ToWav
 from Util import PinManager
 from Util.AudioProcessing import AudioProcessing
 from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
 
-class PlayMusic(object):
 
+class PlayMusic(object):
     Filename = ""
-    Zones = None
+    ZonesConfig: Zones = None
+    GeneralConfig: GeneralConfiguration = None
     Logger = None
 
     ConsumerThread = None
@@ -23,23 +24,33 @@ class PlayMusic(object):
     def __init__(self, filename, zones):
         cliente = clienteLog()
         self.Logger = cliente.InicializaLog(filename="./log/PlayMusic.log")
-        self.Filename = self.CheckFileType( filename)
-        self.Zones = Zones()
+        self.Filename = self.CheckFileType(filename)
+        self.ZonesConfig = Zones()
+        self.GeneralConfig = GeneralConfiguration()
         self.Logger.debug("Create Process Queue")
         self.WorkingQueue = queue.Queue()
 
     def pinManagerProcess(self):
-        pinmanager = PinManager.PinControl(self.Logger, self.Zones)
-        self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.EncenderInRangeZone, name="PinManagerConsumerThread", sleep=0)
+        if self.ZonesConfig.ZonePinType == "REMOTE":
+            pinmanager = PinManager.PinControl(self.Logger, self.ZonesConfig, self.GeneralConfig.MQTT_HOST,
+                                               self.GeneralConfig.MQTT_PORT, self.ZonesConfig.MQTT_TOKEN)
+            self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.publish,
+                                                         name="PinManagerConsumerThread", sleep=0)
+        else:
+            pinmanager = PinManager.PinControl(self.Logger, self.ZonesConfig)
+            self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.EncenderInRangeZone,
+                                                         name="PinManagerConsumerThread", sleep=0)
         self.ConsumerThread.start()
 
     def PlayFile(self):
         self.Logger.info("Iniciamos reproduccion de fichero " + self.Filename)
 
-
         self.pinManagerProcess()
         self.MusicManager = AudioProcessing(FileName=self.Filename)
-        producer = threading.Thread(target=self.MusicManager.PlayWavFile(queue=self.WorkingQueue, FileName=self.Filename, NumeroPines=len(self.Zones.SpectrumPins)), name="MusicManagerThread")
+        producer = threading.Thread(
+            target=self.MusicManager.PlayWavFile(queue=self.WorkingQueue, FileName=self.Filename,
+                                                 NumeroPines=len(self.ZonesConfig.SpectrumPins)),
+            name="MusicManagerThread")
 
         producer.start()
         self.WorkingQueue.join()
@@ -55,7 +66,7 @@ class PlayMusic(object):
     def CheckFileType(self, inputfile):
         filename, file_extension = os.path.splitext(inputfile)
         file_extension = file_extension.upper()
-        if( file_extension == ".MP3"):
+        if (file_extension == ".MP3"):
             outputfile = inputfile + ".wav"
             exists = os.path.isfile(outputfile)
             if exists:
@@ -71,7 +82,6 @@ class PlayMusic(object):
             self.Filename = inputfile
             return inputfile
         # End of file Extension
-
 
 
 def main(argv):
@@ -92,12 +102,10 @@ def main(argv):
         elif opt in ("-i", "--ifile"):
             inputfile = arg
 
-
     playfile = PlayMusic(inputfile, zones)
     playfile.Logger.info("--------------------<<  INI PLAY SCRIPT >>--------------------")
     playfile.PlayFile()
     playfile.Logger.info("--------------------<<  END PLAY SCRIPT >>--------------------")
-
 
 
 if __name__ == "__main__":

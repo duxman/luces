@@ -4,7 +4,8 @@
   "id" : "Zones",
   "properties" :
   {
-    "ZonePinType": {"type": "string", "description": "Zone Type", "enum": ["MCP", "GPIO"], "default": "GPIO"},
+    "ZonePinType": {"type": "string", "description": "Zone Type", "enum": ["GPIO", "REMOTE"], "default": "GPIO"},
+    "MQTT_TOKEN": {"type": "string", "description" :  "Mqtt token to send the messages"},
     "Zones"    : {
       "type"  : "array",
       "format": "tabs-top",
@@ -17,7 +18,6 @@
           "ZoneName": { "type": "string"},
           "ZoneId": { "type": "string"},
           "ZoneType": {"type": "string","enum": ["SPECTRUM","ALONE"],"default": "SPECTRUM", "description": "SPECTRUM = Normal Led Strip ALONE = Always on ligths" },
-          "ZonePosition": {"type": "string","enum": ["LOCAL", "REMOTE"], "default":"LOCAL", "description" :  "LOCAL = GPIO Controlled REMOTE = Comming soon"},
           "ZonePins": {"type": "string","description" : "GPIO PIN"   }
         }
       }

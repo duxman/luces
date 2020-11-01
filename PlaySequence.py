@@ -2,7 +2,7 @@ import sys
 import getopt
 import threading
 import queue
-from config import Zones
+from config import Zones, GeneralConfiguration
 from Util import PinManager
 from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
@@ -11,7 +11,8 @@ from Util.logger import clienteLog
 class PlaySequence(object):
     Filename = ""
     WaitTime = 0
-    Zones = None
+    ZonesConfig: Zones = None
+    GeneralConfig: GeneralConfiguration = None
     Logger = None
 
     ConsumerThread = None
@@ -22,14 +23,21 @@ class PlaySequence(object):
         self.Logger = cliente.InicializaLog(filename="./log/PlaySequence.log")
         self.Filename = filename
         self.WaitTime = waittime
-        self.Zones = Zones()
+        self.ZonesConfig = Zones()
+        self.GeneralConfig = GeneralConfiguration()
         self.Logger.debug("Create Process Queue")
         self.WorkingQueue = queue.Queue()
 
     def pinManagerProcess(self):
-        pinmanager = PinManager.PinControl(self.Logger, self.Zones)
-        self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.EncenderInRangeZone,
-                                                     name="PinManagerConsumerThread", sleep=0)
+        if self.ZonesConfig.ZonePinType == "REMOTE":
+            pinmanager = PinManager.PinControl(self.Logger, self.ZonesConfig, self.GeneralConfig.MQTT_HOST,
+                                               self.GeneralConfig.MQTT_PORT, self.ZonesConfig.MQTT_TOKEN)
+            self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.publish,
+                                                         name="PinManagerConsumerThread", sleep=0)
+        else:
+            pinmanager = PinManager.PinControl(self.Logger, self.ZonesConfig)
+            self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.EncenderInRangeZone,
+                                                         name="PinManagerConsumerThread", sleep=0)
         self.ConsumerThread.start()
 
     def executeSecuence(self, queue, vSecuencia, waittime):

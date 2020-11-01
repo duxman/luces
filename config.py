@@ -31,14 +31,9 @@ class Zone():
     ZonePins = []
     ZoneId = 0
     ZoneType = ""
-    ZonePosition = "LOCAL"
-    VumeterNumber = 0
-    VumeterSection = 0
-    VumeterType = ""
-    VumeterData = None
 
     def __cmp__(self, other):
-        return cmp(self.ZoneId, other.ZoneId)
+        return __cmp__(self.ZoneId, other.ZoneId)
 
     def __eq__(self, other):
         return self.ZoneId == other.ZoneId
@@ -49,41 +44,19 @@ class Zone():
     def __gt__(self, other):
         return self.ZoneId > other.ZoneId
 
-    def __init__(self, name, pins, id, type, position,VNumber, VSection,VType):
+    def __init__(self, name, pins, id, type):
         self.ZoneName = name
         self.ZonePins = pins.split(",")
         self.ZoneId = id
         self.ZoneType = type
-        self.ZonePosition = position
-        self.VumeterData = []
-        if self.ZoneType == "VUMETER":
-            self.VumeterNumber = int(VNumber)
-            self.VumeterSection = int(VSection)
-            self.VumeterType = VType
-            for i in range(self.VumeterSection):
-                inicio =int(((self.VumeterNumber / self.VumeterSection) * i) + 1)
-                fin = int((self.VumeterNumber / self.VumeterSection) * (i +1))
-                if self.VumeterType == "RTOL":
-                    self.VumeterData.append([inicio, fin] )
-                elif self.VumeterType == "lTOR":
-                    self.VumeterData.append([fin, inicio])
-                elif self.VumeterType == "STOC":
-                    self.VumeterData.append([inicio, int(fin/2)])
-                    self.VumeterData.append([fin, int(fin/2)])
-                elif self.VumeterType == "CTOS":
-                    self.VumeterData.append([int(fin / 2), inicio])
-                    self.VumeterData.append([int(fin / 2), fin])
-
-
-
 
 class Zones():
     Logger = None
     ZonePinType = ""
     DefinedZones = []
     SpectrumPins = []
-    VumeterPins = []
     AlonePins = []
+    MQTT_TOKEN = "PinManager"
 
     def __init__(self, path="./web/static/config"):
         self.Logger = logger.clienteLog.logger
@@ -92,16 +65,14 @@ class Zones():
         self.data = json.load(open(path + '/Zones.json'))
 
         self.ZonePinType = self.data["ZonePinType"]
+        self.MQTT_TOKEN = self.data["MQTT_TOKEN"]
+
         definedzonestemp = []
         for definedzone in self.data["Zones"]:
             ZoneTemp = Zone(definedzone["ZoneName"],
                             definedzone["ZonePins"],
                             definedzone["ZoneId"],
-                            definedzone["ZoneType"],
-                            definedzone["ZonePosition"],
-                            definedzone["VumeterNumber"],
-                            definedzone["VumeterSection"],
-                            definedzone["VumeterType"] )
+                            definedzone["ZoneType"])
             definedzonestemp.append(ZoneTemp)
 
         # Ordenamos la lista
@@ -111,19 +82,15 @@ class Zones():
         for d in self.DefinedZones:
             if (d.ZoneType == "ALONE"):
                 self.AlonePins.extend(d.ZonePins)
-            if (d.ZoneType == "VUNETER"):
-                self.VumeterPins.extend(d.ZonePins)
             if (d.ZoneType == "SPECTRUM"):
                 self.SpectrumPins.extend(d.ZonePins)
 
         #Eliminamos pins duplicados
         self.AlonePins = list(dict.fromkeys(self.AlonePins))
-        self.VumeterPins = list(dict.fromkeys(self.VumeterPins))
         self.SpectrumPins = list(dict.fromkeys(self.SpectrumPins))
 
         #Ordenamos pins duplicados
         self.AlonePins.sort()
-        self.VumeterPins.sort()
         self.SpectrumPins.sort()
 
         # mostramos el resultado por si acaso
@@ -160,6 +127,8 @@ class GeneralConfiguration():
     RutaMusica = None
     WebServerPort = 8000
     Programacion = None
+    MQTT_HOST = "localhost"
+    MQTT_PORT = 1883
     ProgramConfiguration = None
     Zones = None
     I2CDevicesConf = None
@@ -174,6 +143,9 @@ class GeneralConfiguration():
         self.RutaMusica = self.data["MusicPath"]
         self.RutaFFMPEG = self.data["FfmpegPath"]
         self.WebServerPort = self.data["WebServerPort"]
+        self.MQTT_HOST = self.data["MQTT_HOST"]
+        self.MQTT_PORT = self.data["MQTT_PORT"]
+
 
         try:
             self.ProgramConfiguration = ProgramConfiguration()

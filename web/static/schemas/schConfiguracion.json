@@ -18,6 +18,19 @@
     {
       "type" : "string",
       "description" : "Configuration server port"
+    },
+    "MQTT_HOST":
+    {
+      "type" : "string",
+      "description" : "Mqtt server, for example raspberry IP with Mosquitto server",
+      "default" : "localhost"
+    },
+    "MQTT_PORT":
+    {
+      "type" : "integer",
+      "description" : "Mqtt server port",
+      "default" : 1883
     }
+
   }
 }

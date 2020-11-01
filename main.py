@@ -1,6 +1,9 @@
 import queue
 import threading
 import os
+
+from paho import mqtt
+
 import config
 import time
 import subprocess
@@ -35,9 +38,9 @@ class DuxmanLights(object):
 
         return_value = False
 
-        if( self.Config.Programacion.Estado == "ON"):
+        if self.Config.Programacion.Estado == "ON":
             return_value = True
-        elif( self.Config.Programacion.Estado == "OFF"):
+        elif self.Config.Programacion.Estado == "OFF":
             return_value = False
         else:
             if ((ahora >= desde) & (ahora < hasta)):
@@ -50,10 +53,10 @@ class DuxmanLights(object):
         while (repeatNumber != 0):
             # comprobamos la hora por si tenemos que salir del bucle
             # Asumimos que el tiempo siempre va hacia delante
-            if (self.CheckTime() == False):
+            if self.CheckTime() == False:
                 break
 
-            if (repeatNumber > 0):
+            if repeatNumber > 0:
                 self.Logger.info("Remaining repeats = " + str(repeatNumber))
             else:
                 self.Logger.debug("Infinite loops")
@@ -65,12 +68,12 @@ class DuxmanLights(object):
             self.Logger.debug("Execute program: " + self.Config.ProgramConfiguration.ProgramName)
 
             # Comprobamos is es musica o secuencia
-            if (self.Config.ProgramConfiguration.ProgramType == "MUSIC"):
+            if self.Config.ProgramConfiguration.ProgramType == "MUSIC":
                 for MusicFile in self.Config.ProgramConfiguration.MusicFiles:
                     self.executeCommandMusic(self.Config.RutaMusica+"/"+MusicFile)
                     self.reloadConfig()
 
-            if (self.Config.ProgramConfiguration.ProgramType == "SEQ"):
+            if self.Config.ProgramConfiguration.ProgramType == "SEQ":
                 for Seq in self.Config.ProgramConfiguration.Sequences:
                     self.executeCommandSequence(Seq.replace(" ", ""), self.Config.ProgramConfiguration.ProgramInterval)
                     self.reloadConfig()
@@ -86,7 +89,7 @@ class DuxmanLights(object):
     def MainProcess(self):
         repeatNumber = int(self.Config.Programacion.Repeticiones)
         # ejecutamos siempre en un bucle infinito
-        while (True):
+        while True:
 
             # Comprobamos la hora
             if (self.CheckTime() == True):
