@@ -10,7 +10,7 @@ from PIL import Image  # Use apt-get install python-imaging to install this
 from LedMatrixAnimation import matrixAnimation
 from config import configurationLedMatrix, animation, calculateMatrix
 
-from Util.SimpleMessage import led, display
+from Util.LedPanelMessage import led, display
 
 MAX_PACKET = 1024
 
