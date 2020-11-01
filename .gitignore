@@ -3,3 +3,4 @@
 temp
 *.pyc
 /log
+/esp8266luces/RemoteZoneLedPanel/include/config.h
