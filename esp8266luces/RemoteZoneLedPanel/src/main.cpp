@@ -2,21 +2,8 @@
 
 #include <Arduino.h>
 
-///////////////////////////////////////////////////////////////////////
-////                 DEFINES
-///////////////////////////////////////////////////////////////////////
-#define NUM_LEDS 432
-#define PIN D1
-#define COLOR_ORDER RGB
 
-
-
-#define MQTT_HOST IPAddress(192, 168, 1, 196)
-#define MQTT_PORT 1883
-///////////////////////////////////////////////////////////////////////
-////                 DEFINES
-///////////////////////////////////////////////////////////////////////
-
+#include "config.h"
 #include <ESP8266WiFi.h>
 //#include <PubSubClient.h>
 #include <Ticker.h>
@@ -37,15 +24,11 @@
 #include "protocol.proto.pb.h"
 #include "main.h"
 
-
 ///////////////////////////////////////////////////////////////////////
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
-const char* ssid = "BUBU_DUXMAN_WLAN";
-const char* password = "2005070400";
 display msgdisplay = display_init_zero;        
 led msgled = led_init_zero;
-
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
 WiFiEventHandler wifiConnectHandler;
@@ -56,8 +39,6 @@ int posicion=0;
 ///////////////////////////////////////////////////////////////////////
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
-
-
 
 
 
@@ -118,7 +99,7 @@ bool decodeled( pb_istream_t *stream, const pb_field_t *field, void **arg)
 void connectToWifi() 
 {
   Serial.println("Connecting to Wi-Fi...");
-  WiFi.begin(ssid, password);
+  WiFi.begin( WIFI_SSID, WIFI_PASSWD);
 }
 
 void onWifiConnect(const WiFiEventStationModeGotIP& event) {
@@ -152,7 +133,7 @@ void onMqttConnect(bool sessionPresent)
   
   Serial.println(sessionPresent);
   
-  uint16_t packetIdSub = mqttClient.subscribe("InData", 2);  
+  uint16_t packetIdSub = mqttClient.subscribe(MQTT_TOKEN, 2);  
   Serial.print("Subscribing at QoS 2, packetId: ");
   Serial.println(packetIdSub);  
   
@@ -187,9 +168,7 @@ void onMqttUnsubscribe(uint16_t packetId)
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) 
 {
-  Serial.printf("Publish received. len %d  index %d total %d len payload %d \r\n", (int)len, (int)index, (int)total,sizeof(payload));  
-
-  //decodedisplay((byte *)payload,len);     
+  Serial.printf("Publish received. len %d  index %d total %d len payload %d \r\n", (int)len, (int)index, (int)total,sizeof(payload));    
   if (index==0)
     payloadBuffer = (byte*) malloc(total);
 
@@ -259,81 +238,3 @@ void loop() {
 ///////////////////////////////////////////////////////////////////////
 ////                 ARDUINO
 ///////////////////////////////////////////////////////////////////////
-
-/*
-void setup_wifi() 
-{
-
-  delay(10);
-  // We start by connecting to a WiFi network  
-  Serial.printf("Connecting to %s\n",ssid);
-  
-
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-
-  int blink =0;
-  while (WiFi.status() != WL_CONNECTED) 
-  {
-    delay(200);
-    Serial.print(".");  
-
-  }  
-  Serial.printf("WiFi connected IP address:");Serial.println(WiFi.localIP());
-}
-
-void callback(char* topic, byte* payload, unsigned int length) 
-{  
-    Serial.printf("Message arrived [%s] = %d\r\n", topic,value++);   
-    decodedisplay(payload,length);    
-    //Serial.println("Show");
-    
-}
-void reconnect()
- {
-  // Loop until we're reconnected
-  while (!client.connected()) 
-  {
-    Serial.print("Attempting MQTT connection...\n");
-    // Create a random client ID
-    String clientId = "ESP8266Client-";
-    clientId += String(random(0xffff), HEX);
-    // Attempt to connect
-    if (client.connect(clientId.c_str())) 
-    {     
-      Serial.printf("connected !!");      
-      client.subscribe("InData");
-    } 
-    else 
-    {
-      Serial.printf("failed, rc= %d\nTry again in 5 seconds",client.state());           
-      delay(5000);
-    }
-  }
-}
-
-
-void setup() 
-{
-  Serial.begin(74880);
-  
-  setup_wifi();
-  Serial.printf("Create mqtt");  
-  client.setBufferSize(4096);
-  Serial.printf("set Server");  
-  client.setServer(mqtt_server, 1883);
-  Serial.printf("set Callback");  
-  client.setCallback(callback);    
-  FastLED.addLeds<WS2812B, PIN>(leds, NUM_LEDS); 
-}
-
-void loop() 
-{
- //  pixels.clear();
-  if (!client.connected()) 
-  {
-    reconnect();
-  }
-  client.loop();  
-}
-*/
