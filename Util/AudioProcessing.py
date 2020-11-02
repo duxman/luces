@@ -5,6 +5,10 @@ import numpy
 import math
 import os
 import time
+import paho.mqtt.client as mqtt
+from Util.ledStripMessage import ledLevel
+from Util.logger import clienteLog
+
 if os.name == 'posix':
     import alsaaudio
 else:
@@ -19,13 +23,44 @@ class AudioProcessing():
     WaveFile = None
     SongName = None
     Device  = None
+    Logger = None
+    clienteMqtt: mqtt.Client = None
+    Tokens = []
 
-    def __init__(self,FileName=None):
+    def __init__(self,FileName=None, Host="", Port=1883, Tokens = []):
+        cliente = clienteLog()
+        self.Logger = cliente.InicializaLog(filename="./log/PlayMusic.log")
         self.SongName = FileName
+        self.Tokens = Tokens
+        self.clienteMqtt = mqtt.Client("LedStripServe", True)
+        #Inicializamos MQTT
+        self.initializeMQTT(Host, Port)
+
+
         if os.name == 'posix':
             self.Device = alsaaudio.PCM()
         else:
             self.Device = pyaudio.PyAudio()
+
+        self.GetMaxRate(FileName)
+
+    def initializeMQTT(self, host, port):
+        self.clienteMqtt.on_connect = self.on_connect
+        self.clienteMqtt.on_publish = self.on_publish
+        self.clienteMqtt.connect(host, port, 15)
+        self.clienteMqtt.loop_start()
+
+    def on_connect(self, mqttc, obj, flags, rc):
+        self.Logger.debug("Conectados a MQTT " + str(rc))
+
+    def on_publish(self, mqttc, obj, mid):
+        self.Logger.debug("Messagge sended " + str(mid))
+
+    def publish(self, id):
+        led = ledLevel()
+        led.Level = id
+        for t in self.Tokens:
+            self.clienteMqtt.publish(t, led.SerializeToString(), 2, False)
 
     def setFfmpegPath(self, path):
         AudioSegment.converter = path
@@ -72,13 +107,13 @@ class AudioProcessing():
 
     def GetMaxRate(self, FileName):
         with contextlib.closing(wave.open(FileName, 'rb')) as f:
-            self.PeriodSize = f.getframerate() / 8
+            self.PeriodSize = int((f.getframerate() / 8))
             array = []
             data = f.readframes(self.PeriodSize)
             while data:
                 #valor = int( audioop.rms( data,2) )
                 data = numpy.fromstring(data, 'Int16')                
-                valor = numpy.median( data)
+                valor = numpy.median( numpy.absolute(data))
                 array.append( valor )
                 data = f.readframes(self.PeriodSize)
             self.MaxRate = numpy.max( array )
@@ -87,10 +122,13 @@ class AudioProcessing():
     def getQueueValue(self, ValorMax, ValorMedio, NumeroPines ):
         ValorIntermedio = (ValorMedio * NumeroPines) / ValorMax
         ValorNormalizado = int(abs(math.ceil(ValorIntermedio)))
-        self.QueueProcess.put(ValorNormalizado)
+        self.publish(ValorNormalizado)
+        value='->#'
+        #self.Logger.info(f".ljust(ValorNormalizado, '#'))
+        #Antes se procesaba con queue ahora com mqtt
+        #self.QueueProcess.put(ValorNormalizado)
 
-    def PlayWavFile(self, queue, FileName = None, NumeroPines=5):
-        self.QueueProcess = queue
+    def PlayWavFile(self, FileName = None, NumeroPines=0):
 
         if FileName == None:
             FileName = self.WaveFile
@@ -101,11 +139,11 @@ class AudioProcessing():
             while data:
                 data1 = numpy.fromstring(data, 'Int16')
 
-                valormedio = numpy.median(data1)
+                valormedio = numpy.median(numpy.absolute(data1))
                 self.getQueueValue( self.MaxRate, valormedio, NumeroPines)
 
                 self.WriteFunctionObject.write(data)
-                time.sleep(0.015)
+                time.sleep(0.0125)
                 data = WaveAudio.readframes(self.PeriodSize)
 
             if os.name != 'poxis':
@@ -114,5 +152,5 @@ class AudioProcessing():
                 self.Device.terminate()
 
 
-            self.QueueProcess.join()
+            #self.QueueProcess.join()
 

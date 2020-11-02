@@ -2,6 +2,7 @@ import json
 from Util import logger
 from PIL import Image  # Use apt-get install python-imaging to install this
 
+
 class programacion:
     HoraDesde = ""
     HoraHasta = ""
@@ -27,6 +28,8 @@ class programacion:
 
 
 class Zone():
+    ZonePinType = ""
+    MQTT_TOKEN = "PinManager"
     ZoneName = ""
     ZonePins = []
     ZoneId = 0
@@ -44,35 +47,36 @@ class Zone():
     def __gt__(self, other):
         return self.ZoneId > other.ZoneId
 
-    def __init__(self, name, pins, id, type):
+    def __init__(self, name, pins, id, type, PinType, MQTT_TOKEN):
         self.ZoneName = name
         self.ZonePins = pins.split(",")
         self.ZoneId = id
         self.ZoneType = type
+        self.ZonePinType = PinType
+        self.MQTT_TOKEN = MQTT_TOKEN
+
 
 class Zones():
     Logger = None
-    ZonePinType = ""
     DefinedZones = []
     SpectrumPins = []
     AlonePins = []
-    MQTT_TOKEN = "PinManager"
+    Tokens = []
 
     def __init__(self, path="./web/static/config"):
         self.Logger = logger.clienteLog.logger
         self.Logger.debug("Cargamos configuracion Zones.json ")
 
         self.data = json.load(open(path + '/Zones.json'))
-
-        self.ZonePinType = self.data["ZonePinType"]
-        self.MQTT_TOKEN = self.data["MQTT_TOKEN"]
-
+        self.Tokens = []
         definedzonestemp = []
         for definedzone in self.data["Zones"]:
             ZoneTemp = Zone(definedzone["ZoneName"],
                             definedzone["ZonePins"],
                             definedzone["ZoneId"],
-                            definedzone["ZoneType"])
+                            definedzone["ZoneType"],
+                            definedzone["ZonePinType"],
+                            definedzone["MQTT_TOKEN"])
             definedzonestemp.append(ZoneTemp)
 
         # Ordenamos la lista
@@ -80,16 +84,20 @@ class Zones():
 
         # Montamos la lista para no tener que calcular los pines
         for d in self.DefinedZones:
-            if (d.ZoneType == "ALONE"):
+            if d.ZoneType == "ALONE":
                 self.AlonePins.extend(d.ZonePins)
-            if (d.ZoneType == "SPECTRUM"):
+            if d.ZoneType == "SPECTRUM":
                 self.SpectrumPins.extend(d.ZonePins)
+            if d.ZonePinType == "REMOTE":
+                self.Tokens.append(d.MQTT_TOKEN)
 
-        #Eliminamos pins duplicados
+        # Eliminamos pins duplicados
         self.AlonePins = list(dict.fromkeys(self.AlonePins))
         self.SpectrumPins = list(dict.fromkeys(self.SpectrumPins))
+        #Eliminamos Tokens duplicados
+        self.Tokens = list(dict.fromkeys(self.Tokens))
 
-        #Ordenamos pins duplicados
+        # Ordenamos pins duplicados
         self.AlonePins.sort()
         self.SpectrumPins.sort()
 
@@ -146,7 +154,6 @@ class GeneralConfiguration():
         self.MQTT_HOST = self.data["MQTT_HOST"]
         self.MQTT_PORT = self.data["MQTT_PORT"]
 
-
         try:
             self.ProgramConfiguration = ProgramConfiguration()
         except IOError:
@@ -162,9 +169,6 @@ class GeneralConfiguration():
 
         except IOError:
             self.Logger.debug("No hay Zonas definidas")
-
-
-
 
 
 def calculateMatrix(MatrixHeight, MatrixWidth, Side="LEFT"):
@@ -238,7 +242,7 @@ class LedMatrix(object):
         self.MQTT_TOKEN = MQTT_TOKEN
         self.MatrixStartLed = MatrixStartLed
         self.MatrixType = MatrixType
-        data = json.loads( AnimationsData )
+        data = json.loads(AnimationsData)
         for anim in data:
             anim["width"] = self.MatrixWidth
             anim["height"] = self.MatrixHeight
@@ -253,7 +257,7 @@ class configurationLedMatrix(object):
 
     def __init__(self, path="./web/static/config"):
         self.data = json.load(open(path + '/LedMatrix.json'))
-        for mtx in self.data["Matrix"]: 
+        for mtx in self.data["Matrix"]:
             lm = LedMatrix(mtx["MatrixWidth"],
                            mtx["MatrixHeight"],
                            mtx["LedPin"],
@@ -338,4 +342,3 @@ class animation(object):
             for inst in data["Commands"]:
                 cLine = commandLine(inst["IniFrame"], inst["EndFrame"], inst["Instruction"], inst["Value"])
                 self.instructions.append(cLine)
-

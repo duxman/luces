@@ -3,11 +3,15 @@ import getopt
 import threading
 import queue
 import os
+
+from paho import mqtt
+
+from Util.ledStripMessage import ledLevel
 from config import Zones, GeneralConfiguration
 from Util import Mp3ToWav
-from Util import PinManager
+#from Util import PinManager
 from Util.AudioProcessing import AudioProcessing
-from Util.StopableThreadConsumer import StopableConsumerThread
+#from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
 
 
@@ -16,10 +20,10 @@ class PlayMusic(object):
     ZonesConfig: Zones = None
     GeneralConfig: GeneralConfiguration = None
     Logger = None
-
     ConsumerThread = None
     MusicManager = None
     WorkingQueue = None
+    Tokens = []
 
     def __init__(self, filename, zones):
         cliente = clienteLog()
@@ -30,28 +34,34 @@ class PlayMusic(object):
         self.Logger.debug("Create Process Queue")
         self.WorkingQueue = queue.Queue()
 
-    def pinManagerProcess(self):
-        if self.ZonesConfig.ZonePinType == "REMOTE":
-            pinmanager = PinManager.PinControl(self.Logger, self.ZonesConfig, self.GeneralConfig.MQTT_HOST,
-                                               self.GeneralConfig.MQTT_PORT, self.ZonesConfig.MQTT_TOKEN)
-            self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.publish,
-                                                         name="PinManagerConsumerThread", sleep=0)
-        else:
-            pinmanager = PinManager.PinControl(self.Logger, self.ZonesConfig)
-            self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.EncenderInRangeZone,
-                                                         name="PinManagerConsumerThread", sleep=0)
-        self.ConsumerThread.start()
+    # def pinManagerProcess(self):
+    #     if self.ZonesConfig.ZonePinType == "REMOTE":
+    #         pinmanager = PinManager.PinControl(self.Logger, self.ZonesConfig, self.GeneralConfig.MQTT_HOST,
+    #                                            self.GeneralConfig.MQTT_PORT, self.ZonesConfig.MQTT_TOKEN)
+    #         self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.publish,
+    #                                                      name="PinManagerConsumerThread", sleep=0)
+    #     else:
+    #         pinmanager = PinManager.PinControl(self.Logger, self.ZonesConfig)
+    #         self.ConsumerThread = StopableConsumerThread(queue=self.WorkingQueue, target=pinmanager.EncenderInRangeZone,
+    #                                                      name="PinManagerConsumerThread", sleep=0)
+    #     self.ConsumerThread.start()
 
     def PlayFile(self):
         self.Logger.info("Iniciamos reproduccion de fichero " + self.Filename)
 
-        self.pinManagerProcess()
-        self.MusicManager = AudioProcessing(FileName=self.Filename)
-        producer = threading.Thread(
-            target=self.MusicManager.PlayWavFile(queue=self.WorkingQueue, FileName=self.Filename,
-                                                 NumeroPines=len(self.ZonesConfig.SpectrumPins)),
-            name="MusicManagerThread")
+        # producer = threading.Thread(
+        #     target=self.MusicManager.PlayWavFile(queue=self.WorkingQueue, FileName=self.Filename,
+        #                                          NumeroPines=len(self.ZonesConfig.SpectrumPins)),
+        #     name="MusicManagerThread")
 
+        #######################################################
+        # El productor gestionara los mensajes a MQTT
+        #######################################################
+        # Pasamos los parametros de host y port de MQTT al productor
+        self.MusicManager = AudioProcessing(FileName=self.Filename, Host=self.GeneralConfig.MQTT_HOST,
+                                            Port=self.GeneralConfig.MQTT_PORT,
+                                            Tokens=self.ZonesConfig.Tokens)
+        producer = threading.Thread(target=self.MusicManager.PlayWavFile(FileName=self.Filename, NumeroPines=len(self.ZonesConfig.SpectrumPins)), name="MusicManagerThread")
         producer.start()
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)
