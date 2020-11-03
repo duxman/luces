@@ -1,4 +1,5 @@
 import contextlib
+import struct
 import uuid
 import wave
 import numpy
@@ -6,6 +7,7 @@ import math
 import os
 import time
 import paho.mqtt.client as mqtt
+import statistics as stats
 from Util.ledStripMessage import ledLevel
 from Util.logger import clienteLog
 
@@ -41,8 +43,6 @@ class AudioProcessing():
             self.Device = alsaaudio.PCM()
         else:
             self.Device = pyaudio.PyAudio()
-
-        self.GetMaxRate(FileName)
 
     def initializeMQTT(self, host, port):
         self.clienteMqtt.on_connect = self.on_connect
@@ -105,26 +105,27 @@ class AudioProcessing():
         self.GetMaxRate(self.WaveFile)
         return self.WaveFile
 
-    def GetMaxRate(self, FileName):
+    def GetMaxRate(self, FileName,numPines):
+        self.MaxRate = 0
         with contextlib.closing(wave.open(FileName, 'rb')) as f:
             self.PeriodSize = int((f.getframerate() / 8))
-            array = []
             data = f.readframes(self.PeriodSize)
             while data:
-                #valor = int( audioop.rms( data,2) )
-                data = numpy.fromstring(data, 'Int16')                
-                valor = numpy.median( numpy.absolute(data))
-                array.append( valor )
+                count = len(data) / 2
+                data = struct.unpack("%dh" % count, data)
+                valor = int(stats.median_low(numpy.absolute(data)))
+                if valor > self.MaxRate:
+                    self.MaxRate = int(valor);
                 data = f.readframes(self.PeriodSize)
-            self.MaxRate = numpy.max( array )
+
         return self.MaxRate, self.PeriodSize
 
     def getQueueValue(self, ValorMax, ValorMedio, NumeroPines ):
         ValorIntermedio = (ValorMedio * NumeroPines) / ValorMax
         ValorNormalizado = int(abs(math.ceil(ValorIntermedio)))
         self.publish(ValorNormalizado)
-        value='->#'
-        #self.Logger.info(f".ljust(ValorNormalizado, '#'))
+        print(ValorNormalizado * '*')
+
         #Antes se procesaba con queue ahora com mqtt
         #self.QueueProcess.put(ValorNormalizado)
 
@@ -133,13 +134,16 @@ class AudioProcessing():
         if FileName == None:
             FileName = self.WaveFile
 
+        self.GetMaxRate(FileName,NumeroPines)
+
         with contextlib.closing(wave.open(FileName, 'rb')) as WaveAudio:
             self.prepareDevice(self.Device, WaveAudio)
             data = WaveAudio.readframes(self.PeriodSize)
             while data:
                 data1 = numpy.fromstring(data, 'Int16')
 
-                valormedio = numpy.median(numpy.absolute(data1))
+                valormedio = int(stats.median_low(numpy.absolute(data1)))
+                #valormedio = numpy.median(numpy.absolute(data1))
                 self.getQueueValue( self.MaxRate, valormedio, NumeroPines)
 
                 self.WriteFunctionObject.write(data)
