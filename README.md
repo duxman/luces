@@ -24,6 +24,12 @@ python -m pip install numpy
 python -m pip install pyaudio
 python -m pip install pydub
 python -m pip install flask
+python -m pip install paho-mqtt
+
+
+Para hacer uso de las zonas remotas es necesario tener instalado Mosquito en la raspberry
+o disponer de alguno servidor MQTT en nuestra red 
+sudo apt-get install mosquitto*
 ````
 For use with MP3 file you need ffmepg instaled in your system 
 make sure you have ffmpeg and ffprobe in your path of execution
@@ -102,6 +108,7 @@ This file contains
 
 **For test a Song execute this command**
 ````
+    Ahora permite zonas remotas con mqtt y esp12E
     sudo python luces/PlayMusic.py -i <Path to song in wav>
     
     example :
@@ -126,17 +133,6 @@ This file contains
     you'll get ../music/sample.mp3.wav    
 ````
 
-**Animation led Matrix**
-````
-    Directo from raspberry to Led Matrix
-    sudo python luces/util/LedMatrixAnimation.py -a <json animation data>'
-    "{'ImageFile': 'file', 'CommandFile': '', 'width': 128, 'heigt': 8, 'Repetitions': 5, 'Speed': 0.1}"
-    
-    Its mandatory use  Pin 18 always because its necesary pwm
-    
-    example :
-    none        
-````
 **Serve Animation led Matrix**
 ````
     Now with a esp8266 ESP12E you can use my code in esp8266luces and flash your device
@@ -148,3 +144,5 @@ This file contains
     example :
     none        
 ````
+[![Demo Video](./media/VID_20201031_234133.mp4)]("Demo Video")
+
