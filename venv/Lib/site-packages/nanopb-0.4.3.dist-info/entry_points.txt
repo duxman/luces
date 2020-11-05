@@ -1,0 +1,4 @@
+[console_scripts]
+nanopb_generator=nanopb.generator.nanopb_generator:main_cli
+protoc-gen-nanopb=nanopb.generator.nanopb_generator:main_plugin
+

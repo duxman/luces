@@ -1,0 +1,12 @@
+{
+    "Zones": [
+        {
+            "MQTT_TOKEN": "LedData",
+            "ZoneId": "1",
+            "ZoneName": "ESP12E 1",
+            "ZonePinType": "REMOTE",
+            "ZonePins": "1,2,3",
+            "ZoneType": "SPECTRUM"
+        }
+    ]
+}

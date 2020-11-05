@@ -190,14 +190,17 @@ class GeneralConfiguration():
             self.Logger.debug("No hay Zonas definidas")
 
 
-def calculateMatrix(MatrixHeight, MatrixWidth, Side="LEFT"):
+def calculateMatrix(MatrixHeight, MatrixWidth, Side="LEFT", PanelsV=1, PanelsH=1):
     if Side == "LEFT":
         bInc = False
     else:
         bInc = True
 
+    CountLeds = MatrixHeight * MatrixWidth
+    VerticalHeight = MatrixHeight * PanelsV
     myMatrix = []
-    for i in range(MatrixHeight, 0, -1):
+    for i in range(VerticalHeight, 0, -1):
+        linetemp=[];
         # Calculate Max and min led
         maxled = (i * MatrixWidth)
         minled = (maxled - MatrixWidth)
@@ -208,7 +211,11 @@ def calculateMatrix(MatrixHeight, MatrixWidth, Side="LEFT"):
         else:
             rangeMatrixLine = range(minled, maxled, 1)
             bInc = False;
-        myMatrix.extend(rangeMatrixLine)
+        linetemp.extend(rangeMatrixLine)
+        for p in range(PanelsH):
+            valorSuma = p * CountLeds
+            line = list(map(lambda x: x + valorSuma, linetemp ))
+            myMatrix.extend(line)
     return myMatrix
 
 
@@ -226,6 +233,8 @@ class LedMatrix(object):
     MatrixStartLed = "RIGHT"
     MatrixType = "NONE"
     Animations = []
+    VerticalPanels = 1
+    HorizontalPanels =1
     ################################################################
     #                 In configuration File
     ################################################################
@@ -251,14 +260,15 @@ class LedMatrix(object):
     ################################################################
     #           Auto calculate
     ################################################################
-    def __init__(self, MatrixWidth, MatrixHeight, LedPin, MQTT_HOST, MQTT_PORT, MQTT_TOKEN, MatrixStartLed, MatrixType,
-                 AnimationsData):
+    def __init__(self, MatrixWidth, MatrixHeight, LedPin, MQTT_HOST, MQTT_PORT, MQTT_TOKEN, MatrixStartLed, MatrixType,PanelsV,PanelsH,AnimationsData):
         self.MatrixWidth = MatrixWidth
         self.MatrixHeight = MatrixHeight
         self.LedPin = LedPin  # GPIO pin connected to the pixels (must support PWM!).
         self.MQTT_HOST = MQTT_HOST
         self.MQTT_PORT = MQTT_PORT
         self.MQTT_TOKEN = MQTT_TOKEN
+        self.VerticalPanels = PanelsV
+        self.HorizontalPanels = PanelsH
         self.MatrixStartLed = MatrixStartLed
         self.MatrixType = MatrixType
         data = json.loads(AnimationsData)
@@ -267,7 +277,7 @@ class LedMatrix(object):
             anim["height"] = self.MatrixHeight
             animtemp = animation(json.dumps(anim))
             self.Animations.append(animtemp)
-        self.myMatrix = calculateMatrix(self.MatrixHeight, self.MatrixWidth)
+        self.myMatrix = calculateMatrix(self.MatrixHeight, self.MatrixWidth,"LEFT",self.VerticalPanels,self.HorizontalPanels)
 
 
 class configurationLedMatrix(object):
@@ -285,6 +295,8 @@ class configurationLedMatrix(object):
                            mtx["MQTT_TOKEN"],
                            mtx["MatrixStartLed"],
                            mtx["MatrixType"],
+                           mtx["VerticalPanels"],
+                           mtx["HorizontalPanels"],
                            json.dumps(mtx["Animations"]))
         self.Matrix.append(lm)
 

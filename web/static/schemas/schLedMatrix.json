@@ -19,6 +19,8 @@
 				{
 					"MatrixWidth": {"type": "integer","default": 16},
 					"MatrixHeight": {"type": "integer","default": 8},
+					"VerticalPanels": {"type": "integer","default": 1},
+					"HorizontalPanels": {"type": "integer","default": 1},
 					"MatrixStartLed": {"type": "string","enum": ["LEFT","RIGHT"],"default": "LEFT"},
 					"MatrixType": {"type": "string","enum": ["GPIO","REMOTE"],"default": "REMOTE"},
 					"LedPin": {"type": "integer","default": 5},
