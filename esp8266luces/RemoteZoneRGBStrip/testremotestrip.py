@@ -48,7 +48,7 @@ class ServeLedStripAnimation():
 
     def on_connect(self, mqttc, obj, flags, rc):
         print("rc: " + str(rc))
-        mqttc.subscribe(self.token)
+       # mqttc.subscribe(self.token)
 
     def decodeMsg(self, msg):
         led = ledLevel()
@@ -67,6 +67,7 @@ class ServeLedStripAnimation():
         my_list = id.split(",")
         for l in my_list:
             led.Level = int(l)
+            time.sleep(0.125)
             self.clienteMqtt.publish(self.token, led.SerializeToString(), 2, False)
 
 

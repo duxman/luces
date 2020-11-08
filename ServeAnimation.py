@@ -24,9 +24,7 @@ import getopt
 import json
 import time, sys, os
 import paho.mqtt.client as mqtt
-from PIL import Image  # Use apt-get install python-imaging to install this
 
-from LedMatrixAnimation import matrixAnimation
 from config import configurationLedMatrix, animation, calculateMatrix
 
 from Util.LedPanelMessage import led, display
@@ -51,6 +49,8 @@ class ServeAnimation():
             for mtx in self.Config.Matrix:
                 self.initializeMQTT(mtx.MQTT_HOST, int(mtx.MQTT_PORT), mtx.MQTT_TOKEN)
                 for anim in mtx.Animations:
+                    anim.panelsV = mtx.VerticalPanels
+                    anim.panelsH= mtx.HorizontalPanels
                     self.startAnimation( anim,mtx.myMatrix)
 
     def initializeMQTT(self, host, port, token):
@@ -120,7 +120,7 @@ class ServeAnimation():
                     # the FLIP command can change this
                     thisincrement = 1
 
-                    rg = Anim.image.crop((x, 0, x + Anim.width, Anim.height))
+                    rg = Anim.image.crop((x, 0, x + Anim.width * Anim.panelsH, Anim.height * Anim.panelsV))
                     dots = list(rg.getdata())
 
                     cont_paquete = 0
@@ -158,7 +158,7 @@ def main(argv):
     token = ""
     ##"{\"ImageFile\": \"prueba.png\", \"CommandFile\": \"\", \"width\": 12, \"heigth\": 8, \"Repetitions\": 5, \"Speed\": 0.1 }"
     try:
-        opts, args = getopt.getopt(argv, "ahpt:", ["AnimationData=", "host=", "port=", "token="])
+        opts, args = getopt.getopt(argv, "a:h:p:t:", ["AnimationData=", "host=", "port=", "token="])
     except getopt.GetoptError:
         print('LedMatrixAnimation.py -a <json animation data>')
         sys.exit(2)
@@ -177,7 +177,9 @@ def main(argv):
 
     if (host != ""):
         ani = animation(inputfile)
-        myMatrix = calculateMatrix(ani.height, ani.width)
+        ani.panelsV=1
+        ani.panelsH=2
+        myMatrix = calculateMatrix(ani.height, ani.width,"LEFT",1,2)
         ma = ServeAnimation(True)
         ma.initializeMQTT(host, int(port), token)
         ma.startAnimation(ani, myMatrix)

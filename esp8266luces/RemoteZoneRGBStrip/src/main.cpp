@@ -65,7 +65,7 @@ void decodeLedLevel( byte* payload,unsigned int length )
         {
             //digitalWrite(PINES[i], HIGH);            
             analogWrite(PINES[i], LED_BRIGHT);  
-            //Serial.printf("Write New level %d\r\n",msgled.Level);        
+            Serial.printf("Write New level %d\r\n",msgled.Level);        
         }
     }
     

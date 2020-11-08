@@ -198,23 +198,29 @@ def calculateMatrix(MatrixHeight, MatrixWidth, Side="LEFT", PanelsV=1, PanelsH=1
 
     CountLeds = MatrixHeight * MatrixWidth
     VerticalHeight = MatrixHeight * PanelsV
+
     myMatrix = []
     for i in range(VerticalHeight, 0, -1):
+        rangeMatrixLine = []
         linetemp=[];
         # Calculate Max and min led
         maxled = (i * MatrixWidth)
         minled = (maxled - MatrixWidth)
         # For calculate go and return
         if bInc == False:
-            rangeMatrixLine = range(maxled - 1, minled - 1, -1)
+            rangeMatrixLine.extend( range(maxled - 1, minled - 1, -1) )
             bInc = True
         else:
-            rangeMatrixLine = range(minled, maxled, 1)
+            rangeMatrixLine.extend( range(minled, maxled, 1) )
             bInc = False;
-        linetemp.extend(rangeMatrixLine)
+        print("range line " + str(i) )
+        print( rangeMatrixLine )
+
         for p in range(PanelsH):
             valorSuma = p * CountLeds
-            line = list(map(lambda x: x + valorSuma, linetemp ))
+            line = list(map(lambda x: x + valorSuma, rangeMatrixLine ))
+            print("line " + str(i))
+            print(line)
             myMatrix.extend(line)
     return myMatrix
 
@@ -277,7 +283,7 @@ class LedMatrix(object):
             anim["height"] = self.MatrixHeight
             animtemp = animation(json.dumps(anim))
             self.Animations.append(animtemp)
-        self.myMatrix = calculateMatrix(self.MatrixHeight, self.MatrixWidth,"LEFT",self.VerticalPanels,self.HorizontalPanels)
+        self.myMatrix = calculateMatrix(self.MatrixHeight, self.self.MatrixStartLed,self.VerticalPanels,self.HorizontalPanels)
 
 
 class configurationLedMatrix(object):

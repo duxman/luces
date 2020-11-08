@@ -28,11 +28,11 @@
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
 #include <pb_decode.h>
-//#define __FASTLED__ 1
+#define __FASTLED__ 1
 #ifdef __FASTLED__
-  #define FASTLED_ESP8266_RAW_PIN_ORDER
-  #define FASTLED_ALLOW_INTERRUPTS 0
-  #define FASTLED_INTERRUPT_RETRY_COUNT 3
+  //#define FASTLED_ESP8266_RAW_PIN_ORDER
+  //#define FASTLED_ALLOW_INTERRUPTS 0
+  //#define FASTLED_INTERRUPT_RETRY_COUNT 3
   #include <FastLED.h>
   CRGB leds[NUM_LEDS];
 #else
@@ -140,16 +140,15 @@ void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
 ///////////////////////////////////////////////////////////////////////
 void connectToMqtt() 
 {
-  Serial.println("Connecting to MQTT...");
+  Serial.println("Connecting to MQTT..." );  
   mqttClient.connect();
 }
 
 void onMqttConnect(bool sessionPresent)
  {
   Serial.println("Connected to MQTT.");
-  ConfigureFastLed();
   Serial.print("Session present: ");
-  
+  ConfigureFastLed();
   Serial.println(sessionPresent);
   
   uint16_t packetIdSub = mqttClient.subscribe(MQTT_TOKEN, 2);  
@@ -211,11 +210,16 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 
 void ConfigureFastLed() 
 {
+  delay(3000); // sanity delay
+  Serial.println("Configuring led strip");
   #ifdef __FASTLED__
-    FastLED.addLeds<WS2812Controller800Khz, PIN>(leds, NUM_LEDS); 
+    
+    FastLED.addLeds<CHIPSET, PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+    //FastLED.addLeds<WS2812Controller800Khz, PIN>(leds, NUM_LEDS); 
     FastLED.clear();
     FastLED.show();
     Serial.println("FastLed Configured");
+
   #else    
     leds.begin();
     leds.setBrightness(50);
@@ -223,6 +227,34 @@ void ConfigureFastLed()
     leds.show();        
     Serial.println("Adafruit Configure Configured");
   #endif
+  printConfigStep( 1);
+  
+}
+// Config step  1 = FastLed
+//              2 = wifi conecting 
+//              3 = wifi Conected
+//              4 = Mqtt conecting
+//              5 = Mqtt Conected
+void printConfigStep( int ConfigStep)
+{
+  int iniLed=(ConfigStep-1)*10;
+  int finLed=ConfigStep;
+  int color= CRGB(255,0,0);  
+  for( int i=iniLed ; i< finLed ; i++)
+  {
+    Serial.printf("Print led %d\r\n",i);
+    #ifdef __FASTLED__
+      
+      FastLED.clear();
+      leds[i] = CRGB(0,0,150);
+      FastLED.show();      
+    #else
+      leds.fill(0); 
+      leds.setPixelColor( i,msgled.Color);        
+      leds.show(); 
+    #endif
+    delay(25);
+  }
 }
 ///////////////////////////////////////////////////////////////////////
 ////                 FASTLED
@@ -232,11 +264,10 @@ void ConfigureFastLed()
 ////                 ARDUINO
 ///////////////////////////////////////////////////////////////////////
 void setup() {
-  Serial.begin(74880);
+  Serial.begin(BAUDSSERIAL);
   Serial.println("/////////////////////////////////////////////////////////////////////");
   Serial.println("/////////////                      INICIO                     ///////");
-  Serial.println("/////////////////////////////////////////////////////////////////////");
-
+  Serial.println("/////////////////////////////////////////////////////////////////////");  
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
 
