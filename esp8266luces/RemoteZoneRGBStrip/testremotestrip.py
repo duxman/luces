@@ -77,7 +77,7 @@ def main(argv):
     port = ""
     token = ""
     try:
-        opts, args = getopt.getopt(argv, "hpt:", ["host=", "port=", "token="])
+        opts, args = getopt.getopt(argv, "h:p:t:", ["host=", "port=", "token="])
     except getopt.GetoptError:
         print('LedStripAnimation.py -h <host> -p<port> -t<token>')
         sys.exit(2)

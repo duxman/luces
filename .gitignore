@@ -5,3 +5,5 @@ temp
 /log
 /esp8266luces/RemoteZoneLedPanel/include/config.h
 config.h
+venv
+libs

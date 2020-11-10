@@ -106,7 +106,7 @@ void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
 void connectToMqtt() 
 {
   Serial.println("Connecting to MQTT...");
-  mqttClient.connect();
+  mqttClient.connect();  
 }
 
 void onMqttConnect(bool sessionPresent)
@@ -119,7 +119,7 @@ void onMqttConnect(bool sessionPresent)
   uint16_t packetIdSub = mqttClient.subscribe(MQTT_TOKEN, 2);  
   Serial.print("Subscribing at QoS 2, packetId: ");
   Serial.println(packetIdSub);  
-
+  ConfigureLed();
   
 }
 
@@ -214,7 +214,7 @@ void setup() {
   Serial.println("/////////////////////////////////////////////////////////////////////");
   Serial.println("/////////////                      INICIO                     ///////");
   Serial.println("/////////////////////////////////////////////////////////////////////");
-  ConfigureLed();
+  
 
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
