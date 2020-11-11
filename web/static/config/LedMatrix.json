@@ -6,19 +6,19 @@
                     "CommandFile": "",
                     "ImageFile": "pruebag1.png",
                     "Repetitions": 5,
-                    "Speed": 0.125
+                    "Speed": 0.250
                 },
                 {
                     "CommandFile": "",
                     "ImageFile": "pruebag.png",
                     "Repetitions": 5,
-                    "Speed": 0.125
+                    "Speed": 0.250
                 }
             ],
             "LedPin": 5,
             "VerticalPanels": 1,
             "HorizontalPanels": 2,
-            "MQTT_HOST": "192.168.1.196",
+            "MQTT_HOST": "192.168.1.118",
             "MQTT_PORT": 1883,
             "MQTT_TOKEN": "InData",
             "MatrixHeight": 18,

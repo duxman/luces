@@ -18,7 +18,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+#define FASTLED_ESP8266_RAW_PIN_ORDER
+#define FASTLED_ESP8266_NODEMCU_PIN_ORDER
+#define FASTLED_ESP8266_D1_PIN_ORDER
 #include <Arduino.h>
 
 

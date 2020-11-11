@@ -75,11 +75,18 @@ class AudioProcessing():
     def on_publish(self, mqttc, obj, mid):
         self.Logger.debug("Messagge sended " + str(mid))
 
-    def publish(self, id):
+    def publish(self, id = -1 , rng=-1):
         led = ledLevel()
-        led.Level = id
-        for t in self.Tokens:
-            self.clienteMqtt.publish(t, led.SerializeToString(), 2, False)
+        if id!=-1:
+            led.Level = id
+            for t in self.Tokens:
+                self.clienteMqtt.publish(t, led.SerializeToString(), 2, False)
+
+        else:
+            for idx in range(rng):
+                led.Level = idx
+                for t in self.Tokens:
+                    self.clienteMqtt.publish(t, led.SerializeToString(), 2, False)
 
     def setFfmpegPath(self, path):
         AudioSegment.converter = path
@@ -142,7 +149,7 @@ class AudioProcessing():
     def getQueueValue(self, ValorMax, ValorMedio, NumeroPines ):
         ValorIntermedio = (ValorMedio * NumeroPines) / ValorMax
         ValorNormalizado = int(abs(math.ceil(ValorIntermedio)))
-        self.publish(ValorNormalizado)
+        self.publish(id=ValorNormalizado)
         print(ValorNormalizado * '*')
 
         #Antes se procesaba con queue ahora com mqtt
