@@ -17,12 +17,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-#define FASTLED_ESP8266_RAW_PIN_ORDER
-#define FASTLED_ESP8266_NODEMCU_PIN_ORDER
-#define FASTLED_ESP8266_D1_PIN_ORDER
+#ifdef SP01
+  #define FASTLED_ESP8266_RAW_PIN_ORDER
+  #define FASTLED_ESP8266_NODEMCU_PIN_ORDER
+  #define FASTLED_ESP8266_D1_PIN_ORDER
+#endif
 #include <Arduino.h>
-
 
 #include "config.h"
 #include <ESP8266WiFi.h>

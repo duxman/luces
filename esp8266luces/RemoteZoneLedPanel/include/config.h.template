@@ -1,14 +1,16 @@
 ///////////////////////////////////////////////////////////////////////
 ////                 DEFINES
 ///////////////////////////////////////////////////////////////////////
-#define NUM_LEDS <NUM OF LEDS IN PANEL>
-#define PIN D1
+#define NUM_LEDS 18*24*2
+const int PIN=2;
+#define CHIPSET WS2812B
 #define COLOR_ORDER RGB
-#define MQTT_HOST <MOSQUITTO SERVER IP>
+//#define COLOR_ORDER GRB
+#define MQTT_HOST IPAddress(AAA, BBB, CCC, DDD)
 #define MQTT_PORT 1883
-#define MQTT_TOKEN <YOUR TOKEN>
-#define ssid = <YOUR WIFI>;
-#define password = <YOUR PASSWORD>
+#define MQTT_TOKEN "<<TOKEN>>"
+#define WIFI_SSID "<<WIFI SSID>>"
+#define WIFI_PASSWD "<<WIFI PASSWD>>"
 ///////////////////////////////////////////////////////////////////////
 ////                 DEFINES
 ///////////////////////////////////////////////////////////////////////

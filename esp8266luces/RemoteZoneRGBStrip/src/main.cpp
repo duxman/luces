@@ -59,15 +59,7 @@ void decodeLedLevel( byte* payload,unsigned int length )
         return;
     }  
     Serial.printf("New level %d\r\n",msgled.Level);        
-    for( int i=0; i< NUM_PINS ;i++) 
-    {
-        if( msgled.Level == LEVELS[i])
-        {
-            //digitalWrite(PINES[i], HIGH);            
-            analogWrite(PINES[i], LED_BRIGHT);  
-            Serial.printf("Write New level %d\r\n",msgled.Level);        
-        }
-    }
+    writeLeds( msgled.Level );
     
 
 }
@@ -157,13 +149,6 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     payloadBuffer = (byte*) malloc(total);
 
   memcpy( payloadBuffer+index,payload,len); 
-  for( int i=0; i< NUM_PINS ;i++) 
-  {
-    //digitalWrite(PINES[i], LOW);  
-    analogWrite(PINES[i], 0);  
-    Serial.printf("off leds %d\r\n",i);        
-               
-  }
   if( index+len == total)
   {
     Serial.printf("Mensaje completo len\r\n");  
@@ -177,7 +162,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 ///////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////
-////                 FASTLED
+////                 LED STRIP
 ///////////////////////////////////////////////////////////////////////
 
 void ConfigureLed() 
@@ -202,8 +187,54 @@ void ConfigureLed()
       }
     }            
 }
+
+void offLeds()
+{
+ for( int i=0; i< NUM_PINS ;i++) 
+  {
+    //digitalWrite(PINES[i], LOW);  
+    analogWrite(PINES[i], LED_BRIGHT_OFF);  
+    Serial.printf("off leds %d\r\n",i);        
+               
+  }
+}
+void writeLeds( int level)
+{
+    for( int i=NUM_PINS-1; i>=0 ;i--) 
+    {
+        int min = LEVELS[i][0];
+        int max = LEVELS[i][1];
+        if( min != max)
+        {
+          if(level < min )
+          {
+            analogWrite(PINES[i], LED_BRIGHT_OFF); 
+          }
+          if(level > max )
+          {
+            analogWrite(PINES[i], LED_BRIGHT_LOW); 
+          }          
+          if(level >= min && level <= max )
+          {
+            analogWrite(PINES[i], LED_BRIGHT); 
+          }
+        }
+        else
+        {
+          if( level == max)
+          {
+              analogWrite(PINES[i], LED_BRIGHT);                
+            Serial.printf("Write New level %d\r\n",msgled.Level);        
+          }
+          else
+          {
+            analogWrite(PINES[i], LED_BRIGHT_OFF);  
+          }
+        }
+    }
+}
 ///////////////////////////////////////////////////////////////////////
-////                 FASTLED
+////                 LED STRIP
 ///////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////
@@ -230,5 +261,6 @@ void setup() {
   connectToWifi();  
 }
 
-void loop() {
+void loop()
+{
 }
