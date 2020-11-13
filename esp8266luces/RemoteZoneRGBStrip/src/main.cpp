@@ -202,6 +202,7 @@ void writeLeds( int level)
 {
     for( int i=NUM_PINS-1; i>=0 ;i--) 
     {
+        
         int min = LEVELS[i][0];
         int max = LEVELS[i][1];
         if( min != max)
@@ -213,18 +214,20 @@ void writeLeds( int level)
           if(level > max )
           {
             analogWrite(PINES[i], LED_BRIGHT_LOW); 
+            Serial.printf("Write New level %d on %d\r\n",msgled.Level,LED_BRIGHT_LOW);  
           }          
           if(level >= min && level <= max )
           {
             analogWrite(PINES[i], LED_BRIGHT); 
+            Serial.printf("Write New level %d on %d\r\n",msgled.Level,LED_BRIGHT);  
           }
         }
         else
         {
           if( level == max)
           {
-              analogWrite(PINES[i], LED_BRIGHT);                
-            Serial.printf("Write New level %d\r\n",msgled.Level);        
+              analogWrite(PINES[i], LED_BRIGHT);                                 
+              Serial.printf("Write New level %d on %d\r\n",msgled.Level,LED_BRIGHT);  
           }
           else
           {

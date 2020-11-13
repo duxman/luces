@@ -7,7 +7,11 @@
 #define LED_BRIGHT 128
 #define WIFI_SSID <YOUR WIFI>
 #define WIFI_PASSWD <YOUR PASSWORD>
+#define LED_BRIGHT 128
+#define LED_BRIGHT_LOW 64
+#define LED_BRIGHT_OFF 0
 #define NUM_PINS 3
+
 ///////////////////////////////////////////////////////////////////////
 ////                 DEFINES
 ///////////////////////////////////////////////////////////////////////
@@ -15,7 +19,16 @@
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
 int PINES[] = {D5,D6,D7}; //PINs connected to RGB STRIP OR RELAY OR EÑ WIRE ....
-int LEVELS[NUM_PINS][2] = {{1,3},{4,6},{7,9}}; //LEVELs FOR EACH PIN
+//Efecto1
+//int LEVELS[NUM_PINS][2] = {{7,7},{8,8},{9,9}}; //LEVELs FOR EACH PIN
+//int LEVELS[NUM_PINS][2] = {{4,4},{5,5},{6,6}}; //LEVELs FOR EACH PIN  
+//int LEVELS[NUM_PINS][2] = {{1,1},{2,2},{3,3}}; //LEVELs FOR EACH PIN
+//efecto2
+//int LEVELS[NUM_PINS][2] = {{1,3},{4,6},{7,9}}; //LEVELs FOR EACH PIN
+//Efecto3
+//int LEVELS[NUM_PINS][2] = {{1,1},{4,4},{7,7}}; //LEVELs FOR EACH PIN
+//int LEVELS[NUM_PINS][2] = {{2,2},{5,5},{8,8}}; //LEVELs FOR EACH PIN
+int LEVELS[NUM_PINS][2] = {{3,3},{6,6},{9,9}}; //LEVELs FOR EACH PIN
 ///////////////////////////////////////////////////////////////////////
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
