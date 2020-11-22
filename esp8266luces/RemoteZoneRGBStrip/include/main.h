@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#define STRING_LEN 128
+#define NUMBER_LEN 6
 
 void decodeLedLevel( byte* payload,unsigned int length );
 void connectToWifi() ;
@@ -31,3 +33,6 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 void ConfigureLed() ;
 void writeLeds( int level);
 void offLeds();
+void saveConfigCallback ();
+void setupConfig ();
+ String getValue(String data, char separator, int index);

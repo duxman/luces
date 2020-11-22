@@ -20,8 +20,10 @@
 
 
 #include <Arduino.h>
+#include <IotWebConf.h>
+#include "webconfig.hpp"
 #include "config.h"
-#include <ESP8266WiFi.h>
+#include <ESP8266WiFi.h>  
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
 #include <pb_decode.h>
@@ -33,6 +35,8 @@
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
 ledLevel msgled = ledLevel_init_zero;
+IPAddress mqttServer = IPAddress();
+int       mqttPort = 0;
 
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
@@ -43,6 +47,82 @@ byte *payloadBuffer;
 int posicion=0;
 ///////////////////////////////////////////////////////////////////////
 ////                 VARIABLES
+///////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////
+////                 CONFIGURACION
+///////////////////////////////////////////////////////////////////////
+
+void configureWifi()
+{	
+	MqttServerParam=IotWebConfParameter("Mqtt Server Param", "StringMqttServerParam", StringMqttServerParam, STRING_LEN);
+	MqttPortParam=IotWebConfParameter("Mqtt Port Param", "IntMqttPortParam", IntMqttPortParam, NUMBER_LEN);
+	MqttTokenParam=IotWebConfParameter("Mqtt Token Param", "StringMqttTokenParam", StringMqttTokenParam, STRING_LEN);
+	separator=IotWebConfSeparator("--------------------------------------"); 
+	PinsParam=IotWebConfParameter("Pins Param", "StringPinsParam", StringPinsParam, STRING_LEN);
+	ValuesParam=IotWebConfParameter("Values Param", "StringValuesParam", StringValuesParam, STRING_LEN);		
+	
+	webConfig.addParameter(&MqttServerParam);
+	webConfig.addParameter(&MqttPortParam);
+	webConfig.addParameter(&MqttTokenParam);
+	webConfig.addParameter(&PinsParam);
+	webConfig.addParameter(&ValuesParam);
+	
+	webConfig.setConfigSavedCallback(&configSaved);
+ //webConfig.setWifiConnectionCallback(&wifiConnected);
+	webConfig.getApTimeoutParameter()->visible = true;
+	
+	boolean validConfig = webConfig.init();	
+	if (!validConfig)
+	{
+		StringMqttServerParam[0]='\0';
+		IntMqttPortParam[0]='\0';
+		StringMqttTokenParam[0]='\0';
+		StringPinsParam[0]='\0';
+		StringValuesParam[0]='\0';
+	}	
+	server.on("/", handleRoot);
+	server.on("/config", []{ webConfig.handleConfig(); });
+	server.onNotFound([](){ webConfig.handleNotFound(); });	
+}
+
+
+void configSaved()
+{
+  Serial.println("Configuration was updated.");
+}
+
+
+void handleRoot()
+{
+  // -- Let IotWebConf test and handle captive portal requests.
+  if (webConfig.handleCaptivePortal())
+  {
+    // -- Captive portal request were already served.
+    return;
+  }
+  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s += "<title>IotWebConf 03 Custom Parameters</title></head><body>Hello world!";
+  s += "<ul>";
+  s += "<li>MQTT SERVER: ";
+  s += StringMqttServerParam;
+  s += "<li>MQTT PORT: ";
+  s += atoi(IntMqttPortParam);
+  s += "<li>MQTT TOKEN: ";
+  s += StringMqttTokenParam;
+  s += "<li>PIN LIST: ";
+  s += StringPinsParam;
+  s += "<li>VALUE LIST: ";
+  s += StringValuesParam;
+  s += "</ul>";
+  s += "Go to <a href='config'>configure page</a> to change values.";
+  s += "</body></html>\n";
+
+  server.send(200, "text/html", s);
+}
+
+///////////////////////////////////////////////////////////////////////
+////                 CONFIGURACION
 ///////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////
@@ -75,11 +155,22 @@ void decodeLedLevel( byte* payload,unsigned int length )
 void connectToWifi() 
 {
   Serial.println("Connecting to Wi-Fi...");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWD);
+  //WiFi.begin(WIFI_SSID, WIFI_PASSWD);
+  WiFi.begin(webConfig.getWifiSsidParameter()->valueBuffer, webConfig.getWifiPasswordParameter()->valueBuffer);
+}
+
+void wifiConnected()
+{
+  Serial.printf("Conectados a wifi ... set params mqtt %s:%s",StringMqttServerParam,IntMqttPortParam);
+  mqttServer.fromString(StringMqttServerParam);
+  mqttPort = atoi(IntMqttPortParam);
+  mqttClient.setServer(mqttServer,mqttPort);  
 }
 
 void onWifiConnect(const WiFiEventStationModeGotIP& event) {
   Serial.println("Connected to Wi-Fi.");
+  delay(5000);
+  wifiConnected();  
   connectToMqtt();
 }
 
@@ -108,7 +199,7 @@ void onMqttConnect(bool sessionPresent)
   
   Serial.println(sessionPresent);
   
-  uint16_t packetIdSub = mqttClient.subscribe(MQTT_TOKEN, 2);  
+  uint16_t packetIdSub = mqttClient.subscribe(StringMqttTokenParam, 2);  
   Serial.print("Subscribing at QoS 2, packetId: ");
   Serial.println(packetIdSub);  
   ConfigureLed();
@@ -117,10 +208,9 @@ void onMqttConnect(bool sessionPresent)
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
  {
-  Serial.println("Disconnected from MQTT.");
-
+  Serial.println("Disconnected from MQTT.");  
   if (WiFi.isConnected()) 
-  {
+  {    
     mqttReconnectTimer.once(2, connectToMqtt);
   }
 }
@@ -164,26 +254,63 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 ///////////////////////////////////////////////////////////////////////
 ////                 LED STRIP
 ///////////////////////////////////////////////////////////////////////
+ String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+        found++;
+        strIndex[0] = strIndex[1]+1;
+        strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+  }
+
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
 
 void ConfigureLed() 
 {
     Serial.printf("Initializing Leds\r\n"); 
-    for( int i=0 ; i < NUM_PINS;i++)
+    String PinString(StringPinsParam);
+    String LevelString(StringValuesParam);     
+    for(int i=0; i<NUM_PINS;i++)
     {
-      pinMode(PINES[i], OUTPUT);
-    }   
+      String PinTemp;
+      String LevelTemp;
+      PinTemp = getValue(PinString, ',', i);
+      LevelTemp = getValue(LevelString, ',', i);
+
+      Serial.print("Read Config Led :"); 
+      Serial.print(PinTemp);
+      Serial.print(" Values = " );
+      Serial.print(LevelTemp);
+      
+      LEVELS[i][0] = getValue(LevelTemp, '-', 0).toInt();
+      LEVELS[i][1] = getValue(LevelTemp, '-', 1).toInt();
+      Serial.printf(" Levels (%d-%d)\r\n", LEVELS[i][0],LEVELS[i][1]);
+
+      PINES[i] = PinTemp.toInt();
+      if(PINES[i] != 0)
+        pinMode(PINES[i], OUTPUT);
+    }       
 
     for( int j=0 ; j < NUM_PINS ; j++)
     {
       for( int i=0 ; i < NUM_PINS;i++)
       {
-        //digitalWrite(PINES[i], HIGH);  
-        Serial.printf("enciendo %d \r\n",PINES[i]); 
-        analogWrite(PINES[i], LED_BRIGHT);  
-        delay(200);
-        //digitalWrite(PINES[i], LOW);  
-        Serial.printf("Apago %d \r\n",PINES[i]); 
-        analogWrite(PINES[i], 0);  
+        if( PINES[i] != 0)
+        {
+          //digitalWrite(PINES[i], HIGH);  
+          Serial.printf("enciendo %d \r\n",PINES[i]); 
+          analogWrite(PINES[i], LED_BRIGHT);  
+          delay(200);
+          //digitalWrite(PINES[i], LOW);  
+          Serial.printf("Apago %d \r\n",PINES[i]); 
+          analogWrite(PINES[i], 0);  
+        }
       }
     }            
 }
@@ -203,35 +330,38 @@ void writeLeds( int level)
     for( int i=NUM_PINS-1; i>=0 ;i--) 
     {
         
-        int min = LEVELS[i][0];
-        int max = LEVELS[i][1];
-        if( min != max)
+        if(PINES[i] != 0)
         {
-          if(level < min )
+          int min = LEVELS[i][0];
+          int max = LEVELS[i][1];
+          if( min != max)
           {
-            analogWrite(PINES[i], LED_BRIGHT_OFF); 
-          }
-          if(level > max )
-          {
-            analogWrite(PINES[i], LED_BRIGHT_LOW); 
-            Serial.printf("Write New level %d on %d\r\n",msgled.Level,LED_BRIGHT_LOW);  
-          }          
-          if(level >= min && level <= max )
-          {
-            analogWrite(PINES[i], LED_BRIGHT); 
-            Serial.printf("Write New level %d on %d\r\n",msgled.Level,LED_BRIGHT);  
-          }
-        }
-        else
-        {
-          if( level == max)
-          {
-              analogWrite(PINES[i], LED_BRIGHT);                                 
+            if(level < min )
+            {
+              analogWrite(PINES[i], LED_BRIGHT_OFF); 
+            }
+            if(level > max )
+            {
+              analogWrite(PINES[i], LED_BRIGHT_LOW); 
+              Serial.printf("Write New level %d on %d\r\n",msgled.Level,LED_BRIGHT_LOW);  
+            }          
+            if(level >= min && level <= max )
+            {
+              analogWrite(PINES[i], LED_BRIGHT); 
               Serial.printf("Write New level %d on %d\r\n",msgled.Level,LED_BRIGHT);  
+            }
           }
           else
           {
-            analogWrite(PINES[i], LED_BRIGHT_OFF);  
+            if( level == max)
+            {
+                analogWrite(PINES[i], LED_BRIGHT);                                 
+                Serial.printf("Write New level %d on %d\r\n",msgled.Level,LED_BRIGHT);  
+            }
+            else
+            {
+              analogWrite(PINES[i], LED_BRIGHT_OFF);  
+            }
           }
         }
     }
@@ -248,7 +378,7 @@ void setup() {
   Serial.println("/////////////////////////////////////////////////////////////////////");
   Serial.println("/////////////                      INICIO                     ///////");
   Serial.println("/////////////////////////////////////////////////////////////////////");
-  
+  configureWifi();
 
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
@@ -257,13 +387,14 @@ void setup() {
   mqttClient.onDisconnect(onMqttDisconnect);
   mqttClient.onSubscribe(onMqttSubscribe);
   mqttClient.onUnsubscribe(onMqttUnsubscribe);
-  mqttClient.onMessage(onMqttMessage);  
-  mqttClient.setServer(MQTT_HOST, MQTT_PORT);
+  mqttClient.onMessage(onMqttMessage);      
   
   
-  connectToWifi();  
+
+  //connectToWifi();  
 }
 
 void loop()
 {
+  webConfig.doLoop();
 }

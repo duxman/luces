@@ -23,7 +23,8 @@
   #define FASTLED_ESP8266_D1_PIN_ORDER
 #endif
 #include <Arduino.h>
-
+#include <IotWebConf.h>
+#include "webconfig.hpp"
 #include "config.h"
 #include <ESP8266WiFi.h>
 //#include <PubSubClient.h>
@@ -36,20 +37,21 @@
   //#define FASTLED_ALLOW_INTERRUPTS 0
   //#define FASTLED_INTERRUPT_RETRY_COUNT 3
   #include <FastLED.h>
-  CRGB leds[NUM_LEDS];
+  CRGB* leds;
 #else
   #define NEO_KHZ400 0x0100 ///< 400 KHz data transmission
   #include <Adafruit_NeoPixel.h>
-  Adafruit_NeoPixel leds(NUM_LEDS, PIN, NEO_RGB + NEO_KHZ800); 
+  Adafruit_NeoPixel leds;
 #endif
 #include "protocol.proto.pb.h"
 #include "main.h"
-
 ///////////////////////////////////////////////////////////////////////
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
 display msgdisplay = display_init_zero;        
 led msgled = led_init_zero;
+IPAddress mqttServer = IPAddress();
+int       mqttPort = 0;
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
 WiFiEventHandler wifiConnectHandler;
@@ -61,7 +63,81 @@ int posicion=0;
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////
+////                 CONFIGURACION
+///////////////////////////////////////////////////////////////////////
 
+void configureWifi()
+{	
+	MqttServerParam=IotWebConfParameter("Mqtt Server Param", "StringMqttServerParam", StringMqttServerParam, STRING_LEN);
+	MqttPortParam=IotWebConfParameter("Mqtt Port Param", "IntMqttPortParam", IntMqttPortParam, NUMBER_LEN);
+	MqttTokenParam=IotWebConfParameter("Mqtt Token Param", "StringMqttTokenParam", StringMqttTokenParam, STRING_LEN);
+	separator=IotWebConfSeparator("--------------------------------------"); 
+	PinsParam=IotWebConfParameter("Pin Param", "StringPinsParam", StringPinsParam, NUMBER_LEN);
+	ValuesParam=IotWebConfParameter("Leds Number Param", "StringValuesParam", StringValuesParam, NUMBER_LEN);		
+	
+	webConfig.addParameter(&MqttServerParam);
+	webConfig.addParameter(&MqttPortParam);
+	webConfig.addParameter(&MqttTokenParam);
+	webConfig.addParameter(&PinsParam);
+	webConfig.addParameter(&ValuesParam);
+	
+	webConfig.setConfigSavedCallback(&configSaved);
+ //webConfig.setWifiConnectionCallback(&wifiConnected);
+	webConfig.getApTimeoutParameter()->visible = true;
+	
+	boolean validConfig = webConfig.init();	
+	if (!validConfig)
+	{
+		StringMqttServerParam[0]='\0';
+		IntMqttPortParam[0]='\0';
+		StringMqttTokenParam[0]='\0';
+		StringPinsParam[0]='\0';
+		StringValuesParam[0]='\0';
+	}	
+	server.on("/", handleRoot);
+	server.on("/config", []{ webConfig.handleConfig(); });
+	server.onNotFound([](){ webConfig.handleNotFound(); });	
+}
+
+
+void configSaved()
+{
+  Serial.println("Configuration was updated.");
+}
+
+
+void handleRoot()
+{
+  // -- Let IotWebConf test and handle captive portal requests.
+  if (webConfig.handleCaptivePortal())
+  {
+    // -- Captive portal request were already served.
+    return;
+  }
+  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s += "<title>IotWebConf 03 Custom Parameters</title></head><body>Hello world!";
+  s += "<ul>";
+  s += "<li>MQTT SERVER: ";
+  s += StringMqttServerParam;
+  s += "<li>MQTT PORT: ";
+  s += atoi(IntMqttPortParam);
+  s += "<li>MQTT TOKEN: ";
+  s += StringMqttTokenParam;
+  s += "<li>PIN: ";
+  s += StringPinsParam;
+  s += "<li>LEDS NUMBER: ";
+  s += StringValuesParam;
+  s += "</ul>";
+  s += "Go to <a href='config'>configure page</a> to change values.";
+  s += "</body></html>\n";
+
+  server.send(200, "text/html", s);
+}
+
+///////////////////////////////////////////////////////////////////////
+////                 CONFIGURACION
+///////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////
 ////                 DECODIFICACION
@@ -120,11 +196,22 @@ bool decodeled( pb_istream_t *stream, const pb_field_t *field, void **arg)
 void connectToWifi() 
 {
   Serial.println("Connecting to Wi-Fi...");
-  WiFi.begin( WIFI_SSID, WIFI_PASSWD);
+  //WiFi.begin(WIFI_SSID, WIFI_PASSWD);
+  WiFi.begin(webConfig.getWifiSsidParameter()->valueBuffer, webConfig.getWifiPasswordParameter()->valueBuffer);
+}
+
+void wifiConnected()
+{
+  Serial.printf("Conectados a wifi ... set params mqtt %s:%s",StringMqttServerParam,IntMqttPortParam);
+  mqttServer.fromString(StringMqttServerParam);
+  mqttPort = atoi(IntMqttPortParam);
+  mqttClient.setServer(mqttServer,mqttPort);  
 }
 
 void onWifiConnect(const WiFiEventStationModeGotIP& event) {
   Serial.println("Connected to Wi-Fi.");
+  delay(5000);
+  wifiConnected();  
   connectToMqtt();
 }
 
@@ -142,8 +229,8 @@ void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
 ///////////////////////////////////////////////////////////////////////
 void connectToMqtt() 
 {
-  Serial.println("Connecting to MQTT..." );  
-  mqttClient.connect();
+  Serial.println("Connecting to MQTT...");
+  mqttClient.connect();  
 }
 
 void onMqttConnect(bool sessionPresent)
@@ -153,7 +240,7 @@ void onMqttConnect(bool sessionPresent)
   ConfigureFastLed();
   Serial.println(sessionPresent);
   
-  uint16_t packetIdSub = mqttClient.subscribe(MQTT_TOKEN, 2);  
+  uint16_t packetIdSub = mqttClient.subscribe(StringMqttTokenParam, 2);  
   Serial.print("Subscribing at QoS 2, packetId: ");
   Serial.println(packetIdSub);  
   
@@ -209,20 +296,40 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 ///////////////////////////////////////////////////////////////////////
 ////                 FASTLED
 ///////////////////////////////////////////////////////////////////////
+ String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+        found++;
+        strIndex[0] = strIndex[1]+1;
+        strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+  }
+
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
 
 void ConfigureFastLed() 
 {
   delay(3000); // sanity delay
   Serial.println("Configuring led strip");
+  NUM_LEDS = atoi( StringValuesParam);  
   #ifdef __FASTLED__
+    CRGB ledtemp[NUM_LEDS];
+    leds = ledtemp;    
+    FastLED.addLeds<CHIPSET, PIN,COLOR_ORDER>(leds,NUM_LEDS).setCorrection( TypicalLEDStrip );
+    //FastLED.addLeds<WS2812Controller800Khz, const int(PIN)>(leds, NUM_LEDS); 
     
-    FastLED.addLeds<CHIPSET, PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-    //FastLED.addLeds<WS2812Controller800Khz, PIN>(leds, NUM_LEDS); 
     FastLED.clear();
     FastLED.show();
     Serial.println("FastLed Configured");
 
   #else    
+    leds = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_RGB + NEO_KHZ800); 
     leds.begin();
     leds.setBrightness(50);
     leds.fill(0); 
@@ -269,7 +376,9 @@ void setup() {
   Serial.begin(BAUDSSERIAL);
   Serial.println("/////////////////////////////////////////////////////////////////////");
   Serial.println("/////////////                      INICIO                     ///////");
-  Serial.println("/////////////////////////////////////////////////////////////////////");  
+  Serial.println("/////////////////////////////////////////////////////////////////////");
+  configureWifi();
+
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
 
@@ -277,14 +386,16 @@ void setup() {
   mqttClient.onDisconnect(onMqttDisconnect);
   mqttClient.onSubscribe(onMqttSubscribe);
   mqttClient.onUnsubscribe(onMqttUnsubscribe);
-  mqttClient.onMessage(onMqttMessage);  
-  mqttClient.setServer(MQTT_HOST, MQTT_PORT);
+  mqttClient.onMessage(onMqttMessage);      
   
   
-  connectToWifi();  
+
+  //connectToWifi();  
 }
 
-void loop() {
+void loop()
+{
+  webConfig.doLoop();
 }
 
 ///////////////////////////////////////////////////////////////////////
