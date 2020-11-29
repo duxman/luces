@@ -45,6 +45,7 @@ WiFiEventHandler wifiDisconnectHandler;
 Ticker wifiReconnectTimer;
 byte *payloadBuffer;
 int posicion=0;
+char wifiName[100];
 ///////////////////////////////////////////////////////////////////////
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
@@ -53,8 +54,10 @@ int posicion=0;
 ////                 CONFIGURACION
 ///////////////////////////////////////////////////////////////////////
 
+IotWebConf webConfig = IotWebConf(getWifiName(), &dnsServer, &server, INITIAL_PASS, CONFIG_VERSION);
 void configureWifi()
 {	
+  Serial.print("Wifi : ");Serial.println(getWifiName());
 	MqttServerParam=IotWebConfParameter("Mqtt Server Param", "StringMqttServerParam", StringMqttServerParam, STRING_LEN);
 	MqttPortParam=IotWebConfParameter("Mqtt Port Param", "IntMqttPortParam", IntMqttPortParam, NUMBER_LEN);
 	MqttTokenParam=IotWebConfParameter("Mqtt Token Param", "StringMqttTokenParam", StringMqttTokenParam, STRING_LEN);
@@ -151,7 +154,21 @@ void decodeLedLevel( byte* payload,unsigned int length )
 ///////////////////////////////////////////////////////////////////////
 ////                 WIFI
 ///////////////////////////////////////////////////////////////////////
-
+char*  getWifiName( )
+{    
+    char seconds[6];
+    int h,m,s;
+    long t;
+    if(sscanf(__TIME__,"%d:%d:%d",&h,&m,&s)==3)
+    {
+       t = (((h*60)+m)*60)+s;
+       ltoa(t,seconds,16);
+       sprintf(wifiName,"%s_%s" , INITIAL_SSID,seconds);
+       
+       return wifiName;
+    }
+    return INITIAL_SSID;
+}
 void connectToWifi() 
 {
   Serial.println("Connecting to Wi-Fi...");
@@ -293,7 +310,7 @@ void ConfigureLed()
       Serial.printf(" Levels (%d-%d)\r\n", LEVELS[i][0],LEVELS[i][1]);
 
       PINES[i] = PinTemp.toInt();
-      if(PINES[i] != 0)
+      if(PINES[i] != 0) 
         pinMode(PINES[i], OUTPUT);
     }       
 

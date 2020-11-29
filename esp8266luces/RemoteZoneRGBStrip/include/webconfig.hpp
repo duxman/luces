@@ -6,7 +6,7 @@
 #define INITIAL_PASS "1234567890"
 #define STRING_LEN 128
 #define NUMBER_LEN 6
-#define CONFIG_VERSION "V0.2'"
+#define CONFIG_VERSION "V0.1'"
 /*****************************************/
 //	 DEFINES
 /*****************************************/
@@ -16,7 +16,6 @@
 /*****************************************/
 DNSServer dnsServer;
 WebServer server(80);
-IotWebConf webConfig = IotWebConf(INITIAL_SSID, &dnsServer, &server, INITIAL_PASS, CONFIG_VERSION);
 boolean needMqttConnect = false;
 /*****************************************/
 //	 VARIABLES

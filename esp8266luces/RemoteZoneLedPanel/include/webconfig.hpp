@@ -16,7 +16,6 @@
 /*****************************************/
 DNSServer dnsServer;
 WebServer server(80);
-IotWebConf webConfig = IotWebConf(INITIAL_SSID, &dnsServer, &server, INITIAL_PASS, CONFIG_VERSION);
 boolean needMqttConnect = false;
 /*****************************************/
 //	 VARIABLES

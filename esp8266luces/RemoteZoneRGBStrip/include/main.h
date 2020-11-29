@@ -35,4 +35,6 @@ void writeLeds( int level);
 void offLeds();
 void saveConfigCallback ();
 void setupConfig ();
- String getValue(String data, char separator, int index);
+String getValue(String data, char separator, int index);
+char*  getWifiName( );
+ 

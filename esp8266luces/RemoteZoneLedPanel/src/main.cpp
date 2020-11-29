@@ -17,9 +17,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifdef SP01
-  #define FASTLED_ESP8266_RAW_PIN_ORDER
   #define FASTLED_ESP8266_NODEMCU_PIN_ORDER
+  #define FASTLED_ESP8266_RAW_PIN_ORDER  
   #define FASTLED_ESP8266_D1_PIN_ORDER
 #endif
 #include <Arduino.h>
@@ -59,6 +60,7 @@ WiFiEventHandler wifiDisconnectHandler;
 Ticker wifiReconnectTimer;
 byte *payloadBuffer;
 int posicion=0;
+char wifiName[100];
 ///////////////////////////////////////////////////////////////////////
 ////                 VARIABLES
 ///////////////////////////////////////////////////////////////////////
@@ -67,8 +69,10 @@ int posicion=0;
 ////                 CONFIGURACION
 ///////////////////////////////////////////////////////////////////////
 
+IotWebConf webConfig = IotWebConf(getWifiName(), &dnsServer, &server, INITIAL_PASS, CONFIG_VERSION);
 void configureWifi()
 {	
+  Serial.print("Wifi : ");Serial.println(getWifiName());
 	MqttServerParam=IotWebConfParameter("Mqtt Server Param", "StringMqttServerParam", StringMqttServerParam, STRING_LEN);
 	MqttPortParam=IotWebConfParameter("Mqtt Port Param", "IntMqttPortParam", IntMqttPortParam, NUMBER_LEN);
 	MqttTokenParam=IotWebConfParameter("Mqtt Token Param", "StringMqttTokenParam", StringMqttTokenParam, STRING_LEN);
@@ -144,7 +148,7 @@ void handleRoot()
 ///////////////////////////////////////////////////////////////////////
 void decodedisplay( byte* payload,unsigned int length )
 {       
-    Serial.printf("try decoding display \n %d",length);          
+    Serial.printf("try decoding display %d\n",length);          
     msgdisplay.frame.funcs.decode=&decodeled;
     pb_istream_t stream = pb_istream_from_buffer(payload,length);    
     bool status = pb_decode(&stream, display_fields, &msgdisplay);
@@ -156,14 +160,17 @@ void decodedisplay( byte* payload,unsigned int length )
     }
     Serial.printf("display: fin = %d  inicio = %d \n", msgdisplay.Fin, msgdisplay.Ini);            
 
+    Serial.printf("try to show \n");          
     if( msgdisplay.Fin == true)
       #ifdef __FASTLED__
+        
         FastLED.show();
         FastLED.clear();
       #else
         leds.show();
         leds.fill(0);        
       #endif
+    Serial.printf("End Show \n");          
 }
 
 bool decodeled( pb_istream_t *stream, const pb_field_t *field, void **arg)
@@ -192,7 +199,21 @@ bool decodeled( pb_istream_t *stream, const pb_field_t *field, void **arg)
 ///////////////////////////////////////////////////////////////////////
 ////                 WIFI
 ///////////////////////////////////////////////////////////////////////
-
+char*  getWifiName( )
+{    
+    char seconds[6];
+    int h,m,s;
+    long t;
+    if(sscanf(__TIME__,"%d:%d:%d",&h,&m,&s)==3)
+    {
+       t = (((h*60)+m)*60)+s;
+       ltoa(t,seconds,16);
+       sprintf(wifiName,"%s_%s" , INITIAL_SSID,seconds);
+       
+       return wifiName;
+    }
+    return INITIAL_SSID;
+}
 void connectToWifi() 
 {
   Serial.println("Connecting to Wi-Fi...");
@@ -318,9 +339,11 @@ void ConfigureFastLed()
   delay(3000); // sanity delay
   Serial.println("Configuring led strip");
   NUM_LEDS = atoi( StringValuesParam);  
+  
   #ifdef __FASTLED__
-    CRGB ledtemp[NUM_LEDS];
-    leds = ledtemp;    
+    leds = (CRGB *)calloc( NUM_LEDS, sizeof(CRGB)  );
+    //CRGB ledtemp[NUM_LEDS];
+    //leds = ledtemp;    
     FastLED.addLeds<CHIPSET, PIN,COLOR_ORDER>(leds,NUM_LEDS).setCorrection( TypicalLEDStrip );
     //FastLED.addLeds<WS2812Controller800Khz, const int(PIN)>(leds, NUM_LEDS); 
     

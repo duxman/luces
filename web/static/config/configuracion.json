@@ -1,6 +1,6 @@
 {
     "FfmpegPath": "",
-    "MQTT_HOST": "192.168.1.118",
+    "MQTT_HOST": "192.168.1.117",
     "MQTT_PORT": 1883,
     "MusicPath": "music",
     "WebServerPort": "89"

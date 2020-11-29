@@ -18,7 +18,7 @@
             "LedPin": 5,
             "VerticalPanels": 1,
             "HorizontalPanels": 2,
-            "MQTT_HOST": "192.168.1.118",
+            "MQTT_HOST": "192.168.1.117",
             "MQTT_PORT": 1883,
             "MQTT_TOKEN": "InData",
             "MatrixHeight": 18,

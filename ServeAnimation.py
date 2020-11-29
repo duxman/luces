@@ -157,6 +157,7 @@ def main(argv):
     port = ""
     token = ""
     ##"{\"ImageFile\": \"prueba.png\", \"CommandFile\": \"\", \"width\": 12, \"heigth\": 8, \"Repetitions\": 5, \"Speed\": 0.1 }"
+    ##{"ImageFile": "prueba.png", "CommandFile": "", "width": 12, "heigth": 8, "Repetitions": 5, "Speed": 0.1 }
     try:
         opts, args = getopt.getopt(argv, "a:h:p:t:", ["AnimationData=", "host=", "port=", "token="])
     except getopt.GetoptError:
