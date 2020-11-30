@@ -22,22 +22,27 @@
   <head>
     <meta charset="utf-8" />
     <title>Duxman Ligths</title>
-    <link rel='stylesheet' id='theme_stylesheet' href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel='stylesheet' id='theme_stylesheet' href="{{ url_for('static', filename='css/bootstrap.min.css') }}">	
     <link rel='stylesheet' id='icon_stylesheet' href="{{ url_for('static', filename='css/all.css') }}">
-    <link rel='stylesheet' href="{{ url_for('static', filename='css/luces.css') }}">
-
-    <script src="{{ url_for('static', filename='js/jsoneditor.min.js') }}"></script>
+	<link rel='stylesheet' href="{{ url_for('static', filename='css/luces.css') }}">    
+	<script src="{{ url_for('static', filename='js/jsoneditor.min.js') }}"/>
+	<script src="{{ url_for('static', filename='js/lz-string.min.js') }}"/>		    	
     <script src="{{ url_for('static', filename='js/require.js') }}"></script>
     <script src="{{ url_for('static', filename='js/editor.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/gui.js') }}"></script>
+	
+	<!--link rel='stylesheet' id='icon_stylesheet' href='https://use.fontawesome.com/releases/v5.6.1/css/all.css'>
+	<link rel='stylesheet' id='theme_stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
+	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js">
+	<script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"-->
   </head>
   <body >
     <h1>DuxmanLigths Web Configurator</h1>
 
     <div class="tab" width="60%">
-      <button class="tablinks" onclick="openTab(event, 'TabProgramacion')">Schedule Task</button>
       <button class="tablinks" onclick="openTab(event, 'TabConfigGeneral')">General Config</button>
+	  <button class="tablinks" onclick="openTab(event, 'TabProgramacion')">Schedule Task</button>      
       <button class="tablinks" onclick="openTab(event, 'TabPrograms')">Programs Config</button>
       <button class="tablinks" onclick="openTab(event, 'TabZones')">Zone config</button>
       <button class="tablinks" onclick="openTab(event, 'TabMatrix')">Led Matrix Config</button>
@@ -45,12 +50,12 @@
     </div>
 
 
-    <div id="TabProgramacion" class="tabcontent">
-        <button id='submitProgramacion'>Save</button>
-    </div>
     <div id="TabConfigGeneral" class="tabcontent">
         <button id='submitGeneral' >Save</button>
     </div>
+	<div id="TabProgramacion" class="tabcontent">
+        <button id='submitProgramacion'>Save</button>
+    </div>    
     <div id="TabPrograms" class="tabcontent">
         <button id='submitPrograms' >Save</button>
     </div>

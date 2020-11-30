@@ -3,9 +3,41 @@
         {
             "MQTT_TOKEN": "LedData",
             "ZoneId": "1",
-            "ZoneName": "ESP12E 1",
-            "ZonePinType": "REMOTE",
+            "ZoneName": "Barandilla y Puerta",
+            "ZonePinType": "GPIO",
             "ZonePins": "1,2,3,4,5,6,7,8,9",
+            "ZoneType": "SPECTRUM"
+        },
+        {
+            "MQTT_TOKEN": "LedData",
+            "ZoneId": "2",
+            "ZoneName": "Escalera",
+            "ZonePinType": "REMOTE",
+            "ZonePins": "1,2,3,4",
+            "ZoneType": "SPECTRUM"
+        },
+        {
+            "MQTT_TOKEN": "LedData",
+            "ZoneId": "3",
+            "ZoneName": "Ventana y puerta",
+            "ZonePinType": "REMOTE",
+            "ZonePins": "1,2,3,4",
+            "ZoneType": "SPECTRUM"
+        },
+        {
+            "MQTT_TOKEN": "LedData",
+            "ZoneId": "4",
+            "ZoneName": "Tira Techo",
+            "ZonePinType": "REMOTE",
+            "ZonePins": "1,2,3,4",
+            "ZoneType": "SPECTRUM"
+        },
+        {
+            "MQTT_TOKEN": "LedData",
+            "ZoneId": "5",
+            "ZoneName": "Terraza Zuperior",
+            "ZonePinType": "REMOTE",
+            "ZonePins": "1,2,3,4",
             "ZoneType": "SPECTRUM"
         }
     ]

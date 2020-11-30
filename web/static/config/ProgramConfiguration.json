@@ -1,0 +1,38 @@
+{
+    "MusicFiles": [
+        {
+            "File": "sampl1.wav"
+        },
+        {
+            "File": "sample2.wav"
+        },
+        {
+            "File": "sample3.wav"
+        },
+        {
+            "File": "sample4.wav"
+        },
+        {
+            "File": "sample5.wav"
+        },
+        {
+            "File": "sample6.wav"
+        },
+        {
+            "File": "sample7.wav"
+        },
+        {
+            "File": "sample8.wav"
+        },
+        {
+            "File": "sample9.wav"
+        },
+        {
+            "File": "sample10.wav"
+        }
+    ],
+    "ProgramInterval": "10",
+    "ProgramName": "Programa Navidad",
+    "ProgramType": "MUSIC",
+    "Sequences": []
+}
