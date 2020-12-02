@@ -22,7 +22,7 @@
 import os
 import time  # necesario para los delays
 
-from paho import mqtt
+import paho.mqtt.client as mqtt
 
 from Util.ledStripMessage import ledLevel
 
@@ -41,16 +41,19 @@ class PinControl(object):
     clienteMqtt: mqtt.Client = None
     token = ""
 
-    def __init__(self, log, z, host="", port=1883, token="PinManager"):
+    def __init__(self, log, zones , host="", port=1883, token="PinManager"):
         self.Logger = log
-        self.Zones = z
+        self.Zones = zones
         self.gpio_setup()
-        for zone in self.Zones.DefinedZones:
-            self.PinList.extend(zone.ZonePins)
-            self.gpio_setup_pins(self.PinList)
+        self.clienteMqtt = mqtt.Client("PinManagerClient", True)
 
         if host != "":
             self.initializeMQTT(host, port, token)
+
+        for zone in self.Zones.DefinedZones:
+            if (zone.ZonePinType == "GPIO"):
+                self.PinList.extend(zone.ZonePins)
+                self.gpio_setup_pins(self.PinList)
 
     def initializeMQTT(self, host, port, token):
         self.token = token
@@ -68,6 +71,11 @@ class PinControl(object):
         led = ledLevel()
         led.ParseFromString(msg.payload)
         print("New Level {}".format(led.Level))
+        self.ApagarTodo()
+        if led.Level < len(self.PinList):
+            self.Encender( self.PinList[led.Level])
+        else:
+            self.EncenderTodo()
 
     def on_message(self, mqttc, obj, msg):
         print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))

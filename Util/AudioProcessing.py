@@ -27,6 +27,8 @@ import os
 import time
 import paho.mqtt.client as mqtt
 import statistics as stats
+
+from Util import PinManager
 from Util.ledStripMessage import ledLevel
 from Util.logger import clienteLog
 
@@ -48,6 +50,7 @@ class AudioProcessing():
     clienteMqtt: mqtt.Client = None
     Tokens = []
 
+
     def __init__(self,FileName=None, Host="", Port=1883, Tokens = []):
         cliente = clienteLog()
         self.Logger = cliente.InicializaLog(filename="./log/PlayMusic.log")
@@ -56,6 +59,7 @@ class AudioProcessing():
         self.clienteMqtt = mqtt.Client("LedStripServe", True)
         #Inicializamos MQTT
         self.initializeMQTT(Host, Port)
+
 
 
         if os.name == 'posix':
@@ -88,6 +92,7 @@ class AudioProcessing():
                 for t in self.Tokens:
                     self.clienteMqtt.publish(t, led.SerializeToString(), 2, False)
 
+        self.clienteMqtt.publish("PinManager", led.SerializeToString(), 2, False)
     def setFfmpegPath(self, path):
         AudioSegment.converter = path
 
@@ -111,7 +116,7 @@ class AudioProcessing():
                 raise ValueError('Unsupported format')
 
             periodsize = WaveAudio.getframerate() / 8
-            AudioDevice.setperiodsize(periodsize)
+            AudioDevice.setperiodsize(int(periodsize))
             self.WriteFunctionObject = AudioDevice
         else:
             self.Stream =  AudioDevice.open(format=AudioDevice.get_format_from_width(WaveAudio.getsampwidth()),
@@ -133,16 +138,24 @@ class AudioProcessing():
 
     def GetMaxRate(self, FileName,numPines):
         self.MaxRate = 0
-        with contextlib.closing(wave.open(FileName, 'rb')) as f:
-            self.PeriodSize = int((f.getframerate() / 8))
-            data = f.readframes(self.PeriodSize)
-            while data:
-                count = len(data) / 2
-                data = struct.unpack("%dh" % count, data)
-                valor = int(stats.median_low(numpy.absolute(data)))
-                if valor > self.MaxRate:
-                    self.MaxRate = int(valor);
+        filemax=FileName+".MaxRate"
+        if os.path.isfile(filemax):
+            fm = open(filemax, "r")
+            self.MaxRate = int(fm.read())
+        else:
+            with contextlib.closing(wave.open(FileName, 'rb')) as f:
+                self.PeriodSize = int((f.getframerate() / 8))
                 data = f.readframes(self.PeriodSize)
+                while data:
+                    count = len(data) / 2
+                    data = struct.unpack("%dh" % count, data)
+                    valor = int(stats.median_low(numpy.absolute(data)))
+                    if valor > self.MaxRate:
+                        self.MaxRate = int(valor);
+                    data = f.readframes(self.PeriodSize)
+                fm = open(filemax,'rw')
+                fm.write(str(self.MaxRate))
+        fm.close()
 
         return self.MaxRate, self.PeriodSize
 
@@ -160,7 +173,9 @@ class AudioProcessing():
         if FileName == None:
             FileName = self.WaveFile
 
+        print("Calculamos MaxRate")
         self.GetMaxRate(FileName,NumeroPines)
+        print("FIN Calcular MaxRate")
 
         with contextlib.closing(wave.open(FileName, 'rb')) as WaveAudio:
             self.prepareDevice(self.Device, WaveAudio)

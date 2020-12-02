@@ -27,7 +27,7 @@ from paho import mqtt
 
 from Util.ledStripMessage import ledLevel
 from config import Zones, GeneralConfiguration
-from Util import Mp3ToWav
+from Util import Mp3ToWav, PinManager
 #from Util import PinManager
 from Util.AudioProcessing import AudioProcessing
 #from Util.StopableThreadConsumer import StopableConsumerThread
@@ -44,6 +44,8 @@ class PlayMusic(object):
     WorkingQueue = None
     Tokens = []
 
+    pinManager =[]
+
     def __init__(self, filename, zones):
         cliente = clienteLog()
         self.Logger = cliente.InicializaLog(filename="./log/PlayMusic.log")
@@ -52,6 +54,7 @@ class PlayMusic(object):
         self.GeneralConfig = GeneralConfiguration()
         self.Logger.debug("Create Process Queue")
         self.WorkingQueue = queue.Queue()
+        self.pinManager  = PinManager.PinControl( cliente, self.ZonesConfig ,self.GeneralConfig.MQTT_HOST,self.GeneralConfig.MQTT_PORT )
 
     # def pinManagerProcess(self):
     #     if self.ZonesConfig.ZonePinType == "REMOTE":
@@ -77,6 +80,8 @@ class PlayMusic(object):
         # El productor gestionara los mensajes a MQTT
         #######################################################
         # Pasamos los parametros de host y port de MQTT al productor
+
+
         self.MusicManager = AudioProcessing(FileName=self.Filename, Host=self.GeneralConfig.MQTT_HOST,
                                             Port=self.GeneralConfig.MQTT_PORT,
                                             Tokens=self.ZonesConfig.Tokens)
