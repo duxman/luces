@@ -5,7 +5,24 @@
             "ZoneId": "1",
             "ZoneName": "Barandilla y Puerta",
             "ZonePinType": "GPIO",
-            "ZonePins": "1,2,3,4,5,6,7,8,9",
+            "ZonePinsArray": [
+                {
+                    "ZonePinId": "26,20,17",
+                    "ZonePinValue": 1
+                },
+                {
+                    "ZonePinId": "19,20,27",
+                    "ZonePinValue": 2
+                },
+                {
+                    "ZonePinId": "13,16,22",
+                    "ZonePinValue": 3
+                },
+                {
+                    "ZonePinId": "6,12,18",
+                    "ZonePinValue": 4
+                }
+            ],
             "ZoneType": "SPECTRUM"
         },
         {
@@ -13,7 +30,24 @@
             "ZoneId": "2",
             "ZoneName": "Escalera",
             "ZonePinType": "REMOTE",
-            "ZonePins": "1,2,3,4",
+            "ZonePinsArray": [
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 1
+                },
+                {
+                    "ZonePinId": "2",
+                    "ZonePinValue": 2
+                },
+                {
+                    "ZonePinId": "3",
+                    "ZonePinValue": 3
+                },
+                {
+                    "ZonePinId": "4",
+                    "ZonePinValue": 4
+                }
+            ],
             "ZoneType": "SPECTRUM"
         },
         {
@@ -21,7 +55,24 @@
             "ZoneId": "3",
             "ZoneName": "Ventana y puerta",
             "ZonePinType": "REMOTE",
-            "ZonePins": "1,2,3,4",
+            "ZonePinsArray": [
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 1
+                },
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 2
+                },
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 3
+                },
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 4
+                }
+            ],
             "ZoneType": "SPECTRUM"
         },
         {
@@ -29,7 +80,24 @@
             "ZoneId": "4",
             "ZoneName": "Tira Techo",
             "ZonePinType": "REMOTE",
-            "ZonePins": "1,2,3,4",
+            "ZonePinsArray": [
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 1
+                },
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 2
+                },
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 3
+                },
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 4
+                }
+            ],
             "ZoneType": "SPECTRUM"
         },
         {
@@ -37,7 +105,28 @@
             "ZoneId": "5",
             "ZoneName": "Terraza Zuperior",
             "ZonePinType": "REMOTE",
-            "ZonePins": "1,2,3,4",
+            "ZonePinsArray": [
+                {
+                    "ZonePinId": "1",
+                    "ZonePinValue": 1
+                },
+                {
+                    "ZonePinId": "2",
+                    "ZonePinValue": 2
+                },
+                {
+                    "ZonePinId": "3",
+                    "ZonePinValue": 3
+                },
+                {
+                    "ZonePinId": "4",
+                    "ZonePinValue": 4
+                },
+                {
+                    "ZonePinId": "5",
+                    "ZonePinValue": 5
+                }
+            ],
             "ZoneType": "SPECTRUM"
         }
     ]

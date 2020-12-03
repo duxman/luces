@@ -22,7 +22,7 @@ from Util import logger
 from PIL import Image  # Use apt-get install python-imaging to install this
 
 
-class programacion:
+class programacion(object):
     HoraDesde = ""
     HoraHasta = ""
     Estado = ""
@@ -46,11 +46,11 @@ class programacion:
         self.WaitTime = int(self.data["WaitTime"])
 
 
-class Zone():
+class Zone(object):
     ZonePinType = ""
     MQTT_TOKEN = "PinManager"
     ZoneName = ""
-    ZonePins : dict = None	
+    ZonePins: dict = {}
     ZoneId = 0
     ZoneType = ""
 
@@ -67,23 +67,24 @@ class Zone():
         return self.ZoneId > other.ZoneId
 
     def __init__(self, name, PinsArray, id, type, PinType, MQTT_TOKEN):
-        self.ZoneName = name		
-		for zp in PinsArray
-		    pins = zp.ZonePinId.split(",")
-		    self.ZonePins[zp.ZonePinValue] = pins
+        self.ZoneName = name
+        self.ZonePins = dict()
+        for zp in PinsArray:
+            pins = zp["ZonePinId"].split(",")
+            self.ZonePins[zp["ZonePinValue"]] = pins
         self.ZoneId = id
         self.ZoneType = type
         self.ZonePinType = PinType
         self.MQTT_TOKEN = MQTT_TOKEN
 
 
-class Zones():
+class Zones(object):
     Logger = None
     DefinedZones = []
     SpectrumPins = []
     AlonePins = []
     Tokens = []
-	MaxPinValue = 0
+    MaxPinValue = 0
 
     def __init__(self, path="./web/static/config"):
         self.Logger = logger.clienteLog.logger
@@ -93,32 +94,37 @@ class Zones():
         self.Tokens = []
         definedzonestemp = []
         for definedzone in self.data["Zones"]:
-            ZoneTemp = Zone(definedzone["ZoneName"],
+            definedzonestemp.append( Zone(definedzone["ZoneName"],
                             definedzone["ZonePinsArray"],
                             definedzone["ZoneId"],
                             definedzone["ZoneType"],
                             definedzone["ZonePinType"],
-                            definedzone["MQTT_TOKEN"])
-            definedzonestemp.append(ZoneTemp)
-		
-		self.MaxPinValue = max(long(k) for k in DefinedZones.ZonePins.keys())
-        
-		# Ordenamos la lista
+                            definedzone["MQTT_TOKEN"]) )
+
+        # Ordenamos la lista
         self.DefinedZones = sorted(definedzonestemp)
+        max = 0
+        for z in self.DefinedZones:
+            for k in z.ZonePins.keys():
+                if k > max:
+                    max=k
+
+        self.MaxPinValue = max
 
         # Montamos la lista para no tener que calcular los pines
         for d in self.DefinedZones:
             if d.ZoneType == "ALONE":
                 self.AlonePins.extend(d.ZonePins)
             if d.ZoneType == "SPECTRUM":
-                self.SpectrumPins.extend(d.ZonePins.values())
+                for zp in d.ZonePins:
+                    self.SpectrumPins.extend(d.ZonePins[zp])
             if d.ZonePinType == "REMOTE":
                 self.Tokens.append(d.MQTT_TOKEN)
 
         # Eliminamos pins duplicados
         self.AlonePins = list(dict.fromkeys(self.AlonePins))
         self.SpectrumPins = list(dict.fromkeys(self.SpectrumPins))
-        #Eliminamos Tokens duplicados
+        # Eliminamos Tokens duplicados
         self.Tokens = list(dict.fromkeys(self.Tokens))
 
         # Ordenamos pins duplicados
@@ -130,7 +136,7 @@ class Zones():
             self.Logger.info(' '.join(d))
 
 
-class ProgramConfiguration():
+class ProgramConfiguration(object):
     Logger = None
     ProgramName = ""
     ProgramType = ""
@@ -154,7 +160,7 @@ class ProgramConfiguration():
             self.Sequences.append(sequence["Activate Zone"])
 
 
-class GeneralConfiguration():
+class GeneralConfiguration(object):
     RutaFFMPEG = None
     RutaMusica = None
     WebServerPort = 8000
@@ -207,23 +213,23 @@ def calculateMatrix(MatrixHeight, MatrixWidth, Side="LEFT", PanelsV=1, PanelsH=1
     myMatrix = []
     for i in range(VerticalHeight, 0, -1):
         rangeMatrixLine = []
-        linetemp=[];
+        linetemp = [];
         # Calculate Max and min led
         maxled = (i * MatrixWidth)
         minled = (maxled - int(MatrixWidth))
         # For calculate go and return
         if bInc == False:
-            rangeMatrixLine.extend( range(maxled - 1, minled - 1, -1) )
+            rangeMatrixLine.extend(range(maxled - 1, minled - 1, -1))
             bInc = True
         else:
-            rangeMatrixLine.extend( range(minled, maxled, 1) )
+            rangeMatrixLine.extend(range(minled, maxled, 1))
             bInc = False;
-        print("range line " + str(i) )
-        print( rangeMatrixLine )
+        print("range line " + str(i))
+        print(rangeMatrixLine)
 
         for p in range(PanelsH):
             valorSuma = p * CountLeds
-            line = list(map(lambda x: x + valorSuma, rangeMatrixLine ))
+            line = list(map(lambda x: x + valorSuma, rangeMatrixLine))
             print("line " + str(i))
             print(line)
             myMatrix.extend(line)
@@ -245,7 +251,7 @@ class LedMatrix(object):
     MatrixType = "NONE"
     Animations = []
     VerticalPanels = 1
-    HorizontalPanels =1
+    HorizontalPanels = 1
     ################################################################
     #                 In configuration File
     ################################################################
@@ -271,7 +277,8 @@ class LedMatrix(object):
     ################################################################
     #           Auto calculate
     ################################################################
-    def __init__(self, MatrixWidth, MatrixHeight, LedPin, MQTT_HOST, MQTT_PORT, MQTT_TOKEN, MatrixStartLed, MatrixType,PanelsV,PanelsH,AnimationsData):
+    def __init__(self, MatrixWidth, MatrixHeight, LedPin, MQTT_HOST, MQTT_PORT, MQTT_TOKEN, MatrixStartLed, MatrixType,
+                 PanelsV, PanelsH, AnimationsData):
         self.MatrixWidth = MatrixWidth
         self.MatrixHeight = MatrixHeight
         self.LedPin = LedPin  # GPIO pin connected to the pixels (must support PWM!).
@@ -288,7 +295,8 @@ class LedMatrix(object):
             anim["height"] = self.MatrixHeight
             animtemp = animation(json.dumps(anim))
             self.Animations.append(animtemp)
-        self.myMatrix = calculateMatrix(self.MatrixHeight, self.MatrixWidth,self.MatrixStartLed,self.VerticalPanels,self.HorizontalPanels)
+        self.myMatrix = calculateMatrix(self.MatrixHeight, self.MatrixWidth, self.MatrixStartLed, self.VerticalPanels,
+                                        self.HorizontalPanels)
 
 
 class configurationLedMatrix(object):

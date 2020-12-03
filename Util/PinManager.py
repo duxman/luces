@@ -37,28 +37,27 @@ else:
 class PinControl(object):
     Logger = None
     Zones = None
-    PinList :dict
+    PinList: dict
     clienteMqtt: mqtt.Client = None
     token = ""
-	
 
-    def __init__(self, log, zones , host="", port=1883, token="PinManager"):
+    def __init__(self, log, zones, host="", port=1883, token="PinManager"):
         self.Logger = log
         self.Zones = zones
         self.gpio_setup()
         self.clienteMqtt = mqtt.Client("PinManagerClient", True)
-
+        self.PinList = dict()
         if host != "":
             self.initializeMQTT(host, port, token)
 
-		pins = []
-		for zone in self.Zones.DefinedZones:
-            if (zone.ZonePinType == "GPIO"):
-				for k in zone.ZonePins:
-					pins.extend(zone.ZonePins[p])
-					self.PinList[k].extend(zone.ZonePins[p])
-				
-		self.gpio_setup_pins(pins)		
+            pins = []
+            for zone in self.Zones.DefinedZones:
+                if (zone.ZonePinType == "GPIO"):
+                    for k in zone.ZonePins:
+                        pins.extend(zone.ZonePins[k])
+                        self.PinList[k] = pins
+
+            self.gpio_setup_pins(pins)
 
     def initializeMQTT(self, host, port, token):
         self.token = token
@@ -78,7 +77,7 @@ class PinControl(object):
         print("New Level {}".format(led.Level))
         self.ApagarTodo()
         if led.Level < self.Zones.MaxPinValue:
-            self.EncenderSpectrumZone( self.PinList[led.Level])
+            self.EncenderSpectrumZone(self.PinList[led.Level])
         else:
             self.EncenderTodo()
 
@@ -141,7 +140,7 @@ class PinControl(object):
         GPIO.output(self.Zones.SpectrumPins, GPIO.LOW)
 
         if (len(pins) > 0):
-            GPIO.output(pins, GPIO.HIGH)       
+            GPIO.output(pins, GPIO.HIGH)
 
     def EncenderInRangeZone(self, MaxValue):
 

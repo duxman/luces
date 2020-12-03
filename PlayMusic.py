@@ -22,15 +22,9 @@ import getopt
 import threading
 import queue
 import os
-
-from paho import mqtt
-
-from Util.ledStripMessage import ledLevel
 from config import Zones, GeneralConfiguration
 from Util import Mp3ToWav, PinManager
-#from Util import PinManager
 from Util.AudioProcessing import AudioProcessing
-#from Util.StopableThreadConsumer import StopableConsumerThread
 from Util.logger import clienteLog
 
 
@@ -85,7 +79,7 @@ class PlayMusic(object):
         self.MusicManager = AudioProcessing(FileName=self.Filename, Host=self.GeneralConfig.MQTT_HOST,
                                             Port=self.GeneralConfig.MQTT_PORT,
                                             Tokens=self.ZonesConfig.Tokens)
-        producer = threading.Thread(target=self.MusicManager.PlayWavFile(FileName=self.Filename, NumeroPines=len(self.ZonesConfig.MaxPinValue)), name="MusicManagerThread")
+        producer = threading.Thread(target=self.MusicManager.PlayWavFile(FileName=self.Filename, NumeroPines=self.ZonesConfig.MaxPinValue), name="MusicManagerThread")
         producer.start()
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)

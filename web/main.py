@@ -18,6 +18,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 import json
+import os
+import subprocess
+
 import flask
 from io import StringIO
 from flask import request, render_template
@@ -44,12 +47,13 @@ def save():
     except Exception as e:
         # flash(e)
         return 'KO'
-        
+
+
 @app.route('/testMusic/<MusicFile>')
 def testMusic(MusicFile):
     error = ''
-    try:       
-        print ("prueba musica")
+    try:
+        print("prueba musica")
         executeCommandMusic(MusicFile)
         return 'OK'
     except Exception as e:
@@ -61,13 +65,13 @@ def testMusic(MusicFile):
 def load():
     return 'OK'
 
+
 def executeCommandMusic(filename):
-    self.Logger.info("--------------------<<  INI SUBPROCESO  >>--------------------")
     wd = os.getcwd()
     os.chdir("../")
-    p = subprocess.Popen("python PlayMusic.py -i " + filename)    
-    os.chdir(wd)   
-    self.Logger.info("--------------------<<  FIN SUBPROCESO  >>--------------------")
+    p = subprocess.Popen("python PlayMusic.py -i " + filename)
+    os.chdir(wd)
+
 
 def saveConfigurationJsonFile(filename, contenido):
     file = open('.' + filename, 'w')
@@ -79,9 +83,7 @@ def saveConfigurationJsonFile(filename, contenido):
 
 
 if __name__ == '__main__':
-
     config = GeneralConfiguration()
-    #ConfigServer = WebServer()
-    #ConfigServer.StartServer()
+    # ConfigServer = WebServer()
+    # ConfigServer.StartServer()
     app.run(host='0.0.0.0', port=int(config.WebServerPort))
-

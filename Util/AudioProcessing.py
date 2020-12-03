@@ -153,7 +153,7 @@ class AudioProcessing():
                     if valor > self.MaxRate:
                         self.MaxRate = int(valor);
                     data = f.readframes(self.PeriodSize)
-                fm = open(filemax,'rw')
+                fm = open(filemax,'w')
                 fm.write(str(self.MaxRate))
         fm.close()
 
