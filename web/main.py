@@ -44,12 +44,30 @@ def save():
     except Exception as e:
         # flash(e)
         return 'KO'
+        
+@app.route('/testMusic/<MusicFile>')
+def testMusic(MusicFile):
+    error = ''
+    try:       
+        print ("prueba musica")
+        executeCommandMusic(MusicFile)
+        return 'OK'
+    except Exception as e:
+        # flash(e)
+        return 'KO'
 
 
 @app.route('/load', methods=['POST'])
 def load():
     return 'OK'
 
+def executeCommandMusic(filename):
+    self.Logger.info("--------------------<<  INI SUBPROCESO  >>--------------------")
+    wd = os.getcwd()
+    os.chdir("../")
+    p = subprocess.Popen("python PlayMusic.py -i " + filename)    
+    os.chdir(wd)   
+    self.Logger.info("--------------------<<  FIN SUBPROCESO  >>--------------------")
 
 def saveConfigurationJsonFile(filename, contenido):
     file = open('.' + filename, 'w')

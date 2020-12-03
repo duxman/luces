@@ -85,7 +85,7 @@ class PlayMusic(object):
         self.MusicManager = AudioProcessing(FileName=self.Filename, Host=self.GeneralConfig.MQTT_HOST,
                                             Port=self.GeneralConfig.MQTT_PORT,
                                             Tokens=self.ZonesConfig.Tokens)
-        producer = threading.Thread(target=self.MusicManager.PlayWavFile(FileName=self.Filename, NumeroPines=len(self.ZonesConfig.SpectrumPins)), name="MusicManagerThread")
+        producer = threading.Thread(target=self.MusicManager.PlayWavFile(FileName=self.Filename, NumeroPines=len(self.ZonesConfig.MaxPinValue)), name="MusicManagerThread")
         producer.start()
         self.WorkingQueue.join()
         self.ConsumerThread.stop(timeout=0.3)

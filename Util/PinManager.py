@@ -37,9 +37,10 @@ else:
 class PinControl(object):
     Logger = None
     Zones = None
-    PinList = []
+    PinList :dict
     clienteMqtt: mqtt.Client = None
     token = ""
+	
 
     def __init__(self, log, zones , host="", port=1883, token="PinManager"):
         self.Logger = log
@@ -50,10 +51,14 @@ class PinControl(object):
         if host != "":
             self.initializeMQTT(host, port, token)
 
-        for zone in self.Zones.DefinedZones:
+		pins = []
+		for zone in self.Zones.DefinedZones:
             if (zone.ZonePinType == "GPIO"):
-                self.PinList.extend(zone.ZonePins)
-                self.gpio_setup_pins(self.PinList)
+				for k in zone.ZonePins:
+					pins.extend(zone.ZonePins[p])
+					self.PinList[k].extend(zone.ZonePins[p])
+				
+		self.gpio_setup_pins(pins)		
 
     def initializeMQTT(self, host, port, token):
         self.token = token
@@ -72,8 +77,8 @@ class PinControl(object):
         led.ParseFromString(msg.payload)
         print("New Level {}".format(led.Level))
         self.ApagarTodo()
-        if led.Level < len(self.PinList):
-            self.Encender( self.PinList[led.Level])
+        if led.Level < self.Zones.MaxPinValue:
+            self.EncenderSpectrumZone( self.PinList[led.Level])
         else:
             self.EncenderTodo()
 
@@ -125,26 +130,18 @@ class PinControl(object):
             self.Apagar(pin)
 
     def EncenderTodo(self):
-        for pin in self.PinList:
-            self.Encender(pin)
+        GPIO.output(self.Zones.SpectrumPins, GPIO.HIGH)
 
     def ApagarTodo(self):
-        for pin in self.PinList:
-            self.Apagar(pin)
+        GPIO.output(self.Zones.SpectrumPins, GPIO.LOW)
 
     def EncenderSpectrumZone(self, pins):
         self.Logger.info("item to show " + " ".join(pins))
 
-        if os.name == 'poxis':
-            GPIO.output(self.Zones.SpectrumPins, GPIO.LOW)
+        GPIO.output(self.Zones.SpectrumPins, GPIO.LOW)
 
         if (len(pins) > 0):
-            GPIO.output(pins, GPIO.HIGH)
-        else:
-            if os.name == 'poxis':
-                GPIO.output(pins, GPIO.LOW)
-            else:
-                GPIO.output(0, GPIO.LOW)
+            GPIO.output(pins, GPIO.HIGH)       
 
     def EncenderInRangeZone(self, MaxValue):
 

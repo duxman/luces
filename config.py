@@ -50,7 +50,7 @@ class Zone():
     ZonePinType = ""
     MQTT_TOKEN = "PinManager"
     ZoneName = ""
-    ZonePins = []
+    ZonePins : dict = None	
     ZoneId = 0
     ZoneType = ""
 
@@ -66,9 +66,11 @@ class Zone():
     def __gt__(self, other):
         return self.ZoneId > other.ZoneId
 
-    def __init__(self, name, pins, id, type, PinType, MQTT_TOKEN):
-        self.ZoneName = name
-        self.ZonePins = pins.split(",")
+    def __init__(self, name, PinsArray, id, type, PinType, MQTT_TOKEN):
+        self.ZoneName = name		
+		for zp in PinsArray
+		    pins = zp.ZonePinId.split(",")
+		    self.ZonePins[zp.ZonePinValue] = pins
         self.ZoneId = id
         self.ZoneType = type
         self.ZonePinType = PinType
@@ -81,6 +83,7 @@ class Zones():
     SpectrumPins = []
     AlonePins = []
     Tokens = []
+	MaxPinValue = 0
 
     def __init__(self, path="./web/static/config"):
         self.Logger = logger.clienteLog.logger
@@ -91,14 +94,16 @@ class Zones():
         definedzonestemp = []
         for definedzone in self.data["Zones"]:
             ZoneTemp = Zone(definedzone["ZoneName"],
-                            definedzone["ZonePins"],
+                            definedzone["ZonePinsArray"],
                             definedzone["ZoneId"],
                             definedzone["ZoneType"],
                             definedzone["ZonePinType"],
                             definedzone["MQTT_TOKEN"])
             definedzonestemp.append(ZoneTemp)
-
-        # Ordenamos la lista
+		
+		self.MaxPinValue = max(long(k) for k in DefinedZones.ZonePins.keys())
+        
+		# Ordenamos la lista
         self.DefinedZones = sorted(definedzonestemp)
 
         # Montamos la lista para no tener que calcular los pines
@@ -106,7 +111,7 @@ class Zones():
             if d.ZoneType == "ALONE":
                 self.AlonePins.extend(d.ZonePins)
             if d.ZoneType == "SPECTRUM":
-                self.SpectrumPins.extend(d.ZonePins)
+                self.SpectrumPins.extend(d.ZonePins.values())
             if d.ZonePinType == "REMOTE":
                 self.Tokens.append(d.MQTT_TOKEN)
 

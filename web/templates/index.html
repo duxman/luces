@@ -22,6 +22,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Duxman Ligths</title>
+	<link rel="icon" type="image/vnd.microsoft.icon" href="{{ url_for('static', filename='icon/favicon.ico') }}" sizes="16x16">	
     <link rel='stylesheet' id='theme_stylesheet' href="{{ url_for('static', filename='css/bootstrap.min.css') }}">	
     <link rel='stylesheet' id='icon_stylesheet' href="{{ url_for('static', filename='css/all.css') }}">
 	<link rel='stylesheet' href="{{ url_for('static', filename='css/luces.css') }}">    
@@ -73,45 +74,59 @@
 
     <script>
 
-      var editorGeneral;
-      var editorProgramacion;
-      var editorProgramas;
-      var editorZonas;
+		var editorGeneral;
+		var editorProgramacion;
+		var editorProgramas;
+		var editorZonas;
 
 
 
-      editorProgramacion = loadTab( "{{ url_for('static', filename='config/programacion.json') }}",
-               "{{ url_for('static', filename='schemas/schPrograma.json') }}",
-               "TabProgramacion",
-               "submitProgramacion",
-                false);
+		editorProgramacion = loadTab( "{{ url_for('static', filename='config/programacion.json') }}",
+			   "{{ url_for('static', filename='schemas/schPrograma.json') }}",
+			   "TabProgramacion",
+			   "submitProgramacion",
+				false);
 
 
-      loadTab( "{{ url_for('static', filename='config/configuracion.json') }}",
-               "{{ url_for('static', filename='schemas/schConfiguracion.json') }}",
-               "TabConfigGeneral",
-               "submitGeneral",
-               false);
+		loadTab( "{{ url_for('static', filename='config/configuracion.json') }}",
+			   "{{ url_for('static', filename='schemas/schConfiguracion.json') }}",
+			   "TabConfigGeneral",
+			   "submitGeneral",
+			   false);
 
 
-      loadTab( "{{ url_for('static', filename='config/ProgramConfiguration.json') }}",
-               "{{ url_for('static', filename='schemas/schProgramConfiguration.json') }}",
-               "TabPrograms",
-               "submitPrograms",
-               true);
+		loadTab( "{{ url_for('static', filename='config/ProgramConfiguration.json') }}",
+			   "{{ url_for('static', filename='schemas/schProgramConfiguration.json') }}",
+			   "TabPrograms",
+			   "submitPrograms",
+			   true);
 
 
-      loadTab( "{{ url_for('static', filename='config/Zones.json') }}",
-               "{{ url_for('static', filename='schemas/schZones.json') }}",
-               "TabZones",
-               "submitZones",
-               true);
+		loadTab( "{{ url_for('static', filename='config/Zones.json') }}",
+			   "{{ url_for('static', filename='schemas/schZones.json') }}",
+			   "TabZones",
+			   "submitZones",
+			   true);
 
-      loadTab( "{{ url_for('static', filename='config/LedMatrix.json') }}",
-               "{{ url_for('static', filename='schemas/schLedMatrix.json') }}",
-               "TabMatrix",
-               "submitMatrix",
-               true);
+		loadTab( "{{ url_for('static', filename='config/LedMatrix.json') }}",
+			   "{{ url_for('static', filename='schemas/schLedMatrix.json') }}",
+			   "TabMatrix",
+			   "submitMatrix",
+			   true);
+			   
+		function testFileMusic(fichero)
+		{
+			$.ajax
+            (
+              {
+                type: "POST",
+                url: "/testMusic",
+                data: { filename: fichero},
+                dataType: "text"
+              }
+            ).done(function( o ) { alert("Reproduciendo " +  fichero); });
+			
+		}
     </script>
   </body>
 </html>

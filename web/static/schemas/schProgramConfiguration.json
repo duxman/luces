@@ -14,9 +14,10 @@
         {
           "title"     : "Music File",
           "type"      : "object",
+		  "id"		  : "File_id",
           "properties":
           {
-            "File"      : {"type": "string"}
+            "File"      : {"type": "string", "links": [ { "rel" : "Test file" , "href": "/testMusic/{{self}}" } ]}
           }
         }
       },
