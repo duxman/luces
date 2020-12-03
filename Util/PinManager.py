@@ -25,19 +25,14 @@ import time  # necesario para los delays
 import paho.mqtt.client as mqtt
 
 from Util.ledStripMessage import ledLevel
-
-if os.name == 'poxis':
-    import RPi.GPIO as GPIO
-else:
-    import tool.EmulatorGUI as GPIODEV
-
-    GPIO = GPIODEV.emulatorGPIO()
-
+import RPi.GPIO as GPIO
 
 class PinControl(object):
     Logger = None
     Zones = None
-    PinList: dict
+    PinListRange = []
+    PinList = []
+
     clienteMqtt: mqtt.Client = None
     token = ""
 
@@ -46,18 +41,22 @@ class PinControl(object):
         self.Zones = zones
         self.gpio_setup()
         self.clienteMqtt = mqtt.Client("PinManagerClient", True)
-        self.PinList = dict()
+        self.PinList = []
         if host != "":
             self.initializeMQTT(host, port, token)
 
-            pins = []
+            self.PinListRange = []
             for zone in self.Zones.DefinedZones:
                 if (zone.ZonePinType == "GPIO"):
-                    for k in zone.ZonePins:
-                        pins.extend(zone.ZonePins[k])
-                        self.PinList[k] = pins
 
-            self.gpio_setup_pins(pins)
+                    for k in zone.ZonePins:
+                        self.PinListRange.extend(zone.ZonePins[k])
+                        pinttemp = [int(numeric_string) for numeric_string in zone.ZonePins[k]]
+                        self.PinList.append(pinttemp)
+
+            pins = list(dict.fromkeys(self.PinListRange))
+            self.PinListRange = [int(numeric_string) for numeric_string in pins]
+            self.gpio_setup_pins(self.PinListRange)
 
     def initializeMQTT(self, host, port, token):
         self.token = token
@@ -74,15 +73,17 @@ class PinControl(object):
     def decodeMsg(self, msg):
         led = ledLevel()
         led.ParseFromString(msg.payload)
-        print("New Level {}".format(led.Level))
+        #print("New Level {}".format(led.Level))
+        #print("led.Level {} , Zones.MaxPinValue {}, self.PinList {} "
+        #      .format(led.Level, self.Zones.MaxPinValue, self.PinList))
         self.ApagarTodo()
-        if led.Level < self.Zones.MaxPinValue:
+        if led.Level  < len(self.PinList):
             self.EncenderSpectrumZone(self.PinList[led.Level])
-        else:
+        if led.Level > self.Zones.MaxPinValue:
             self.EncenderTodo()
 
     def on_message(self, mqttc, obj, msg):
-        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
         self.decodeMsg(msg)
 
     def on_publish(self, mqttc, obj, mid):
@@ -104,8 +105,13 @@ class PinControl(object):
         GPIO.setwarnings(False)
 
     def gpio_setup_pins(self, pinList):
-        GPIO.setup(pinList, GPIO.OUT)
-        GPIO.output(pinList, GPIO.LOW)
+        print("Set Pins {}".format(pinList))
+        for p in pinList:
+            print ("Set Pin {}".format(p))
+            GPIO.setup(int(p), GPIO.OUT)
+            GPIO.output(int(p), GPIO.LOW)
+            GPIO.output(int(p), GPIO.HIGH)
+            GPIO.output(int(p), GPIO.LOW)
         self.publish(0)
 
     def Encender(self, pin):
@@ -129,18 +135,21 @@ class PinControl(object):
             self.Apagar(pin)
 
     def EncenderTodo(self):
-        GPIO.output(self.Zones.SpectrumPins, GPIO.HIGH)
+        GPIO.output(self.PinListRange, GPIO.HIGH)
+        #for p in self.PinListRange:
+        #    GPIO.output(int(p), GPIO.HIGH)
 
     def ApagarTodo(self):
-        GPIO.output(self.Zones.SpectrumPins, GPIO.LOW)
+        #for p in self.PinListRange:
+        #    GPIO.output(int(p), GPIO.LOW)
+        GPIO.output(self.PinListRange, GPIO.LOW)
 
     def EncenderSpectrumZone(self, pins):
-        self.Logger.info("item to show " + " ".join(pins))
-
-        GPIO.output(self.Zones.SpectrumPins, GPIO.LOW)
-
+        #print(pins)
         if (len(pins) > 0):
             GPIO.output(pins, GPIO.HIGH)
+            #for p in pins:
+            #    GPIO.output(int(p), GPIO.HIGH)
 
     def EncenderInRangeZone(self, MaxValue):
 
