@@ -25,7 +25,12 @@ import time  # necesario para los delays
 import paho.mqtt.client as mqtt
 
 from Util.ledStripMessage import ledLevel
-import RPi.GPIO as GPIO
+if os.name != 'nt':
+    import RPi.GPIO as GPIO
+else:
+     from tool.EmulatorGUI import emulatorGPIO
+     GPIO = emulatorGPIO()
+
 
 class PinControl(object):
     Logger = None
@@ -70,15 +75,24 @@ class PinControl(object):
         print("rc: " + str(rc))
         mqttc.subscribe(self.token)
 
-    def decodeMsg(self, msg):
+    def decodeMsg(self, msg, rgn=-1):
         led = ledLevel()
         led.ParseFromString(msg.payload)
         #print("New Level {}".format(led.Level))
         #print("led.Level {} , Zones.MaxPinValue {}, self.PinList {} "
         #      .format(led.Level, self.Zones.MaxPinValue, self.PinList))
         self.ApagarTodo()
-        if led.Level  < len(self.PinList):
-            self.EncenderSpectrumZone(self.PinList[led.Level])
+        if led.Level < len(self.PinList):
+            if rgn!=-1:
+                pintoon = []
+                for i in range(led.Level+1):
+                    pintoon.extend(self.PinList[led.Level])
+                try:
+                    self.EncenderSpectrumZone(pintoon)
+                except:
+                    self.EncenderSpectrumZone(self.PinList[led.Level-1])
+            else:
+             self.EncenderSpectrumZone(self.PinList[led.Level])
         if led.Level > self.Zones.MaxPinValue:
             self.EncenderTodo()
 

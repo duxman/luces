@@ -66,13 +66,15 @@ class ServeAnimation():
         mqttc.subscribe(self.token)
 
     def decodeMsg(self, msg):
-        ledpanel = display()
-        ledpanel.ParseFromString(msg.payload)
-        for l in ledpanel.frame:
-            print("Pin {}, Color {}".format(l.Pin, l.Color))
+        print("New frame")
+        #ledpanel = display()
+        #ledpanel.ParseFromString(msg.payload)
+
+        #for l in ledpanel.frame:
+        #    print("Pin {}, Color {}".format(l.Pin, l.Color))
 
     def on_message(self, mqttc, obj, msg):
-        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
         self.decodeMsg(msg)
 
     def on_publish(self, mqttc, obj, mid):

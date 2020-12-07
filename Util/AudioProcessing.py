@@ -79,10 +79,12 @@ class AudioProcessing():
     def on_publish(self, mqttc, obj, mid):
         self.Logger.debug("Messagge sended " + str(mid))
 
-    def publish(self, id = -1 , rng=-1):
+    def publish(self, id=-1, rng=-1):
         led = ledLevel()
+
         if id!=-1:
             led.Level = id
+            self.clienteMqtt.publish("PinManager", led.SerializeToString(), 2, False)
             for t in self.Tokens:
                 self.clienteMqtt.publish(t, led.SerializeToString(), 2, False)
 
@@ -92,7 +94,8 @@ class AudioProcessing():
                 for t in self.Tokens:
                     self.clienteMqtt.publish(t, led.SerializeToString(), 2, False)
 
-        self.clienteMqtt.publish("PinManager", led.SerializeToString(), 2, False)
+
+
     def setFfmpegPath(self, path):
         AudioSegment.converter = path
 
@@ -163,7 +166,7 @@ class AudioProcessing():
         ValorIntermedio = (ValorMedio * NumeroPines) / ValorMax
         ValorNormalizado = int(abs(math.ceil(ValorIntermedio)))
         self.publish(id=ValorNormalizado)
-        print(ValorNormalizado * '*')
+        print( (ValorNormalizado * '*' ) +( (NumeroPines - ValorNormalizado ) * '#' ) )
 
         #Antes se procesaba con queue ahora com mqtt
         #self.QueueProcess.put(ValorNormalizado)
@@ -188,13 +191,14 @@ class AudioProcessing():
                 self.getQueueValue( self.MaxRate, valormedio, NumeroPines)
 
                 self.WriteFunctionObject.write(data)
-                time.sleep(0.0125)
+                #time.sleep(0.05)
                 data = WaveAudio.readframes(self.PeriodSize)
 
-            if os.name != 'poxis':
+            if os.name != 'posix':
                 self.Stream.stop_stream()
                 self.Stream.close()
                 self.Device.terminate()
+
 
 
             #self.QueueProcess.join()
